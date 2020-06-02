@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+	<name>ss_prestablog</name>
+	<displayName><![CDATA[Prestashop 1.7]]></displayName>
+	<version><![CDATA[1.0.0]]></version>
+	<description><![CDATA[Simple and Straightforward module for a blog inside Prestashop 1.7 e-commerce. ]]></description>
+	<author><![CDATA[Adib Aroui]]></author>
+	<tab><![CDATA[content_management]]></tab>
+	<is_configurable>1</is_configurable>
+	<need_instance>1</need_instance>
+</module>
