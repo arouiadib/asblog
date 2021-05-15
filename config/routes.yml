@@ -1,0 +1,28 @@
+# Admin routes
+admin_blog_post_list:
+  path: /blog_post/list
+  methods: [GET]
+  defaults:
+      _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::listAction'
+
+admin_blog_post_new:
+  path: /blog_post/new
+  methods: [GET, POST]
+  defaults:
+    _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::newAction'
+
+admin_blog_post_edit:
+    path: /blog_post/{post_id}/edit
+    methods: [GET, POST]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::editAction'
+
+admin_blog_post_delete:
+    path: /blog_post/{post_id}/delete
+    methods: [POST]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::createAction'
+
+
+# FO routes
+# Todo
