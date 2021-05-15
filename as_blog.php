@@ -1,40 +1,16 @@
 <?php
-/**
-* 2007-2020 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-*  @author    PrestaShop SA <contact@prestashop.com>
-*  @copyright 2007-2020 PrestaShop SA
-*  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-*  International Registered Trademark & Property of PrestaShop SA
-*/
 
 if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-class Ss_prestablog extends Module
+class As_blog extends Module
 {
     protected $config_form = false;
 
     public function __construct()
     {
-        $this->name = 'ss_prestablog';
+        $this->name = 'as_blog';
         $this->tab = 'content_management';
         $this->version = '1.0.0';
         $this->author = 'Adib Aroui';
@@ -61,7 +37,7 @@ class Ss_prestablog extends Module
      */
     public function install()
     {
-        Configuration::updateValue('SS_PRESTABLOG_LIVE_MODE', false);
+        Configuration::updateValue('AS_BLOG_LIVE_MODE', false);
 
         include(dirname(__FILE__).'/sql/install.php');
 
@@ -72,7 +48,7 @@ class Ss_prestablog extends Module
 
     public function uninstall()
     {
-        Configuration::deleteByName('SS_PRESTABLOG_LIVE_MODE');
+        Configuration::deleteByName('AS_BLOG_LIVE_MODE');
 
         include(dirname(__FILE__).'/sql/uninstall.php');
 
@@ -87,7 +63,7 @@ class Ss_prestablog extends Module
         /**
          * If values have been submitted in the form, process.
          */
-        if (((bool)Tools::isSubmit('submitSs_prestablogModule')) == true) {
+        if (((bool)Tools::isSubmit('submitAs_blogModule')) == true) {
             $this->postProcess();
         }
 
@@ -112,7 +88,7 @@ class Ss_prestablog extends Module
         $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
 
         $helper->identifier = $this->identifier;
-        $helper->submit_action = 'submitSs_prestablogModule';
+        $helper->submit_action = 'submitAs_blogModule';
         $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false)
             .'&configure='.$this->name.'&tab_module='.$this->tab.'&module_name='.$this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
@@ -141,7 +117,7 @@ class Ss_prestablog extends Module
                     array(
                         'type' => 'switch',
                         'label' => $this->l('Live mode'),
-                        'name' => 'SS_PRESTABLOG_LIVE_MODE',
+                        'name' => 'AS_BLOG_LIVE_MODE',
                         'is_bool' => true,
                         'desc' => $this->l('Use this module in live mode'),
                         'values' => array(
@@ -162,12 +138,12 @@ class Ss_prestablog extends Module
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-envelope"></i>',
                         'desc' => $this->l('Enter a valid email address'),
-                        'name' => 'SS_PRESTABLOG_ACCOUNT_EMAIL',
+                        'name' => 'AS_BLOG_ACCOUNT_EMAIL',
                         'label' => $this->l('Email'),
                     ),
                     array(
                         'type' => 'password',
-                        'name' => 'SS_PRESTABLOG_ACCOUNT_PASSWORD',
+                        'name' => 'AS_BLOG_ACCOUNT_PASSWORD',
                         'label' => $this->l('Password'),
                     ),
                 ),
@@ -184,9 +160,9 @@ class Ss_prestablog extends Module
     protected function getConfigFormValues()
     {
         return array(
-            'SS_PRESTABLOG_LIVE_MODE' => Configuration::get('SS_PRESTABLOG_LIVE_MODE', true),
-            'SS_PRESTABLOG_ACCOUNT_EMAIL' => Configuration::get('SS_PRESTABLOG_ACCOUNT_EMAIL', 'contact@prestashop.com'),
-            'SS_PRESTABLOG_ACCOUNT_PASSWORD' => Configuration::get('SS_PRESTABLOG_ACCOUNT_PASSWORD', null),
+            'AS_BLOG_LIVE_MODE' => Configuration::get('AS_BLOG_LIVE_MODE', true),
+            'AS_BLOG_ACCOUNT_EMAIL' => Configuration::get('AS_BLOG_ACCOUNT_EMAIL', 'contact@prestashop.com'),
+            'AS_BLOG_ACCOUNT_PASSWORD' => Configuration::get('AS_BLOG_ACCOUNT_PASSWORD', null),
         );
     }
 

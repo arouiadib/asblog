@@ -1,0 +1,30 @@
+{
+  "name": "prestashop/as_blog",
+  "description": "Blog module for PrestaShop 1.7",
+  "homepage": "https://github.com/arouiadib/as_blog",
+  "license": "AFL-3.0",
+  "authors": [
+    {
+      "name": "Adib Aroui",
+      "email": "aroui.adib@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0"
+  },
+    "require-dev": {
+    "prestashop/php-dev-tools": "^3.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "PrestaShop\\Module\\AsBlog\\": "src/"
+    },
+    "classmap": ["as_blog"],
+    "exclude-from-classmap": []
+  },
+  "config": {
+    "preferred-install": "dist",
+    "prepend-autoloader": false
+  },
+  "type": "prestashop-module"
+}
