@@ -82,9 +82,9 @@ class PostController extends FrameworkBundleAdminController
      *
      * @throws \Exception
      */
-    public function editProcessAction(Request $request, $linkBlockId)
+    public function editProcessAction(Request $request, $blogPostId)
     {
-        return $this->processForm($request, 'Successful update.', $linkBlockId);
+        return $this->processForm($request, 'Successful update.', $blogPostId);
     }
 
     /**
@@ -94,7 +94,7 @@ class PostController extends FrameworkBundleAdminController
      *
      * @return RedirectResponse
      */
-    public function deleteAction($linkBlockId)
+    public function deleteAction($blogPostId)
     {
         return $this->redirectToRoute('admin_blog_post_list');
     }
@@ -108,7 +108,7 @@ class PostController extends FrameworkBundleAdminController
      *
      * @throws \Exception
      */
-    private function processForm(Request $request, $successMessage, $linkBlockId = null)
+    private function processForm(Request $request, $successMessage, $blogPostId = null)
     {
         return $this->render('@Modules/as_blog/views/templates/admin/blog_post/form.html.twig', [
         ]);

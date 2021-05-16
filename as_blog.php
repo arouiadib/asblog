@@ -23,7 +23,7 @@ class As_blog extends Module
 
         parent::__construct();
 
-        $this->displayName = $this->l('Prestashop 1.7');
+        $this->displayName = $this->l('Blog for Prestashop 1.7');
         $this->description = $this->l('Simple and Straightforward module for a blog inside Prestashop 1.7 e-commerce. ');
 
         $this->confirmUninstall = $this->l('');
