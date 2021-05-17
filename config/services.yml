@@ -1,0 +1,13 @@
+services:
+    _defaults:
+        public: true
+
+    ## Post services
+    # Post repository
+    prestashop.module.link_block.repository:
+        class: PrestaShop\Module\AsBlog\Repository\PostRepository
+        arguments:
+            $connection: '@doctrine.dbal.default_connection'
+            $dbPrefix: '%database_prefix%'
+            $languages: '@=service("prestashop.adapter.legacy.context").getLanguages(true, service("prestashop.adapter.shop.context").getContextShopID())'
+            $translator: '@translator'
