@@ -8,6 +8,9 @@ class As_blog extends Module
 {
     protected $config_form = false;
 
+    /* @var PostRepository */
+    private $postRepository;
+
     public function __construct()
     {
         $this->name = 'as_blog';
@@ -15,11 +18,6 @@ class As_blog extends Module
         $this->version = '1.0.0';
         $this->author = 'Adib Aroui';
         $this->need_instance = 1;
-
-        /**
-         * Set $this->bootstrap to true if your module is compliant with bootstrap (PrestaShop 1.6)
-         */
-        $this->bootstrap = true;
 
         parent::__construct();
 
@@ -31,28 +29,61 @@ class As_blog extends Module
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
     }
 
-    /**
-     * Don't forget to create update methods if needed:
-     * http://doc.prestashop.com/display/PS16/Enabling+the+Auto-Update
-     */
+
     public function install()
     {
         Configuration::updateValue('AS_BLOG_LIVE_MODE', false);
 
-        include(dirname(__FILE__).'/sql/install.php');
+        if (!parent::install()) {
+            return false;
+        }
 
-        return parent::install() &&
-            $this->registerHook('header') &&
-            $this->registerHook('backOfficeHeader');
+        if (null !== $this->getPostRepository()) {
+            $installed = $this->installDatabase();
+        } else {
+            $installed = $this->installLegacyDatabase();
+        }
+
+        if ($installed
+            && $this->registerHook('header')
+            && $this->registerHook('backOfficeHeader')
+        ) {
+            return true;
+        }
+
+        $this->uninstall();
+
+        return false;
+    }
+
+
+    public function installDatabase() {
+
+        $installed = true;
+
+        $errors = $this->postRepository->createTables();
+
+        if (!empty($errors)) {
+            $this->addModuleErrors($errors);
+            $installed = false;
+        }
+
+        return $installed;
     }
 
     public function uninstall()
     {
         Configuration::deleteByName('AS_BLOG_LIVE_MODE');
 
-        include(dirname(__FILE__).'/sql/uninstall.php');
-
         return parent::uninstall();
+    }
+
+    /**
+     * @return bool
+     */
+    private function installLegacyDatabase()
+    {
+        return true;
     }
 
     /**
@@ -196,5 +227,42 @@ class As_blog extends Module
     {
         $this->context->controller->addJS($this->_path.'/views/js/front.js');
         $this->context->controller->addCSS($this->_path.'/views/css/front.css');
+    }
+
+    /**
+     * @return PostRepository|LegacyPostRepository|null
+     */
+    private function getRepository()
+    {
+        if (null === $this->posRepository) {
+            try {
+                $this->postRepository = $this->get('prestashop.module.as_blog.repository');
+            } catch (Throwable $e) {
+                try {
+                    $container = SymfonyContainer::getInstance();
+                    if (null !== $container) {
+                        //Module is not installed so its services are not loaded
+                        /** @var LegacyContext $context */
+                        $legacyContext = $container->get('prestashop.adapter.legacy.context');
+                        /** @var Context $shopContext */
+                        $shopContext = $container->get('prestashop.adapter.shop.context');
+                        $this->postRepository = new PostRepository(
+                            $container->get('doctrine.dbal.default_connection'),
+                            $container->getParameter('database_prefix'),
+                            $legacyContext->getLanguages(true, $shopContext->getContextShopID()),
+                            $container->get('translator')
+                        );
+                    }
+                } catch (Throwable $e) {
+                }
+            }
+        }
+
+        // Container is not available so we use legacy repository as fallback
+        /*if (!$this->repository) {
+            $this->repository = $this->legacyBlockRepository;
+        }*/
+
+        return $this->postRepository;
     }
 }
