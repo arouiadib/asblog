@@ -24,7 +24,7 @@ services:
 
     # Post form handler
     prestashop.module.as_blog.form_handler:
-        class: PrestaShop\Core\Form\FormHandler
+        class: PrestaShop\PrestaShop\Core\Form\FormHandler
         arguments:
             $formBuilder: '@=service("form.factory").createBuilder()'
             $hookDispatcher: '@prestashop.core.hook.dispatcher'

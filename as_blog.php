@@ -4,6 +4,19 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+if (!defined('_CAN_LOAD_FILES_')) {
+    exit;
+}
+
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+}
+
+use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
+use PrestaShop\PrestaShop\Adapter\LegacyContext;
+use PrestaShop\PrestaShop\Adapter\Shop\Context;
+use PrestaShop\Module\AsBlog\Repository\PostRepository;
+
 class As_blog extends Module
 {
     protected $config_form = false;
@@ -60,7 +73,6 @@ class As_blog extends Module
     public function installDatabase() {
 
         $installed = true;
-
         $errors = $this->postRepository->createTables();
 
         if (!empty($errors)) {
@@ -232,29 +244,23 @@ class As_blog extends Module
     /**
      * @return PostRepository|LegacyPostRepository|null
      */
-    private function getRepository()
+    private function getPostRepository()
     {
-        if (null === $this->posRepository) {
+        if (null === $this->postRepository) {
             try {
                 $this->postRepository = $this->get('prestashop.module.as_blog.repository');
             } catch (Throwable $e) {
-                try {
-                    $container = SymfonyContainer::getInstance();
-                    if (null !== $container) {
-                        //Module is not installed so its services are not loaded
-                        /** @var LegacyContext $context */
-                        $legacyContext = $container->get('prestashop.adapter.legacy.context');
-                        /** @var Context $shopContext */
-                        $shopContext = $container->get('prestashop.adapter.shop.context');
-                        $this->postRepository = new PostRepository(
-                            $container->get('doctrine.dbal.default_connection'),
-                            $container->getParameter('database_prefix'),
-                            $legacyContext->getLanguages(true, $shopContext->getContextShopID()),
-                            $container->get('translator')
-                        );
-                    }
-                } catch (Throwable $e) {
-                }
+                /** @var LegacyContext $context */
+                $legacyContext = $this->get('prestashop.adapter.legacy.context');
+                /** @var Context $shopContext */
+                $shopContext = $this->get('prestashop.adapter.shop.context');
+
+                $this->postRepository = new PostRepository(
+                    $this->get('doctrine.dbal.default_connection'),
+                    SymfonyContainer::getInstance()->getParameter('database_prefix'),
+                    $legacyContext->getLanguages(true, $shopContext->getContextShopID()),
+                    $this->get('translator')
+                );
             }
         }
 

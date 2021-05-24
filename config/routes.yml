@@ -9,7 +9,7 @@ admin_blog_post_new:
   path: /blog_post/new
   methods: [GET, POST]
   defaults:
-    _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::newAction'
+    _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::createAction'
 
 admin_blog_post_edit:
     path: /blog_post/{post_id}/edit

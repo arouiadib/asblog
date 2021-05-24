@@ -1,6 +1,6 @@
 <?php
 
-namespace PrestaShop\Module\AsBlog\Controller\Admin;
+namespace PrestaShop\Module\AsBlog\Controller;
 
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -38,6 +38,7 @@ class PostController extends FrameworkBundleAdminController
      */
     public function createAction(Request $request)
     {
+var_dump('hi');die;
         return $this->render('@Modules/as_blog/views/templates/admin/blog_post/form.html.twig', [
         ]);
     }
