@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use PrestaShopBundle\Security\Annotation\ModuleActivated;
+use PrestaShop\Module\AsBlog\Core\Search\Filters\PostFilters;
+
 
 /**
  * Class PostController.
@@ -24,8 +26,15 @@ class PostController extends FrameworkBundleAdminController
      */
     public function listAction(Request $request)
     {
+        $filtersParams = $this->buildFiltersParamsByRequest($request);
+
+        /** @var PostGridFactory $bookingGridFactory */
+        $bookingGridFactory = $this->get('prestashop.module.as_blog.grid.factory');
+        $grid = $bookingGridFactory->getGrid($filtersParams);
+        $presentedGrid = $this->presentGrid($grid);
 
         return $this->render('@Modules/as_blog/views/templates/admin/blog_post/list.html.twig', [
+            'grid' => $presentedGrid,
             'enableSidebar' => true,
             'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
@@ -132,5 +141,16 @@ class PostController extends FrameworkBundleAdminController
                 'icon' => 'add_circle_outline',
             ],
         ];
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    private function buildFiltersParamsByRequest(Request $request)
+    {
+        $filtersParams = array_merge(PostFilters::getDefaults(), $request->query->all());
+        return $filtersParams;
     }
 }

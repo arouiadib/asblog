@@ -39,3 +39,30 @@ services:
         public: true
         tags:
             - { name: form.type }
+
+    ## Post grid
+
+    # Grid data query builder
+    prestashop.module.as_blog.grid.query_builder:
+        class: PrestaShop\Module\AsBlog\Core\Grid\Query\PostQueryBuilder
+        arguments:
+            $connection: '@doctrine.dbal.default_connection'
+            $dbPrefix: '%database_prefix%'
+
+    # Grid Data Factory
+    prestashop.module.as_blog.grid.data_factory:
+        class: '%prestashop.core.grid.data.factory.doctrine_grid_data_factory%'
+        arguments:
+            $gridQueryBuilder: '@prestashop.module.as_blog.grid.query_builder'
+            $hookDispatcher: '@prestashop.core.hook.dispatcher'
+            $queryParser: '@prestashop.core.grid.query.doctrine_query_parser'
+            $gridId: 'post'
+
+    # Grid Factory
+    prestashop.module.as_blog.grid.factory:
+        class: PrestaShop\Module\AsBlog\Core\Grid\PostGridFactory
+        arguments:
+            $translator: '@translator'
+            $hookDispatcher: '@prestashop.core.hook.dispatcher'
+            $dataFactory: '@prestashop.module.as_blog.grid.data_factory'
+            $filterFormFactory: '@prestashop.core.grid.filter.form_factory'
