@@ -24,8 +24,11 @@ class PostController extends FrameworkBundleAdminController
      */
     public function listAction(Request $request)
     {
-        var_dump('hi');die;
+
         return $this->render('@Modules/as_blog/views/templates/admin/blog_post/list.html.twig', [
+            'enableSidebar' => true,
+            'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
+            'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
         ]);
     }
     /**

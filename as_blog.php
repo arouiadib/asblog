@@ -21,7 +21,6 @@ class As_blog extends Module
 {
     protected $config_form = false;
 
-    public $tabs = [];
     /* @var PostRepository */
     private $postRepository;
 
@@ -32,7 +31,6 @@ class As_blog extends Module
         $this->version = '1.0.0';
         $this->author = 'Adib Aroui';
         $this->need_instance = 1;
-
 
         parent::__construct();
 
@@ -76,7 +74,6 @@ class As_blog extends Module
 
 
     public function installDatabase() {
-
         $installed = true;
         $errors = $this->postRepository->createTables();
 
@@ -319,5 +316,4 @@ class As_blog extends Module
 
         return $tab->delete();
     }
-
 }
