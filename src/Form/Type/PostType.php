@@ -1,6 +1,5 @@
 <?php
 
-
 namespace PrestaShop\Module\AsBlog\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
@@ -11,7 +10,6 @@ use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints\Length;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\DefaultLanguage;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class PostType extends TranslatorAwareType
 {
@@ -63,7 +61,7 @@ class PostType extends TranslatorAwareType
                     ],
                 ],
             ])
-            ->add('content', TextareaType::class, [
+            ->add('content', TranslateTextType::class, [
                     'locales' => $this->locales,
                     'required' => true,
                     'label' => $this->trans('Content', 'Modules.AsBlog.Admin'),

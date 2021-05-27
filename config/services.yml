@@ -31,3 +31,11 @@ services:
             $formDataProvider: '@prestashop.module.as_blog.form_provider'
             $formTypes:
                 'post': 'PrestaShop\Module\AsBlog\Form\Type\PostType'
+            $hookName: 'AdminLinkWidget'
+
+    prestashop.module.as_blog.form_type:
+        class: PrestaShop\Module\AsBlog\Form\Type\PostType
+        parent: 'form.type.translatable.aware'
+        public: true
+        tags:
+            - { name: form.type }

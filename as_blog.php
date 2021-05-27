@@ -21,6 +21,7 @@ class As_blog extends Module
 {
     protected $config_form = false;
 
+    public $tabs = [];
     /* @var PostRepository */
     private $postRepository;
 
@@ -31,6 +32,7 @@ class As_blog extends Module
         $this->version = '1.0.0';
         $this->author = 'Adib Aroui';
         $this->need_instance = 1;
+
 
         parent::__construct();
 
@@ -48,6 +50,9 @@ class As_blog extends Module
         Configuration::updateValue('AS_BLOG_LIVE_MODE', false);
 
         if (!parent::install()) {
+            return false;
+        }
+        if (!$this->installTab()) {
             return false;
         }
 
@@ -87,7 +92,7 @@ class As_blog extends Module
     {
         Configuration::deleteByName('AS_BLOG_LIVE_MODE');
 
-        return parent::uninstall();
+        return parent::uninstall() && $this->uninstallTab();
     }
 
     /**
@@ -264,11 +269,55 @@ class As_blog extends Module
             }
         }
 
-        // Container is not available so we use legacy repository as fallback
-        /*if (!$this->repository) {
-            $this->repository = $this->legacyBlockRepository;
-        }*/
-
         return $this->postRepository;
     }
+
+    public function enable($force_all = false)
+    {
+        return parent::enable($force_all)
+            && $this->installTab()
+            ;
+    }
+
+    public function disable($force_all = false)
+    {
+        return parent::disable($force_all)
+            && $this->uninstallTab()
+            ;
+    }
+
+    private function installTab()
+    {
+        $tabId = (int) Tab::getIdFromClassName('AsBlogPostController');
+        if (!$tabId) {
+            $tabId = null;
+        }
+
+        $tab = new Tab($tabId);
+        $tab->active = 1;
+        $tab->class_name = 'AsBlogPostController';
+        $tab->name = array();
+
+        foreach (Language::getLanguages(true) as $lang) {
+            $tab->name[$lang['id_lang']] = $this->trans('Blog', array(), 'Modules.Asblog.Admin', $lang['locale']);
+        }
+        $tab->route_name = 'admin_blog_post_list';
+        $tab->id_parent = (int) Tab::getIdFromClassName('DEFAULT');
+        $tab->module = $this->name;
+
+        return $tab->save();
+    }
+
+    private function uninstallTab()
+    {
+        $tabId = (int) Tab::getIdFromClassName('AsBlogPostController');
+        if (!$tabId) {
+            return true;
+        }
+
+        $tab = new Tab($tabId);
+
+        return $tab->delete();
+    }
+
 }

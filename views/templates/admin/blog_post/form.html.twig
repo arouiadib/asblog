@@ -1,0 +1,51 @@
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+{% trans_default_domain "Admin.Design.Feature" %}
+{% form_theme postForm '@Modules/as_blog/views/templates/admin/fields.html.twig' %}
+
+{% block content %}
+    {% if postForm.vars.data.post.id_post is defined and postForm.vars.data.post.id_post is not null %}
+        {% set formAction = url('admin_blog_post_edit_process', {'postId': postForm.vars.data.post.id_post}) %}
+    {% else %}
+        {% set formAction = url('admin_blog_post_create_process') %}
+    {% endif %}
+    {{ form_start(postForm, {'action': formAction, 'attr': {'class': 'form', 'id': 'post_form'}}) }}
+    <div class="row justify-content-center">
+        {% block post_form %}
+            <div class="col-xl-10">
+                <div class="card">
+                    <h3 class="card-header">
+                        <i class="material-icons">mode_edit</i>
+                        {% if postForm.vars.data.post.id_post is defined %}
+                            {{ 'Edit the post'|trans({}, 'Modules.Asblog.Admin') }}
+                        {% else %}
+                            {{ 'New post'|trans({}, 'Modules.Asblog.Admin') }}
+                        {% endif %}
+                    </h3>
+                    <div class="card-block row">
+                        <div class="card-text">
+                            {{ form_row(postForm.post.title) }}
+                            {{ form_row(postForm.post.content) }}
+
+                            {{ form_rest(postForm.post) }}
+                            {% do postForm.post.setRendered %}
+                            {{ form_rest(postForm) }}
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url('admin_blog_post_list') }}" class="btn btn-secondary">{{ 'Cancel'|trans({}, 'Admin.Actions') }}</a>
+                            <button class="btn btn-primary">{{ 'Save'|trans({}, 'Admin.Actions') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+    {{ form_end(postForm) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('../modules/as_blog/views/public/form.bundle.js') }}"></script>
+{% endblock %}

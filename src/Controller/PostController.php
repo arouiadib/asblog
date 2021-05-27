@@ -17,7 +17,6 @@ use PrestaShopBundle\Security\Annotation\ModuleActivated;
 class PostController extends FrameworkBundleAdminController
 {
     /**
-     * @AdminSecurity("is_granted('read', request.get('_legacy_controller'))", message="Access denied.")
      *
      * @param Request $request
      *
@@ -25,28 +24,30 @@ class PostController extends FrameworkBundleAdminController
      */
     public function listAction(Request $request)
     {
+        var_dump('hi');die;
         return $this->render('@Modules/as_blog/views/templates/admin/blog_post/list.html.twig', [
         ]);
     }
-
     /**
-     * @AdminSecurity("is_granted('create', request.get('_legacy_controller'))", message="Access denied.")
      *
      * @param Request $request
      *
      * @return Response
-     *
-     * @throws \Exception
      */
     public function createAction(Request $request)
     {
-var_dump('hi');die;
+        $this->get('prestashop.module.as_blog.form_provider')->setIdPost(null);
+        $form = $this->get('prestashop.module.as_blog.form_handler')->getForm();
+
         return $this->render('@Modules/as_blog/views/templates/admin/blog_post/form.html.twig', [
+            'postForm' => $form->createView(),
+            'enableSidebar' => true,
+            'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
+            'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
         ]);
     }
 
     /**
-     * @AdminSecurity("is_granted('update', request.get('_legacy_controller'))", message="Access denied.")
      *
      * @param Request $request
      * @param int $linkBlockId
@@ -62,7 +63,6 @@ var_dump('hi');die;
     }
 
     /**
-     * @AdminSecurity("is_granted('create', request.get('_legacy_controller'))", message="Access denied.")
      *
      * @param Request $request
      *
@@ -76,7 +76,6 @@ var_dump('hi');die;
     }
 
     /**
-     * @AdminSecurity("is_granted('update', request.get('_legacy_controller'))", message="Access denied.")
      *
      * @param Request $request
      * @param int $linkBlockId
@@ -91,7 +90,6 @@ var_dump('hi');die;
     }
 
     /**
-     * @AdminSecurity("is_granted('delete', request.get('_legacy_controller'))", message="Access denied.")
      *
      * @param int $linkBlockId
      *
@@ -115,5 +113,21 @@ var_dump('hi');die;
     {
         return $this->render('@Modules/as_blog/views/templates/admin/blog_post/form.html.twig', [
         ]);
+    }
+
+    /**
+     * Gets the header toolbar buttons.
+     *
+     * @return array
+     */
+    private function getToolbarButtons()
+    {
+        return [
+            'add' => [
+                'href' => $this->generateUrl('admin_blog_post_create'),
+                'desc' => $this->trans('New post', 'Modules.Asblog.Admin'),
+                'icon' => 'add_circle_outline',
+            ],
+        ];
     }
 }

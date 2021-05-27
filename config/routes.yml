@@ -4,25 +4,41 @@ admin_blog_post_list:
   methods: [GET]
   defaults:
       _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::listAction'
+      _legacy_controller: 'AsBlogPostController'
+      _legacy_link: 'AsBlogPostController'
 
-admin_blog_post_new:
-  path: /blog_post/new
-  methods: [GET, POST]
+admin_blog_post_create:
+  path: /blog_post/create
+  methods: [GET]
   defaults:
     _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::createAction'
+    _legacy_controller: 'AsBlogPostController'
+
+admin_blog_post_create_process:
+    path: /blog_post/create
+    methods: [POST]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::processCreateAction'
+        _legacy_controller: 'AsBlogPostController'
 
 admin_blog_post_edit:
     path: /blog_post/{post_id}/edit
-    methods: [GET, POST]
+    methods: [GET]
     defaults:
         _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::editAction'
+
+admin_blog_post_edit_process:
+    path: /blog_post/{post_id}/edit
+    methods: [POST]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::processEditAction'
+        _legacy_controller: 'AsBlogPostController'
 
 admin_blog_post_delete:
     path: /blog_post/{post_id}/delete
     methods: [POST]
     defaults:
         _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::createAction'
-
 
 # FO routes
 # Todo
