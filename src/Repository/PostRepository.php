@@ -191,6 +191,7 @@ class PostRepository
      */
     private function updateLanguages($postId, array $postTitle, array $postContent)
     {
+
         foreach ($this->languages as $language) {
             $qb = $this->connection->createQueryBuilder();
             $qb
@@ -229,7 +230,7 @@ class PostRepository
                     'postId' => $postId,
                     'langId' => $language['id_lang'],
                     'title' => $postTitle[$language['id_lang']],
-                    'content' => empty($postContent) ? null : json_encode($postContent[$language['id_lang']]),
+                    'content' => empty($postContent) ? null : $postContent[$language['id_lang']],
                 ]);
 
             $this->executeQueryBuilder($qb, 'Post language error');
