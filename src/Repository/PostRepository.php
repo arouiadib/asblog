@@ -65,13 +65,7 @@ class PostRepository
     {
         $qb = $this->connection->createQueryBuilder();
         $qb
-            ->insert($this->dbPrefix . 'post')
-            ->values([
-                'content' => ':content',
-            ])
-            ->setParameters([
-                'content' => json_encode($data['content']),
-            ]);
+            ->insert($this->dbPrefix . 'post');
 
         $this->executeQueryBuilder($qb, 'Post error');
         $postId = $this->connection->lastInsertId();
@@ -89,7 +83,7 @@ class PostRepository
      */
     public function update($postId, array $data)
     {
-        $this->updateLanguages($postId, $data['block_name'], $data['custom_content']);
+        $this->updateLanguages($postId, $data['title'], $data['content']);
     }
 
     /**

@@ -58,7 +58,7 @@ final class PostDefinitionFactory extends AbstractGridDefinitionFactory
                             ->setIcon('edit')
                             ->setOptions([
                                 'route' => 'admin_blog_post_edit',
-                                'route_param_name' => 'postId',
+                                'route_param_name' => 'post_id',
                                 'route_param_field' => 'id_post',
                             ])
                         )
@@ -68,7 +68,7 @@ final class PostDefinitionFactory extends AbstractGridDefinitionFactory
                             ->setOptions([
                                 'method' => 'POST',
                                 'route' => 'admin_blog_post_delete',
-                                'route_param_name' => 'postId',
+                                'route_param_name' => 'post_id',
                                 'route_param_field' => 'id_post',
                                 'confirm_message' => $this->trans(
                                     'Delete selected item?',

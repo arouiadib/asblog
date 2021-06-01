@@ -4,9 +4,9 @@
 
 {% block content %}
     {% if postForm.vars.data.post.id_post is defined and postForm.vars.data.post.id_post is not null %}
-        {% set formAction = url('admin_blog_post_edit_process', {'postId': postForm.vars.data.post.id_post}) %}
+        {% set formAction = url('admin_blog_post_process_edit', {'post_id': postForm.vars.data.post.id_post}) %}
     {% else %}
-        {% set formAction = url('admin_blog_post_create_process') %}
+        {% set formAction = url('admin_blog_post_process_create') %}
     {% endif %}
     {{ form_start(postForm, {'action': formAction, 'attr': {'class': 'form', 'id': 'post_form'}}) }}
     <div class="row justify-content-center">

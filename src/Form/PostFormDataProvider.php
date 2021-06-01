@@ -8,6 +8,7 @@ use PrestaShop\PrestaShop\Core\Addon\Module\ModuleRepository;
 use PrestaShop\Module\AsBlog\Repository\PostRepository;
 use PrestaShop\PrestaShop\Core\Form\FormDataProviderInterface;
 
+use Language;
 /**
  * Class PostFormDataProvider.
  */
@@ -82,7 +83,7 @@ class PostFormDataProvider implements FormDataProviderInterface
 
         return ['post' => [
             'id_post' => $arrayPost['id_post'],
-            'title' => $arrayPost['name'],
+            'title' => $arrayPost['title'],
             'content' => $arrayPost['content'],
         ]];
     }
@@ -96,6 +97,17 @@ class PostFormDataProvider implements FormDataProviderInterface
      */
     public function prepareData(array $post): array
     {
+        $defaultLanguageId = (int) $this->configuration->get('PS_LANG_DEFAULT');
+
+        if (!empty($post['title'])) {
+            foreach ($this->languages as $language) {
+                if (empty($post['title'][$language['id_lang']])) {
+                    $post['title'][$language['id_lang']] = $post['title'][$defaultLanguageId];
+                }
+            }
+        }
+
+        return $post;
     }
 
     /**
@@ -107,6 +119,22 @@ class PostFormDataProvider implements FormDataProviderInterface
      */
     public function setData(array $data)
     {
+        $post = $this->prepareData($data['post']);
+
+        $errors = $this->validatePost($post);
+
+        if (!empty($errors)) {
+            return $errors;
+        }
+
+        if (empty($post['id_post'])) {
+            $postId = $this->repository->create($post);
+            $this->setIdPost($postId);
+        } else {
+            $postId = $post['id_post'];
+            $this->repository->update($postId, $post);
+        }
+
         return [];
     }
 
@@ -138,6 +166,36 @@ class PostFormDataProvider implements FormDataProviderInterface
     private function validatePost(array $data)
     {
         $errors = [];
+
+        if (!isset($data['title'])) {
+            $errors[] = [
+                'key' => 'Missing title',
+                'domain' => 'Admin.Catalog.Notification',
+                'parameters' => [],
+            ];
+        } else {
+            foreach ($this->languages as $language) {
+                if (empty($data['title'][$language['id_lang']])) {
+                    $errors[] = [
+                        'key' => 'Missing title for language %s',
+                        'domain' => 'Admin.Catalog.Notification',
+                        'parameters' => [$language['iso_code']],
+                    ];
+                }
+            }
+        }
+
+        $defaultLanguageId = (int) $this->configuration->get('PS_LANG_DEFAULT');
+        $fields = ['content'];
+        foreach ($fields as $field) {
+            if (empty($data[$field][$defaultLanguageId])) {
+                $errors[] = [
+                    'key' => 'Missing %s content for language %s',
+                    'domain' => 'Admin.Catalog.Notification',
+                    'parameters' => [$field, Language::getIsoById($defaultLanguageId)],
+                ];
+            }
+        }
 
         return $errors;
     }

@@ -10,7 +10,7 @@ class Post extends \ObjectModel
     /**
      * @var int
      */
-    public $id_link_block;
+    public $id_post;
 
     /**
      * @var string

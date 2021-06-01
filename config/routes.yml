@@ -14,7 +14,7 @@ admin_blog_post_create:
     _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::createAction'
     _legacy_controller: 'AsBlogPostController'
 
-admin_blog_post_create_process:
+admin_blog_post_process_create:
     path: /blog_post/create
     methods: [POST]
     defaults:
@@ -26,8 +26,9 @@ admin_blog_post_edit:
     methods: [GET]
     defaults:
         _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::editAction'
+        _legacy_controller: 'AsBlogPostController'
 
-admin_blog_post_edit_process:
+admin_blog_post_process_edit:
     path: /blog_post/{post_id}/edit
     methods: [POST]
     defaults:

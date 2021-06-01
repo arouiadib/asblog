@@ -62,15 +62,22 @@ class PostController extends FrameworkBundleAdminController
     /**
      *
      * @param Request $request
-     * @param int $linkBlockId
+     * @param int $postId
      *
      * @return Response
      *
      * @throws \Exception
      */
-    public function editAction(Request $request, $linkBlockId)
+    public function editAction(Request $request, $post_id)
     {
+        $this->get('prestashop.module.as_blog.form_provider')->setIdPost($post_id);
+        $form = $this->get('prestashop.module.as_blog.form_handler')->getForm();
+
         return $this->render('@Modules/as_blog/views/templates/admin/blog_post/form.html.twig', [
+            'postForm' => $form->createView(),
+            'enableSidebar' => true,
+            'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
+            'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
         ]);
     }
 
@@ -82,7 +89,7 @@ class PostController extends FrameworkBundleAdminController
      *
      * @throws \Exception
      */
-    public function createProcessAction(Request $request)
+    public function processCreateAction(Request $request)
     {
         return $this->processForm($request, 'Successful creation.');
     }
@@ -90,24 +97,24 @@ class PostController extends FrameworkBundleAdminController
     /**
      *
      * @param Request $request
-     * @param int $linkBlockId
+     * @param int $post_id
      *
      * @return RedirectResponse|Response
      *
      * @throws \Exception
      */
-    public function editProcessAction(Request $request, $blogPostId)
+    public function processEditAction(Request $request, $post_id)
     {
-        return $this->processForm($request, 'Successful update.', $blogPostId);
+        return $this->processForm($request, 'Successful update.', $post_id);
     }
 
     /**
      *
-     * @param int $linkBlockId
+     * @param int $post_id
      *
      * @return RedirectResponse
      */
-    public function deleteAction($blogPostId)
+    public function deleteAction($post_id)
     {
         return $this->redirectToRoute('admin_blog_post_list');
     }
@@ -115,7 +122,7 @@ class PostController extends FrameworkBundleAdminController
     /**
      * @param Request $request
      * @param string $successMessage
-     * @param int|null $linkBlockId
+     * @param int|null $blogPostId
      *
      * @return Response|RedirectResponse
      *
@@ -123,7 +130,36 @@ class PostController extends FrameworkBundleAdminController
      */
     private function processForm(Request $request, $successMessage, $blogPostId = null)
     {
+        $this->get('prestashop.module.as_blog.form_provider')->setIdPost($blogPostId);
+
+        $formHandler = $this->get('prestashop.module.as_blog.form_handler');
+        $form = $formHandler->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $saveErrors = $formHandler->save($form->getData());
+
+                    if (0 === count($saveErrors)) {
+                    $this->addFlash('success', $this->trans($successMessage, 'Admin.Notifications.Success'));
+
+                    return  $this->redirectToRoute('admin_blog_post_list');
+                }
+                $formErrors = [];
+                foreach ($form->getErrors(true) as $error) {
+                    $formErrors[] = $error->getMessage();
+                }
+
+                $this->flashErrors($formErrors);
+            }
+        }
+
         return $this->render('@Modules/as_blog/views/templates/admin/blog_post/form.html.twig', [
+            'postForm' => $form->createView(),
+            'enableSidebar' => true,
+            'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
+            'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
         ]);
     }
 
