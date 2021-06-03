@@ -22,6 +22,11 @@ class Post extends \ObjectModel
      */
     public $content;
 
+    /**
+     * @var \DateTime
+     */
+    public $date_add;
+
 
     /**
      * @see ObjectModel::$definition
@@ -33,6 +38,7 @@ class Post extends \ObjectModel
         'fields' => array(
             'title' => array('type' => self::TYPE_STRING, 'lang' => true, 'required' => true, 'size' => 40),
             'content' => array('type' => self::TYPE_STRING),
+            'date_add' => array('type' => self::TYPE_DATE, 'required' => true),
         ),
     );
 
@@ -59,10 +65,10 @@ class Post extends \ObjectModel
     public function toArray()
     {
         return [
-            'id' => $this->id,
             'id_post' => $this->id_post,
             'title' => $this->title,
             'content' => $this->content,
+            'date_add' => $this->date_add
         ];
     }
 }

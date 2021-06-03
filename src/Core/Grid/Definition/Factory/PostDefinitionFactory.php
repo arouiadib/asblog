@@ -45,6 +45,12 @@ final class PostDefinitionFactory extends AbstractGridDefinitionFactory
                     'field' => 'id_post',
                 ])
             )
+            ->add((new DataColumn('date'))
+                ->setName($this->trans('Date', [], 'Modules.Asblog.Admin'))
+                ->setOptions([
+                    'field' => 'date_add',
+                ])
+            )
             ->add((new DataColumn('title'))
                 ->setName($this->trans('Title', [], 'Modules.Asblog.Admin'))
                 ->setOptions([

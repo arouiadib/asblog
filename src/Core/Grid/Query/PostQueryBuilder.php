@@ -21,6 +21,7 @@ final class PostQueryBuilder extends AbstractDoctrineQueryBuilder
         $qb = $this->getQueryBuilder($searchCriteria->getFilters());
         $qb->select('
             p.id_post,
+            p.date_add,
             pl.title
             ')
             ->orderBy(

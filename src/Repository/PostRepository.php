@@ -65,7 +65,14 @@ class PostRepository
     {
         $qb = $this->connection->createQueryBuilder();
         $qb
-            ->insert($this->dbPrefix . 'post');
+            ->insert($this->dbPrefix . 'post')
+            ->values([
+                    'date_add' => ':dateAdd'
+            ])
+            ->setParameters([
+                'dateAdd' => date('Y-m-d H:i:s')
+            ])
+        ;
 
         $this->executeQueryBuilder($qb, 'Post error');
         $postId = $this->connection->lastInsertId();
@@ -124,6 +131,7 @@ class PostRepository
         $queries = [
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post`(
     			`id_post` int(10) unsigned NOT NULL auto_increment,
+    			`date_add` datetime
     			PRIMARY KEY (`id_post`)
             ) ENGINE=$engine DEFAULT CHARSET=utf8",
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_lang`(

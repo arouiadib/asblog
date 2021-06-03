@@ -17,7 +17,7 @@ final class PostFilters extends Filters
         return [
             'limit' => 0,
             'offset' => 0,
-            'orderBy' => 'id_post',
+            'orderBy' => 'date_add',
             'sortOrder' => 'asc',
             'filters' => [],
         ];
