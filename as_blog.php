@@ -228,10 +228,10 @@ class As_blog extends Module
     */
     public function hookBackOfficeHeader()
     {
-        if (Tools::getValue('module_name') == $this->name) {
-            $this->context->controller->addJS($this->_path.'views/js/back.js');
-            $this->context->controller->addCSS($this->_path.'views/css/back.css');
-        }
+        //if (Tools::getValue('as_blog') == $this->name) {
+            $this->context->controller->addJS($this->_path.'views/dist/backoffice.js');
+            //$this->context->controller->addCSS($this->_path.'views/css/back.css');
+        //}
     }
 
     /**
@@ -239,8 +239,8 @@ class As_blog extends Module
      */
     public function hookHeader()
     {
-        $this->context->controller->addJS($this->_path.'/views/js/front.js');
-        $this->context->controller->addCSS($this->_path.'/views/css/front.css');
+        //$this->context->controller->addJS($this->_path.'/views/js/front.js');
+        //$this->context->controller->addCSS($this->_path.'/views/css/front.css');
     }
 
     /**

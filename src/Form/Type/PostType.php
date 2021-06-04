@@ -6,6 +6,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
 use PrestaShopBundle\Form\Admin\Type\TranslateTextType;
+use PrestaShopBundle\Form\Admin\Type\TranslatableType;
+use PrestaShopBundle\Form\Admin\Type\FormattedTextareaType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints\Length;
@@ -55,21 +57,36 @@ class PostType extends TranslatorAwareType
                                 [
                                     '%limit%' => 150
                                 ],
-                                'Modules.AsBlog.Admin'
+                                'Modules.Asblog.Admin'
                             ),
                         ]),
                     ],
                 ],
             ])
-            ->add('content', TranslateTextType::class, [
-                    'locales' => $this->locales,
-                    'required' => true,
-                    'label' => $this->trans('Content', 'Modules.AsBlog.Admin'),
+            ->add('content',  TranslatableType::class, [
+                'required' => false,
+                'label' => $this->trans('Summary', 'Admin.Global'),
+                'type' => FormattedTextareaType::class,
+                'options' => [
+                    'limit' => 200,
+                    'attr' => [
+                        'class' => 'serp-default-description',
+                    ],
                     'constraints' => [
-                        new DefaultLanguage(),
-                    ]
-                ]
-            )
+                        new Length([
+                            'max' => 500,
+                            'maxMessage' => $this->trans(
+                                'This field cannot be longer than %limit% characters.',
+                                'Admin.Notifications.Error',
+                                [
+                                    '%limit%' => 500,
+                                ]
+                            ),
+                        ]),
+                    ],
+                ],
+                'label_tag_name' => 'h2',
+            ])
         ;
     }
 

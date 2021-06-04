@@ -131,7 +131,7 @@ class PostRepository
         $queries = [
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post`(
     			`id_post` int(10) unsigned NOT NULL auto_increment,
-    			`date_add` datetime
+    			`date_add` datetime,
     			PRIMARY KEY (`id_post`)
             ) ENGINE=$engine DEFAULT CHARSET=utf8",
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_lang`(
