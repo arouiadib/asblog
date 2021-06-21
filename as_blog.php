@@ -60,10 +60,7 @@ class As_blog extends Module
             $installed = $this->installLegacyDatabase();
         }
 
-        if ($installed
-            && $this->registerHook('header')
-            && $this->registerHook('backOfficeHeader')
-        ) {
+        if ($installed) {
             return true;
         }
 
@@ -221,26 +218,6 @@ class As_blog extends Module
         foreach (array_keys($form_values) as $key) {
             Configuration::updateValue($key, Tools::getValue($key));
         }
-    }
-
-    /**
-    * Add the CSS & JavaScript files you want to be loaded in the BO.
-    */
-    public function hookBackOfficeHeader()
-    {
-        //if (Tools::getValue('as_blog') == $this->name) {
-            $this->context->controller->addJS($this->_path.'views/dist/backoffice.js');
-            //$this->context->controller->addCSS($this->_path.'views/css/back.css');
-        //}
-    }
-
-    /**
-     * Add the CSS & JavaScript files you want to be added on the FO.
-     */
-    public function hookHeader()
-    {
-        //$this->context->controller->addJS($this->_path.'/views/js/front.js');
-        //$this->context->controller->addCSS($this->_path.'/views/css/front.css');
     }
 
     /**

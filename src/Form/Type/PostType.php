@@ -6,7 +6,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
 use PrestaShopBundle\Form\Admin\Type\TranslateTextType;
-use PrestaShopBundle\Form\Admin\Type\TranslatableType;
+use PrestaShopBundle\Form\Admin\Type\TranslateType;
 use PrestaShopBundle\Form\Admin\Type\FormattedTextareaType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -63,8 +63,9 @@ class PostType extends TranslatorAwareType
                     ],
                 ],
             ])
-            ->add('content',  TranslatableType::class, [
+            ->add('content',  TranslateType::class, [
                 'required' => false,
+                'locales' => $this->locales,
                 'label' => $this->trans('Summary', 'Admin.Global'),
                 'type' => FormattedTextareaType::class,
                 'options' => [

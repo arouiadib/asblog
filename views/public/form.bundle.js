@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "741f7133d49e7cc554cf"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "9a95db2bae5182a34fd6"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -238,7 +238,7 @@
 /******/ 				};
 /******/ 			});
 /******/ 			hotUpdate = {};
-/******/ 			var chunkId = 1;
+/******/ 			var chunkId = 0;
 /******/ 			{ // eslint-disable-line no-lone-blocks
 /******/ 				/*globals chunkId */
 /******/ 				hotEnsureUpdateChunk(chunkId);
@@ -706,7 +706,7 @@
 /******/ 	__webpack_require__.h = function() { return hotCurrentHash; };
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return hotCreateRequire(13)(__webpack_require__.s = 13);
+/******/ 	return hotCreateRequire(5)(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -715,7 +715,7 @@
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_translatable_input__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_translatable_input__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_translatable_input___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_translatable_input__);
 
 
@@ -723,20 +723,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 var $ = window.$;
 
 $(function () {
-  new __WEBPACK_IMPORTED_MODULE_0__components_translatable_input___default.a({ localeInputSelector: '.js-locale-input' });
 
+  new __WEBPACK_IMPORTED_MODULE_0__components_translatable_input___default.a({ localeInputSelector: '.js-locale-input' });
+  console.log(__WEBPACK_IMPORTED_MODULE_0__components_translatable_input___default.a);
   // TinyMCE
-  window.prestashop.component.initComponents(['TranslatableField', 'TinyMCEEditor', 'TranslatableInput']
-  // 'EventEmitter',
-  //'TextWithLengthCounter',
-  );
+  window.prestashop.component.initComponents(['TranslatableField', 'TinyMCEEditor', 'TranslatableInput', 'EventEmitter', 'TextWithLengthCounter']);
 });
 
 /***/ }),
 /* 1 */,
-/* 2 */,
-/* 3 */,
-/* 4 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -747,7 +743,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.EventEmitter = undefined;
 
-var _events = __webpack_require__(12);
+var _events = __webpack_require__(4);
 
 var _events2 = _interopRequireDefault(_events);
 
@@ -785,13 +781,7 @@ var EventEmitter = exports.EventEmitter = new _events2.default(); /**
 exports.default = EventEmitter;
 
 /***/ }),
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -826,7 +816,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _eventEmitter = __webpack_require__(4);
+var _eventEmitter = __webpack_require__(2);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -966,7 +956,7 @@ var TranslatableInput = function () {
 exports.default = TranslatableInput;
 
 /***/ }),
-/* 12 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1470,7 +1460,7 @@ function eventTargetAgnosticAddListener(emitter, name, listener, flags) {
 
 
 /***/ }),
-/* 13 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(0);
