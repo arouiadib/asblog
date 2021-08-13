@@ -1,5 +1,5 @@
 {% block form_row -%}
-    {% spaceless %}
+    {% apply spaceless %}
         <div class="{{ block('form_row_class') }} {% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %}">
             {% if form.vars.label is not same as(false) %}
                 {{ form_label(form) }}
@@ -12,7 +12,7 @@
                 {{ form_errors(form) }}
             </div>
         </div>
-    {% endspaceless %}
+    {% endapply %}
 {%- endblock form_row %}
 
 {% block form_row_class -%}
