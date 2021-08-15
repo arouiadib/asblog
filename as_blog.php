@@ -16,13 +16,19 @@ use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
 use PrestaShop\PrestaShop\Adapter\LegacyContext;
 use PrestaShop\PrestaShop\Adapter\Shop\Context;
 use PrestaShop\Module\AsBlog\Repository\PostRepository;
+use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
-class As_blog extends Module
+class As_blog extends Module implements WidgetInterface
 {
     protected $config_form = false;
 
     /* @var PostRepository */
     private $postRepository;
+
+    public $templates = [
+        'blog_post_list' => 'blog_post_list.tpl',
+        'blog_post' => 'blog_post.tpl',
+    ];
 
     public function __construct()
     {
@@ -292,5 +298,67 @@ class As_blog extends Module
         $tab = new Tab($tabId);
 
         return $tab->delete();
+    }
+
+    public function getWidgetVariables($hookName, array $configuration)
+    {
+        $template_vars = [];
+        if($hookName == null && isset($configuration['hook']))
+        {
+            $hookName = $configuration['hook'];
+        }
+
+        if($hookName == 'displayBlogPostList') {
+            $template_vars = $this->getTemplateVarBlogPostList();
+        } elseif ($hookName == 'displayBlogPost') {
+            $template_vars = $this->getTemplateVarBlogPost();
+        }
+
+        return $template_vars;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTemplateVarBlogPostList()
+    {
+        // get list of blog post titles and their urls
+
+        return;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTemplateVarBlogPost()
+    {
+        // get the title of blog post
+        // get the content of blog post
+        return;
+    }
+
+
+    public function renderWidget($hookName, array $configuration)
+    {
+        if (!$this->active) {
+            return;
+        }
+
+        $template_file = null;
+
+        if($hookName == null && isset($configuration['hook']))
+        {
+            $hookName = $configuration['hook'];
+        }
+
+        if($hookName == 'displayBlogPostList') {
+            $template_file = $this->templates['blog_post_list'];
+        } elseif ($hookName == 'displayBlogPost') {
+            $template_file = $this->templates['blog_post'];
+        }
+
+        $this->smarty->assign($this->getWidgetVariables($hookName, $configuration));
+
+        return $this->display(__FILE__, 'views/templates/widget/' . $template_file);
     }
 }

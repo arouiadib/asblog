@@ -40,6 +40,3 @@ admin_blog_post_delete:
     methods: [POST]
     defaults:
         _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::createAction'
-
-# FO routes
-# Todo
