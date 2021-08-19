@@ -20,6 +20,20 @@ use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class As_blog extends Module implements WidgetInterface
 {
+    public static $ModuleRoutes = array(
+        'module-as_blog-blogpost' => array(
+            'controller' => 'blogpost',
+            'rule' => 'blog_post{/:id_post}',
+            'keywords' => array(
+                'id_post' => array('regexp' => '[0-9]+', 'param' => 'id_post'),
+            ),
+            'params' => array(
+                'fc' => 'module',
+                'module' => 'as_blog',
+            )
+        )
+    );
+
     protected $config_form = false;
 
     /* @var PostRepository */
@@ -360,5 +374,17 @@ class As_blog extends Module implements WidgetInterface
         $this->smarty->assign($this->getWidgetVariables($hookName, $configuration));
 
         return $this->display(__FILE__, 'views/templates/widget/' . $template_file);
+    }
+
+    public function hookModuleRoutes($route = '', $detail = array())
+    {
+        return $this->getStaticModuleRoutes('ModuleRoutes');
+    }
+
+    public function getStaticModuleRoutes($ModuleRoutes)
+    {
+        if ($ModuleRoutes == 'ModuleRoutes') {
+            return self::$ModuleRoutes;
+        }
     }
 }
