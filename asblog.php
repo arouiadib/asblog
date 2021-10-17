@@ -18,10 +18,10 @@ use PrestaShop\PrestaShop\Adapter\Shop\Context;
 use PrestaShop\Module\AsBlog\Repository\PostRepository;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
-class As_blog extends Module implements WidgetInterface
+class Asblog extends Module implements WidgetInterface
 {
     public static $ModuleRoutes = array(
-        'module-as_blog-blogpost' => array(
+        'module-asblog-blogpost' => array(
             'controller' => 'blogpost',
             'rule' => 'blog_post{/:id_post}',
             'keywords' => array(
@@ -29,7 +29,7 @@ class As_blog extends Module implements WidgetInterface
             ),
             'params' => array(
                 'fc' => 'module',
-                'module' => 'as_blog',
+                'module' => 'asblog',
             )
         )
     );
@@ -46,7 +46,7 @@ class As_blog extends Module implements WidgetInterface
 
     public function __construct()
     {
-        $this->name = 'as_blog';
+        $this->name = 'asblog';
         $this->tab = 'content_management';
         $this->version = '1.0.0';
         $this->author = 'Adib Aroui';
@@ -55,19 +55,18 @@ class As_blog extends Module implements WidgetInterface
         parent::__construct();
 
         $this->displayName = $this->l('Blog for Prestashop 1.7');
-        $this->description = $this->l('Simple and Straightforward module for a blog inside Prestashop 1.7 e-commerce. ');
+        $this->description = $this->l('Simple and Straightforward module for a blog inside Prestashop 1.7 store');
 
-        $this->confirmUninstall = $this->l('');
+        $this->confirmUninstall = $this->l('Uninstall?');
 
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
     }
-
 
     public function install()
     {
         Configuration::updateValue('AS_BLOG_LIVE_MODE', false);
 
-        if (!parent::install()) {
+        if (!parent::install() || !$this->registerHook('moduleRoutes')) {
             return false;
         }
         if (!$this->installTab()) {
@@ -125,7 +124,7 @@ class As_blog extends Module implements WidgetInterface
         /**
          * If values have been submitted in the form, process.
          */
-        if (((bool)Tools::isSubmit('submitAs_blogModule')) == true) {
+        if (((bool)Tools::isSubmit('submitAsblogModule')) == true) {
             $this->postProcess();
         }
 
@@ -150,7 +149,7 @@ class As_blog extends Module implements WidgetInterface
         $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
 
         $helper->identifier = $this->identifier;
-        $helper->submit_action = 'submitAs_blogModule';
+        $helper->submit_action = 'submitAsblogModule';
         $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false)
             .'&configure='.$this->name.'&tab_module='.$this->tab.'&module_name='.$this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
@@ -247,7 +246,7 @@ class As_blog extends Module implements WidgetInterface
     {
         if (null === $this->postRepository) {
             try {
-                $this->postRepository = $this->get('prestashop.module.as_blog.repository');
+                $this->postRepository = $this->get('prestashop.module.asblog.repository');
             } catch (Throwable $e) {
                 /** @var LegacyContext $context */
                 $legacyContext = $this->get('prestashop.adapter.legacy.context');

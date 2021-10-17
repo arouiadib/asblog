@@ -14,7 +14,7 @@ use PrestaShop\Module\AsBlog\Core\Search\Filters\PostFilters;
 /**
  * Class PostController.
  *
- * @ModuleActivated(moduleName="as_blog", redirectRoute="admin_module_manage")
+ * @ModuleActivated(moduleName="asblog", redirectRoute="admin_module_manage")
  */
 class PostController extends FrameworkBundleAdminController
 {
@@ -29,11 +29,11 @@ class PostController extends FrameworkBundleAdminController
         $filtersParams = $this->buildFiltersParamsByRequest($request);
 
         /** @var PostGridFactory $bookingGridFactory */
-        $bookingGridFactory = $this->get('prestashop.module.as_blog.grid.factory');
+        $bookingGridFactory = $this->get('prestashop.module.asblog.grid.factory');
         $grid = $bookingGridFactory->getGrid($filtersParams);
         $presentedGrid = $this->presentGrid($grid);
 
-        return $this->render('@Modules/as_blog/views/templates/admin/blog_post/list.html.twig', [
+        return $this->render('@Modules/asblog/views/templates/admin/blog_post/list.html.twig', [
             'grid' => $presentedGrid,
             'enableSidebar' => true,
             'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
@@ -48,10 +48,10 @@ class PostController extends FrameworkBundleAdminController
      */
     public function createAction(Request $request)
     {
-        $this->get('prestashop.module.as_blog.form_provider')->setIdPost(null);
-        $form = $this->get('prestashop.module.as_blog.form_handler')->getForm();
+        $this->get('prestashop.module.asblog.form_provider')->setIdPost(null);
+        $form = $this->get('prestashop.module.asblog.form_handler')->getForm();
 
-        return $this->render('@Modules/as_blog/views/templates/admin/blog_post/form.html.twig', [
+        return $this->render('@Modules/asblog/views/templates/admin/blog_post/form.html.twig', [
             'postForm' => $form->createView(),
             'enableSidebar' => true,
             'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
@@ -70,10 +70,10 @@ class PostController extends FrameworkBundleAdminController
      */
     public function editAction(Request $request, $post_id)
     {
-        $this->get('prestashop.module.as_blog.form_provider')->setIdPost($post_id);
-        $form = $this->get('prestashop.module.as_blog.form_handler')->getForm();
+        $this->get('prestashop.module.asblog.form_provider')->setIdPost($post_id);
+        $form = $this->get('prestashop.module.asblog.form_handler')->getForm();
 
-        return $this->render('@Modules/as_blog/views/templates/admin/blog_post/form.html.twig', [
+        return $this->render('@Modules/asblog/views/templates/admin/blog_post/form.html.twig', [
             'postForm' => $form->createView(),
             'enableSidebar' => true,
             'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
@@ -130,9 +130,9 @@ class PostController extends FrameworkBundleAdminController
      */
     private function processForm(Request $request, $successMessage, $blogPostId = null)
     {
-        $this->get('prestashop.module.as_blog.form_provider')->setIdPost($blogPostId);
+        $this->get('prestashop.module.asblog.form_provider')->setIdPost($blogPostId);
 
-        $formHandler = $this->get('prestashop.module.as_blog.form_handler');
+        $formHandler = $this->get('prestashop.module.asblog.form_handler');
         $form = $formHandler->getForm();
 
         $form->handleRequest($request);
@@ -155,7 +155,7 @@ class PostController extends FrameworkBundleAdminController
             }
         }
 
-        return $this->render('@Modules/as_blog/views/templates/admin/blog_post/form.html.twig', [
+        return $this->render('@Modules/asblog/views/templates/admin/blog_post/form.html.twig', [
             'postForm' => $form->createView(),
             'enableSidebar' => true,
             'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),

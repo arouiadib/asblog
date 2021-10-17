@@ -1,6 +1,6 @@
 {% extends '@PrestaShop/Admin/layout.html.twig' %}
 {% trans_default_domain "Admin.Design.Feature" %}
-{% form_theme postForm '@Modules/as_blog/views/templates/admin/fields.html.twig' %}
+{% form_theme postForm '@Modules/asblog/views/templates/admin/fields.html.twig' %}
 
 {% block content %}
     {% if postForm.vars.data.post.id_post is defined and postForm.vars.data.post.id_post is not null %}
@@ -47,5 +47,5 @@
 {% block javascripts %}
     {{ parent() }}
 
-    <script src="{{ asset('../modules/as_blog/views/public/form.bundle.js') }}"></script>
+    <script src="{{ asset('../modules/asblog/views/public/form.bundle.js') }}"></script>
 {% endblock %}

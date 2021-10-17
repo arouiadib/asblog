@@ -6,6 +6,7 @@ class AsBlogBlogPostModuleFrontController extends ModuleFrontController
     public function initContent()
     {
         $id_post = (int) Tools::getValue('id_post');
+
         // get the repository of post
 
         // get the post
@@ -19,7 +20,7 @@ class AsBlogBlogPostModuleFrontController extends ModuleFrontController
         );
 
 
-        $this->setTemplate('view.tpl');
+        $this->setTemplate('module:asblog/views/templates/front/view_post.tpl');
 
         parent::initContent();
     }

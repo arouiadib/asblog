@@ -4,7 +4,7 @@ services:
 
     ## Post services
     # Post repository
-    prestashop.module.as_blog.repository:
+    prestashop.module.asblog.repository:
         class: PrestaShop\Module\AsBlog\Repository\PostRepository
         arguments:
             $connection: '@doctrine.dbal.default_connection'
@@ -13,27 +13,27 @@ services:
             $translator: '@translator'
 
     # Post form data provider
-    prestashop.module.as_blog.form_provider:
+    prestashop.module.asblog.form_provider:
         class: PrestaShop\Module\AsBlog\Form\PostFormDataProvider
         arguments:
-            $repository: '@prestashop.module.as_blog.repository'
+            $repository: '@prestashop.module.asblog.repository'
             $moduleRepository: '@prestashop.core.admin.module.repository'
             $languages: '@=service("prestashop.adapter.legacy.context").getLanguages(true, service("prestashop.adapter.shop.context").getContextShopID())'
             $shopId: '@=service("prestashop.adapter.shop.context").getContextShopID()'
             $configuration: '@prestashop.adapter.legacy.configuration'
 
     # Post form handler
-    prestashop.module.as_blog.form_handler:
+    prestashop.module.asblog.form_handler:
         class: PrestaShop\PrestaShop\Core\Form\FormHandler
         arguments:
             $formBuilder: '@=service("form.factory").createBuilder()'
             $hookDispatcher: '@prestashop.core.hook.dispatcher'
-            $formDataProvider: '@prestashop.module.as_blog.form_provider'
+            $formDataProvider: '@prestashop.module.asblog.form_provider'
             $formTypes:
                 'post': 'PrestaShop\Module\AsBlog\Form\Type\PostType'
             $hookName: 'AdminLinkWidget'
 
-    prestashop.module.as_blog.form_type:
+    prestashop.module.asblog.form_type:
         class: PrestaShop\Module\AsBlog\Form\Type\PostType
         parent: 'form.type.translatable.aware'
         public: true
@@ -43,26 +43,26 @@ services:
     ## Post grid
 
     # Grid data query builder
-    prestashop.module.as_blog.grid.query_builder:
+    prestashop.module.asblog.grid.query_builder:
         class: PrestaShop\Module\AsBlog\Core\Grid\Query\PostQueryBuilder
         arguments:
             $connection: '@doctrine.dbal.default_connection'
             $dbPrefix: '%database_prefix%'
 
     # Grid Data Factory
-    prestashop.module.as_blog.grid.data_factory:
+    prestashop.module.asblog.grid.data_factory:
         class: '%prestashop.core.grid.data.factory.doctrine_grid_data_factory%'
         arguments:
-            $gridQueryBuilder: '@prestashop.module.as_blog.grid.query_builder'
+            $gridQueryBuilder: '@prestashop.module.asblog.grid.query_builder'
             $hookDispatcher: '@prestashop.core.hook.dispatcher'
             $queryParser: '@prestashop.core.grid.query.doctrine_query_parser'
             $gridId: 'post'
 
     # Grid Factory
-    prestashop.module.as_blog.grid.factory:
+    prestashop.module.asblog.grid.factory:
         class: PrestaShop\Module\AsBlog\Core\Grid\PostGridFactory
         arguments:
             $translator: '@translator'
             $hookDispatcher: '@prestashop.core.hook.dispatcher'
-            $dataFactory: '@prestashop.module.as_blog.grid.data_factory'
+            $dataFactory: '@prestashop.module.asblog.grid.data_factory'
             $filterFormFactory: '@prestashop.core.grid.filter.form_factory'

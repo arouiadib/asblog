@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
-    <name>as_blog</name>
+    <name>asblog</name>
     <displayName><![CDATA[Blog for Prestashop 1.7]]></displayName>
     <version><![CDATA[1.0.0]]></version>
     <description><![CDATA[Simple and Straightforward module for a blog inside Prestashop 1.7 e-commerce. ]]></description>

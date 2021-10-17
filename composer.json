@@ -1,7 +1,7 @@
 {
-  "name": "prestashop/as_blog",
+  "name": "prestashop/asblog",
   "description": "Blog module for PrestaShop 1.7",
-  "homepage": "https://github.com/arouiadib/as_blog",
+  "homepage": "https://github.com/arouiadib/asblog",
   "license": "AFL-3.0",
   "authors": [
     {
@@ -19,7 +19,7 @@
     "psr-4": {
       "PrestaShop\\Module\\AsBlog\\": "src/"
     },
-    "classmap": ["as_blog.php"],
+    "classmap": ["asblog.php"],
     "exclude-from-classmap": []
   },
   "config": {
