@@ -175,42 +175,10 @@ class Asblog extends Module implements WidgetInterface
                 'icon' => 'icon-cogs',
                 ),
                 'input' => array(
-                    array(
-                        'type' => 'switch',
-                        'label' => $this->l('Live mode'),
-                        'name' => 'AS_BLOG_LIVE_MODE',
-                        'is_bool' => true,
-                        'desc' => $this->l('Use this module in live mode'),
-                        'values' => array(
-                            array(
-                                'id' => 'active_on',
-                                'value' => true,
-                                'label' => $this->l('Enabled')
-                            ),
-                            array(
-                                'id' => 'active_off',
-                                'value' => false,
-                                'label' => $this->l('Disabled')
-                            )
-                        ),
-                    ),
-                    array(
-                        'col' => 3,
-                        'type' => 'text',
-                        'prefix' => '<i class="icon icon-envelope"></i>',
-                        'desc' => $this->l('Enter a valid email address'),
-                        'name' => 'AS_BLOG_ACCOUNT_EMAIL',
-                        'label' => $this->l('Email'),
-                    ),
-                    array(
-                        'type' => 'password',
-                        'name' => 'AS_BLOG_ACCOUNT_PASSWORD',
-                        'label' => $this->l('Password'),
-                    ),
                 ),
-                'submit' => array(
+                /*'submit' => array(
                     'title' => $this->l('Save'),
-                ),
+                ),*/
             ),
         );
     }
@@ -220,11 +188,7 @@ class Asblog extends Module implements WidgetInterface
      */
     protected function getConfigFormValues()
     {
-        return array(
-            'AS_BLOG_LIVE_MODE' => Configuration::get('AS_BLOG_LIVE_MODE', true),
-            'AS_BLOG_ACCOUNT_EMAIL' => Configuration::get('AS_BLOG_ACCOUNT_EMAIL', 'contact@prestashop.com'),
-            'AS_BLOG_ACCOUNT_PASSWORD' => Configuration::get('AS_BLOG_ACCOUNT_PASSWORD', null),
-        );
+        return array();
     }
 
     /**
