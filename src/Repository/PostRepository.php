@@ -90,6 +90,19 @@ class PostRepository
      */
     public function update($postId, array $data)
     {
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->update($this->dbPrefix . 'post', 'p')
+            ->andWhere('p.id_post = :postId')
+            ->set('date_add', ':dateAdd')
+            ->setParameters([
+                'postId' => $postId,
+                'dateAdd' => $data['date_add']->format('d-m-y H:i')
+            ])
+        ;
+
+        $this->executeQueryBuilder($qb, 'Blog post update error');
+
         $this->updateLanguages($postId, $data['title'], $data['content']);
     }
 

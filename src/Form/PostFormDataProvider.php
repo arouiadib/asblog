@@ -2,6 +2,7 @@
 
 namespace PrestaShop\Module\AsBlog\Form;
 
+use DateTime;
 use PrestaShop\Module\AsBlog\Model\Post;
 use PrestaShop\PrestaShop\Adapter\Configuration;
 use PrestaShop\PrestaShop\Core\Addon\Module\ModuleRepository;
@@ -81,10 +82,12 @@ class PostFormDataProvider implements FormDataProviderInterface
         $post = new Post($this->idPost);
         $arrayPost = $post->toArray();
 
+
         return ['post' => [
             'id_post' => $arrayPost['id_post'],
             'title' => $arrayPost['title'],
             'content' => $arrayPost['content'],
+            'date_add' => new DateTime($arrayPost['date_add'])
         ]];
     }
 

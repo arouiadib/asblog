@@ -25,10 +25,8 @@
                         <div class="card-text">
                             {{ form_row(postForm.post.title) }}
                             {{ form_row(postForm.post.content) }}
-
+                            {{ form_row(postForm.post.date_add) }}
                             {{ form_rest(postForm.post) }}
-                            {% do postForm.post.setRendered %}
-                            {{ form_rest(postForm) }}
                         </div>
                     </div>
                     <div class="card-footer">
@@ -47,5 +45,13 @@
 {% block javascripts %}
     {{ parent() }}
 
+
     <script src="{{ asset('../modules/asblog/views/public/form.bundle.js') }}"></script>
+    <script type="text/javascript">
+      $('.datetimepicker').datetimepicker({
+        locale: 'es',
+        useCurrent: false,
+        sideBySide: true
+      });
+    </script>
 {% endblock %}

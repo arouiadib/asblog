@@ -2,6 +2,7 @@
 
 namespace PrestaShop\Module\AsBlog\Form\Type;
 
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -12,6 +13,7 @@ use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints\Length;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\DefaultLanguage;
+use PrestaShop\Module\AsBlog\Form\DataTransformer\DateTimeTransformer;
 
 class PostType extends TranslatorAwareType
 {
@@ -88,7 +90,19 @@ class PostType extends TranslatorAwareType
                 ],
                 'label_tag_name' => 'h2',
             ])
+            ->add('date_add', TextType::class, [
+                'label' => $this->trans('Published at', 'Modules.AsBlog.Admin'),
+                'required' => true,
+                'attr' => array(
+                    'class' => 'form-control input-inline datetimepicker',
+                    'data-provide' => 'datepicker',
+                    'data-format' => 'dd-mm-yyyy HH:ii',
+                )
+            ])
         ;
+
+        $builder->get('date_add')
+            ->addModelTransformer(new DateTimeTransformer());
     }
 
     /**
