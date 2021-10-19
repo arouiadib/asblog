@@ -45,13 +45,5 @@
 {% block javascripts %}
     {{ parent() }}
 
-
     <script src="{{ asset('../modules/asblog/views/public/form.bundle.js') }}"></script>
-    <script type="text/javascript">
-      $('.datetimepicker').datetimepicker({
-        locale: 'es',
-        useCurrent: false,
-        sideBySide: true
-      });
-    </script>
 {% endblock %}
