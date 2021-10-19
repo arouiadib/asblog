@@ -14,5 +14,11 @@ $(() => {
     'EventEmitter',
     'TextWithLengthCounter',
   ]);
+
+  $('.datetimepicker').datetimepicker({
+    locale: 'es',
+    useCurrent: false,
+    sideBySide: true
+  });
 });
 
