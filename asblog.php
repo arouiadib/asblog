@@ -64,7 +64,6 @@ class Asblog extends Module implements WidgetInterface
 
     public function install()
     {
-        Configuration::updateValue('AS_BLOG_LIVE_MODE', false);
 
         if (!parent::install() || !$this->registerHook('moduleRoutes')) {
             return false;
@@ -103,7 +102,6 @@ class Asblog extends Module implements WidgetInterface
 
     public function uninstall()
     {
-        Configuration::deleteByName('AS_BLOG_LIVE_MODE');
 
         return parent::uninstall() && $this->uninstallTab();
     }
