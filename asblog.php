@@ -102,7 +102,6 @@ class Asblog extends Module implements WidgetInterface
 
     public function uninstall()
     {
-
         return parent::uninstall() && $this->uninstallTab();
     }
 
