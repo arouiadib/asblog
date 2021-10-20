@@ -4,7 +4,7 @@ services:
 
     ## Post services
     # Post repository
-    prestashop.module.asblog.repository:
+    prestashop.module.asblog.post.repository:
         class: PrestaShop\Module\AsBlog\Repository\PostRepository
         arguments:
             $connection: '@doctrine.dbal.default_connection'

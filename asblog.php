@@ -207,7 +207,7 @@ class Asblog extends Module implements WidgetInterface
     {
         if (null === $this->postRepository) {
             try {
-                $this->postRepository = $this->get('prestashop.module.asblog.repository');
+                $this->postRepository = $this->get('prestashop.module.asblog.post.repository');
             } catch (Throwable $e) {
                 /** @var LegacyContext $context */
                 $legacyContext = $this->get('prestashop.adapter.legacy.context');
