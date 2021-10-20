@@ -66,12 +66,12 @@ class CategoryRepository
         $this->dropTables();
 
         $queries = [
-            "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}category`(
+            "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_category`(
     			`id_category` int(10) unsigned NOT NULL auto_increment,
     			`id_parent` int(10) unsigned,
     			PRIMARY KEY (`id_category`)
             ) ENGINE=$engine DEFAULT CHARSET=utf8",
-            "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}category_lang`(
+            "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_category_lang`(
     			`id_category` int(10) unsigned NOT NULL,
     			`id_lang` int(10) unsigned NOT NULL,
     			`name` varchar(40) NOT NULL default '',
@@ -81,7 +81,7 @@ class CategoryRepository
     			`meta_description` text default NULL,
     			PRIMARY KEY (`id_category`, `id_lang`)
             ) ENGINE=$engine DEFAULT CHARSET=utf8",
-            "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_shop` (
+            "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_category_shop` (
     			`id_category` int(10) unsigned NOT NULL auto_increment,
     			`id_shop` int(10) unsigned NOT NULL,
     			PRIMARY KEY (`id_category`, `id_shop`)
