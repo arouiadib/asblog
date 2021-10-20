@@ -76,3 +76,10 @@ services:
         $dbPrefix: '%database_prefix%'
         $languages: '@=service("prestashop.adapter.legacy.context").getLanguages(true, service("prestashop.adapter.shop.context").getContextShopID())'
         $translator: '@translator'
+
+    prestashop.module.asblog.category.form_type:
+        class: PrestaShop\Module\AsBlog\Form\Type\CategoryType
+        parent: 'form.type.translatable.aware'
+        public: true
+        tags:
+            - { name: form.type }
