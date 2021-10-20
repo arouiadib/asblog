@@ -16,7 +16,7 @@ services:
     prestashop.module.asblog.form_provider:
         class: PrestaShop\Module\AsBlog\Form\PostFormDataProvider
         arguments:
-            $repository: '@prestashop.module.asblog.repository'
+            $repository: '@prestashop.module.asblog.post.repository'
             $moduleRepository: '@prestashop.core.admin.module.repository'
             $languages: '@=service("prestashop.adapter.legacy.context").getLanguages(true, service("prestashop.adapter.shop.context").getContextShopID())'
             $shopId: '@=service("prestashop.adapter.shop.context").getContextShopID()'

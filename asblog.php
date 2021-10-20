@@ -109,7 +109,7 @@ class Asblog extends Module implements WidgetInterface
     {
         return parent::uninstall() && $this->uninstallTab();
     }
-    
+
 
     /**
      * Load the configuration form
