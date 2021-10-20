@@ -16,6 +16,7 @@ use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
 use PrestaShop\PrestaShop\Adapter\LegacyContext;
 use PrestaShop\PrestaShop\Adapter\Shop\Context;
 use PrestaShop\Module\AsBlog\Repository\PostRepository;
+use PrestaShop\Module\AsBlog\Repository\CategoryRepository;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class Asblog extends Module implements WidgetInterface
@@ -38,6 +39,9 @@ class Asblog extends Module implements WidgetInterface
 
     /* @var PostRepository */
     private $postRepository;
+
+    /* @var CategoryRepository */
+    private $categoryRepository;
 
     public $templates = [
         'blog_post_list' => 'blog_post_list.tpl',
@@ -72,10 +76,8 @@ class Asblog extends Module implements WidgetInterface
             return false;
         }
 
-        if (null !== $this->getPostRepository()) {
+        if (null !== $this->getPostRepository() && null !== $this->getCategoryRepository()) {
             $installed = $this->installDatabase();
-        } else {
-            $installed = $this->installLegacyDatabase();
         }
 
         if ($installed) {
@@ -90,7 +92,10 @@ class Asblog extends Module implements WidgetInterface
 
     public function installDatabase() {
         $installed = true;
-        $errors = $this->postRepository->createTables();
+
+        $errorsPostTables = $this->postRepository->createTables();
+        $errorsCategoryTables = $this->categoryRepository->createTables();
+        $errors = array_merge($errorsPostTables, $errorsCategoryTables);
 
         if (!empty($errors)) {
             $this->addModuleErrors($errors);
@@ -104,14 +109,7 @@ class Asblog extends Module implements WidgetInterface
     {
         return parent::uninstall() && $this->uninstallTab();
     }
-
-    /**
-     * @return bool
-     */
-    private function installLegacyDatabase()
-    {
-        return true;
-    }
+    
 
     /**
      * Load the configuration form
@@ -201,7 +199,7 @@ class Asblog extends Module implements WidgetInterface
     }
 
     /**
-     * @return PostRepository|LegacyPostRepository|null
+     * @return PostRepository|null
      */
     private function getPostRepository()
     {
@@ -224,6 +222,32 @@ class Asblog extends Module implements WidgetInterface
         }
 
         return $this->postRepository;
+    }
+
+    /**
+     * @return CategoryRepository|null
+     */
+    private function getCategoryRepository()
+    {
+        if (null === $this->categoryRepository) {
+            try {
+                $this->categoryRepository = $this->get('prestashop.module.asblog.category.repository');
+            } catch (Throwable $e) {
+                /** @var LegacyContext $context */
+                $legacyContext = $this->get('prestashop.adapter.legacy.context');
+                /** @var Context $shopContext */
+                $shopContext = $this->get('prestashop.adapter.shop.context');
+
+                $this->categoryRepository = new CategoryRepository(
+                    $this->get('doctrine.dbal.default_connection'),
+                    SymfonyContainer::getInstance()->getParameter('database_prefix'),
+                    $legacyContext->getLanguages(true, $shopContext->getContextShopID()),
+                    $this->get('translator')
+                );
+            }
+        }
+
+        return $this->categoryRepository;
     }
 
     public function enable($force_all = false)

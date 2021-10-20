@@ -66,3 +66,13 @@ services:
             $hookDispatcher: '@prestashop.core.hook.dispatcher'
             $dataFactory: '@prestashop.module.asblog.grid.data_factory'
             $filterFormFactory: '@prestashop.core.grid.filter.form_factory'
+
+    ## Category services
+    # Category repository
+    prestashop.module.asblog.category.repository:
+      class: PrestaShop\Module\AsBlog\Repository\CategoryRepository
+      arguments:
+        $connection: '@doctrine.dbal.default_connection'
+        $dbPrefix: '%database_prefix%'
+        $languages: '@=service("prestashop.adapter.legacy.context").getLanguages(true, service("prestashop.adapter.shop.context").getContextShopID())'
+        $translator: '@translator'
