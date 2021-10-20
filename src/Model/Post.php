@@ -18,7 +18,7 @@ class Post extends \ObjectModel
     public $title;
 
     /**
-     * @var array
+     * @var string
      */
     public $content;
 
@@ -37,7 +37,7 @@ class Post extends \ObjectModel
         'multilang' => true,
         'fields' => array(
             'title' => array('type' => self::TYPE_STRING, 'lang' => true, 'required' => true, 'size' => 40),
-            'content' => array('type' => self::TYPE_STRING),
+            'content' => array('type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isString', 'required' => true),
             'date_add' => array('type' => self::TYPE_DATE, 'required' => true),
         ),
     );
