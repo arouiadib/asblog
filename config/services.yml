@@ -40,6 +40,7 @@ services:
         tags:
             - { name: form.type }
 
+
     ## Post grid
 
     # Grid data query builder
@@ -83,3 +84,24 @@ services:
         public: true
         tags:
             - { name: form.type }
+
+    # Category form handler
+    prestashop.module.asblog.category.form_handler:
+        class: PrestaShop\PrestaShop\Core\Form\FormHandler
+        arguments:
+            $formBuilder: '@=service("form.factory").createBuilder()'
+            $hookDispatcher: '@prestashop.core.hook.dispatcher'
+            $formDataProvider: '@prestashop.module.asblog.category.form_provider'
+            $formTypes:
+                'post': 'PrestaShop\Module\AsBlog\Form\Type\CategoryType'
+
+
+    # Post form data provider
+    prestashop.module.asblog.category.form_provider:
+        class: PrestaShop\Module\AsBlog\Form\PostFormDataProvider
+        arguments:
+            $repository: '@prestashop.module.asblog.category.repository'
+            $moduleRepository: '@prestashop.core.admin.module.repository'
+            $languages: '@=service("prestashop.adapter.legacy.context").getLanguages(true, service("prestashop.adapter.shop.context").getContextShopID())'
+            $shopId: '@=service("prestashop.adapter.shop.context").getContextShopID()'
+            $configuration: '@prestashop.adapter.legacy.configuration'

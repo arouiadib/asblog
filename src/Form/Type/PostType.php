@@ -88,7 +88,7 @@ class PostType extends TranslatorAwareType
                         ]),
                     ],
                 ],
-                'label_tag_name' => 'h2',
+                //'label_tag_name' => 'h2',
             ])
             ->add('date_add', TextType::class, [
                 'label' => $this->trans('Published at', 'Modules.AsBlog.Admin'),

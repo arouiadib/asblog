@@ -2,7 +2,6 @@
 
 namespace PrestaShop\Module\AsBlog\Form\Type;
 
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -88,7 +87,7 @@ class CategoryType extends TranslatorAwareType
                         ]),
                     ],
                 ],
-                'label_tag_name' => 'h2',
+                //'label_tag_name' => 'h2',
             ])
             ->add('meta_keywords', TranslateTextType::class, [
                 'locales' => $this->locales,
