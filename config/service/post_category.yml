@@ -1,0 +1,41 @@
+services:
+    _defaults:
+      public: true
+
+    ## Category services
+    # Category repository
+    prestashop.module.asblog.category.repository:
+      class: PrestaShop\Module\AsBlog\Repository\CategoryRepository
+      arguments:
+        $connection: '@doctrine.dbal.default_connection'
+        $dbPrefix: '%database_prefix%'
+        $languages: '@=service("prestashop.adapter.legacy.context").getLanguages(true, service("prestashop.adapter.shop.context").getContextShopID())'
+        $translator: '@translator'
+
+    prestashop.module.asblog.category.form_type:
+        class: PrestaShop\Module\AsBlog\Form\Type\CategoryType
+        parent: 'form.type.translatable.aware'
+        public: true
+        tags:
+            - { name: form.type }
+
+    # Category form handler
+    prestashop.module.asblog.category.form_handler:
+        class: PrestaShop\PrestaShop\Core\Form\FormHandler
+        arguments:
+            $formBuilder: '@=service("form.factory").createBuilder()'
+            $hookDispatcher: '@prestashop.core.hook.dispatcher'
+            $formDataProvider: '@prestashop.module.asblog.category.form_provider'
+            $formTypes:
+                'post': 'PrestaShop\Module\AsBlog\Form\Type\CategoryType'
+
+
+    # Category form data provider
+    prestashop.module.asblog.category.form_provider:
+        class: PrestaShop\Module\AsBlog\Form\PostFormDataProvider
+        arguments:
+            $repository: '@prestashop.module.asblog.category.repository'
+            $moduleRepository: '@prestashop.core.admin.module.repository'
+            $languages: '@=service("prestashop.adapter.legacy.context").getLanguages(true, service("prestashop.adapter.shop.context").getContextShopID())'
+            $shopId: '@=service("prestashop.adapter.shop.context").getContextShopID()'
+            $configuration: '@prestashop.adapter.legacy.configuration'
