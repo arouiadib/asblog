@@ -40,3 +40,36 @@ admin_blog_post_delete:
     methods: [POST]
     defaults:
         _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::createAction'
+
+
+# Admin routes
+
+admin_blog_category_create:
+  path: /blog_category/create
+  methods: [GET]
+  defaults:
+    _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::createAction'
+    _legacy_controller: 'AsBlogCategoryController'
+
+admin_blog_category_process_create:
+  path: /blog_category/create
+  methods: [POST]
+  defaults:
+    _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::processCreateAction'
+    _legacy_controller: 'AsBlogCategoryController'
+
+admin_blog_category_edit:
+  path: /blog_category/{category_id}/edit
+  methods: [GET]
+  defaults:
+    _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::editAction'
+    _legacy_controller: 'AsBlogCategoryController'
+
+admin_blog_category_process_edit:
+  path: /blog_category/{category_id}/edit
+  methods: [POST]
+  defaults:
+    _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::processEditAction'
+    _legacy_controller: 'AsBlogCategoryController'
+
+
