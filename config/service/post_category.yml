@@ -32,7 +32,7 @@ services:
 
     # Category form data provider
     prestashop.module.asblog.category.form_provider:
-        class: PrestaShop\Module\AsBlog\Form\PostFormDataProvider
+        class: PrestaShop\Module\AsBlog\Form\CategoryFormDataProvider
         arguments:
             $repository: '@prestashop.module.asblog.category.repository'
             $moduleRepository: '@prestashop.core.admin.module.repository'
