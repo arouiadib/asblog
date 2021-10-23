@@ -3,7 +3,12 @@
 namespace PrestaShop\Module\AsBlog\Controller;
 
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
-
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use PrestaShopBundle\Security\Annotation\AdminSecurity;
+use PrestaShopBundle\Security\Annotation\ModuleActivated;
+use PrestaShop\Module\AsBlog\Core\Search\Filters\PostFilters;
 /**
  * Class CategoryController.
  *
@@ -11,6 +16,17 @@ use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
  */
 class CategoryController extends FrameworkBundleAdminController
 {
+    /**
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function listAction(Request $request)
+    {
+
+        return new Response("Hi");
+    }
     /**
      *
      * @param Request $request

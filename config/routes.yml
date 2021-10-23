@@ -42,7 +42,15 @@ admin_blog_post_delete:
         _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::createAction'
 
 
-# Admin routes
+# Category Admin routes
+
+admin_blog_category_list:
+  path: /blog_category/list
+  methods: [GET]
+  defaults:
+    _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::listAction'
+    _legacy_controller: 'AsBlogCategoryController'
+    _legacy_link: 'AsBlogCategoryController'
 
 admin_blog_category_create:
   path: /blog_category/create

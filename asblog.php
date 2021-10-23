@@ -72,10 +72,7 @@ class Asblog extends Module implements WidgetInterface
         if (!parent::install() || !$this->registerHook('moduleRoutes')) {
             return false;
         }
-        if (!$this->installTab()) {
-            return false;
-        }
-
+        
         if (null !== $this->getPostRepository() && null !== $this->getCategoryRepository()) {
             $installed = $this->installDatabase();
         }
@@ -107,7 +104,7 @@ class Asblog extends Module implements WidgetInterface
 
     public function uninstall()
     {
-        return parent::uninstall() && $this->uninstallTab();
+        return parent::uninstall() && $this->uninstallTabs();
     }
 
 
@@ -253,49 +250,90 @@ class Asblog extends Module implements WidgetInterface
     public function enable($force_all = false)
     {
         return parent::enable($force_all)
-            && $this->installTab()
+            && $this->installTabs()
             ;
     }
 
     public function disable($force_all = false)
     {
         return parent::disable($force_all)
-            && $this->uninstallTab()
+            && $this->uninstallTabs()
             ;
     }
 
-    private function installTab()
+    private function installTabs()
     {
-        $tabId = (int) Tab::getIdFromClassName('AsBlogPostController');
-        if (!$tabId) {
-            $tabId = null;
+        $mainTabId = (int) Tab::getIdFromClassName('AsBlogAdmin');
+        if (!$mainTabId) {
+            $mainTabId = null;
         }
 
-        $tab = new Tab($tabId);
-        $tab->active = 1;
-        $tab->class_name = 'AsBlogPostController';
-        $tab->name = array();
+        $mainTab = new Tab($mainTabId);
+        $mainTab->active = 1;
+        $mainTab->class_name = 'AsBlogAdmin';
+        $mainTab->name = array();
 
         foreach (Language::getLanguages(true) as $lang) {
-            $tab->name[$lang['id_lang']] = $this->trans('Blog', array(), 'Modules.Asblog.Admin', $lang['locale']);
+            $mainTab->name[$lang['id_lang']] = $this->trans('Blog', array(), 'Modules.Asblog.Admin', $lang['locale']);
         }
-        $tab->route_name = 'admin_blog_post_list';
-        $tab->id_parent = (int) Tab::getIdFromClassName('DEFAULT');
-        $tab->module = $this->name;
 
-        return $tab->save();
+        $mainTab->id_parent = 0;
+        $mainTab->module = $this->name;
+
+        $return = $mainTab->save();
+        $mainTabId = $mainTab->id;
+
+        $tabs = $this->getAsBlogTabs();
+
+        foreach ($tabs as $tab) {
+            $subTab             = new Tab();
+            $subTab->class_name = $tab['class_name'];
+            $subTab->id_parent = $mainTabId;
+            $subTab->module = $this->name;
+            $subTab->route_name = $tab['route_name'];
+            foreach (Language::getLanguages(true) as $lang) {
+                $subTab->name[$lang['id_lang']] = $this->trans($tab['name'], array(), 'Modules.Asblog.Admin', $lang['locale']);
+            }
+            $return &= $subTab->save();
+        }
+
+        return $return;
     }
 
-    private function uninstallTab()
+    private function uninstallTabs()
     {
-        $tabId = (int) Tab::getIdFromClassName('AsBlogPostController');
-        if (!$tabId) {
-            return true;
+        $return = true;
+
+        $mainTabId = (int) Tab::getIdFromClassName('AsBlogAdmin');
+        if ($mainTabId) {
+            $mainTab = new Tab($mainTabId);
+            $return &= $mainTab->delete();
         }
 
-        $tab = new Tab($tabId);
+        $tabs = $this->getAsBlogTabs();
+        foreach ($tabs as $tab) {
+            $subTabId = (int) Tab::getIdFromClassName($tab['class_name']);
+            $subTab = new Tab($subTabId);
+            $return &= $subTab->delete();
+        }
 
-        return $tab->delete();
+        return $return;
+    }
+
+    private function getAsBlogTabs()
+    {
+        return [
+            [
+                'class_name' => 'AsBlogPostController',
+                'name'       => 'Blog Post',
+                'route_name' =>  'admin_blog_post_list'
+            ],
+            [
+                'class_name' => 'AsBlogCategoryController',
+                'name'       => 'Blog Category',
+                'route_name' =>  'admin_blog_category_list'
+            ],
+        ];
     }
 
     public function getWidgetVariables($hookName, array $configuration)
