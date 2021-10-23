@@ -1,4 +1,4 @@
-# Admin routes
+# Admin blog post routes
 admin_blog_post_list:
   path: /blog_post/list
   methods: [GET]
@@ -42,8 +42,7 @@ admin_blog_post_delete:
         _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::createAction'
 
 
-# Category Admin routes
-
+# Admin blog Category  routes
 admin_blog_category_list:
   path: /blog_category/list
   methods: [GET]

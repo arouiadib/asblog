@@ -1,0 +1,48 @@
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+{% trans_default_domain "Admin.Design.Feature" %}
+{% form_theme categoryForm '@Modules/asblog/views/templates/admin/fields.html.twig' %}
+
+{% block content %}
+    {% if categoryForm.vars.data.category.id_category is defined and categoryForm.vars.data.category.id_category is not null %}
+        {% set formAction = url('admin_blog_category_process_edit', {'category_id': categoryForm.vars.data.category.id_category}) %}
+    {% else %}
+        {% set formAction = url('admin_blog_category_process_create') %}
+    {% endif %}
+    {{ form_start(categoryForm, {'action': formAction, 'attr': {'class': 'form', 'id': 'category_form'}}) }}
+    <div class="row justify-content-center">
+        {% block category_form %}
+            <div class="col-xl-10">
+                <div class="card">
+                    <h3 class="card-header">
+                        <i class="material-icons">mode_edit</i>
+                        {% if categoryForm.vars.data.category.id_category is defined %}
+                            {{ 'Edit the category'|trans({}, 'Modules.Asblog.Admin') }}
+                        {% else %}
+                            {{ 'New category'|trans({}, 'Modules.Asblog.Admin') }}
+                        {% endif %}
+                    </h3>
+                    <div class="card-block row">
+                        <div class="card-text">
+                            {{ form_row(categoryForm.category.name) }}
+                            {{ form_row(categoryForm.category.description) }}
+                            {{ form_rest(categoryForm.category) }}
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url('admin_blog_category_list') }}" class="btn btn-secondary">{{ 'Cancel'|trans({}, 'Admin.Actions') }}</a>
+                            <button class="btn btn-primary">{{ 'Save'|trans({}, 'Admin.Actions') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+    {{ form_end(categoryForm) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('../modules/asblog/views/public/form.bundle.js') }}"></script>
+{% endblock %}

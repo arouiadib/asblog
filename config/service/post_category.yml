@@ -27,8 +27,8 @@ services:
             $hookDispatcher: '@prestashop.core.hook.dispatcher'
             $formDataProvider: '@prestashop.module.asblog.category.form_provider'
             $formTypes:
-                'post': 'PrestaShop\Module\AsBlog\Form\Type\CategoryType'
-
+                'category': 'PrestaShop\Module\AsBlog\Form\Type\CategoryType'
+            $hookName: 'AdminPostCategoryWidget'
 
     # Category form data provider
     prestashop.module.asblog.category.form_provider:
@@ -39,3 +39,31 @@ services:
             $languages: '@=service("prestashop.adapter.legacy.context").getLanguages(true, service("prestashop.adapter.shop.context").getContextShopID())'
             $shopId: '@=service("prestashop.adapter.shop.context").getContextShopID()'
             $configuration: '@prestashop.adapter.legacy.configuration'
+
+
+  ## Category Grid
+  # Grid data query builder
+    prestashop.module.asblog.category.grid.query_builder:
+      class: PrestaShop\Module\AsBlog\Core\Grid\Query\CategoryQueryBuilder
+      arguments:
+        $connection: '@doctrine.dbal.default_connection'
+        $dbPrefix: '%database_prefix%'
+
+  # Grid Data Factory
+    prestashop.module.asblog.category.grid.data_factory:
+      class: '%prestashop.core.grid.data.factory.doctrine_grid_data_factory%'
+      arguments:
+        $gridQueryBuilder: '@prestashop.module.asblog.category.grid.query_builder'
+        $hookDispatcher: '@prestashop.core.hook.dispatcher'
+        $queryParser: '@prestashop.core.grid.query.doctrine_query_parser'
+        $gridId: 'category'
+
+  # Grid Factory
+    prestashop.module.asblog.category.grid.factory:
+      class: PrestaShop\Module\AsBlog\Core\Grid\CategoryGridFactory
+      arguments:
+        $translator: '@translator'
+        $hookDispatcher: '@prestashop.core.hook.dispatcher'
+        $dataFactory: '@prestashop.module.asblog.category.grid.data_factory'
+        $filterFormFactory: '@prestashop.core.grid.filter.form_factory'
+

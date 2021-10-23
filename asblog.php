@@ -72,7 +72,7 @@ class Asblog extends Module implements WidgetInterface
         if (!parent::install() || !$this->registerHook('moduleRoutes')) {
             return false;
         }
-        
+
         if (null !== $this->getPostRepository() && null !== $this->getCategoryRepository()) {
             $installed = $this->installDatabase();
         }

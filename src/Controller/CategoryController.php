@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use PrestaShopBundle\Security\Annotation\ModuleActivated;
-use PrestaShop\Module\AsBlog\Core\Search\Filters\PostFilters;
+use PrestaShop\Module\AsBlog\Core\Search\Filters\CategoryFilters;
 /**
  * Class CategoryController.
  *
@@ -24,8 +24,20 @@ class CategoryController extends FrameworkBundleAdminController
      */
     public function listAction(Request $request)
     {
+        $filtersParams = $this->buildFiltersParamsByRequest($request);
 
-        return new Response("Hi");
+        /** @var CategoryGridFactory $categoryGridFactory */
+        $categoryGridFactory = $this->get('prestashop.module.asblog.category.grid.factory');
+        $grid = $categoryGridFactory->getGrid($filtersParams);
+        $presentedGrid = $this->presentGrid($grid);
+
+
+        return $this->render('@Modules/asblog/views/templates/admin/blog_post/list.html.twig', [
+            'grid' => $presentedGrid,
+            'enableSidebar' => true,
+            'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
+            'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
+        ]);
     }
     /**
      *
@@ -154,5 +166,16 @@ class CategoryController extends FrameworkBundleAdminController
                 'icon' => 'add_circle_outline',
             ],
         ];
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    private function buildFiltersParamsByRequest(Request $request)
+    {
+        $filtersParams = array_merge(CategoryFilters::getDefaults(), $request->query->all());
+        return $filtersParams;
     }
 }
