@@ -18,6 +18,17 @@ services:
         public: true
         tags:
             - { name: form.type }
+        arguments:
+          $parentCategoryChoices: '@=service("prestashop.module.asblog.category.choice_provider.parent_category").getChoices()'
+
+    prestashop.module.asblog.category.choice_provider.parent_category:
+        class: PrestaShop\Module\AsBlog\Form\ChoiceProvider\ParentCategoryChoiceProvider
+        arguments:
+          $connection: '@doctrine.dbal.default_connection'
+          $dbPrefix: '%database_prefix%'
+          $idLang: '@=service("prestashop.adapter.legacy.context").getLanguage().id'
+          $shopIds: '@=service("prestashop.adapter.shop.context").getContextListShopID()'
+
 
     # Category form handler
     prestashop.module.asblog.category.form_handler:

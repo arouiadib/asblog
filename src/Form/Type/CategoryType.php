@@ -12,7 +12,7 @@ use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints\Length;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\DefaultLanguage;
-
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class CategoryType extends TranslatorAwareType
 {
@@ -22,17 +22,25 @@ class CategoryType extends TranslatorAwareType
     private $translator;
 
     /**
+     * @var array
+     */
+    private $choices;
+
+    /**
      * PostType constructor.
      *
      * @param TranslatorInterface $translator
      * @param array $locales
+     * @param array $parentCategoryChoices
      */
     public function __construct(
         TranslatorInterface $translator,
-        array $locales
+        array $locales,
+        array $parentCategoryChoices
     ) {
         parent::__construct($translator, $locales);
         $this->translator = $translator;
+        $this->choices = $parentCategoryChoices;
     }
 
     /**
@@ -63,6 +71,13 @@ class CategoryType extends TranslatorAwareType
                         ]),
                     ],
                 ],
+            ])
+            ->add('id_parent', ChoiceType::class, [
+                'choices' => $this->choices,
+                'attr' => [
+                    'data-toggle' => 'select2',
+                ],
+                'label' => $this->trans('Parent Category', 'Admin.Global'),
             ])
             ->add('description',  TranslateType::class, [
                 'required' => false,
