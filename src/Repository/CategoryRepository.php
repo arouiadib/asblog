@@ -111,9 +111,9 @@ class CategoryRepository
     {
         $errors = [];
         $tableNames = [
-            'category_shop',
-            'category_lang',
-            'category',
+            'post_category_shop',
+            'post_category_lang',
+            'post_category',
         ];
         foreach ($tableNames as $tableName) {
             $sql = 'DROP TABLE IF EXISTS ' . $this->dbPrefix . $tableName;
