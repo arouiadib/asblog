@@ -33,7 +33,7 @@ class PostController extends FrameworkBundleAdminController
         $grid = $bookingGridFactory->getGrid($filtersParams);
         $presentedGrid = $this->presentGrid($grid);
 
-        return $this->render('@Modules/asblog/views/templates/admin/blog_post/list.html.twig', [
+        return $this->render('@Modules/asblog/views/templates/admin/list.html.twig', [
             'grid' => $presentedGrid,
             'enableSidebar' => true,
             'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
