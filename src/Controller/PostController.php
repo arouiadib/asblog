@@ -29,8 +29,9 @@ class PostController extends FrameworkBundleAdminController
         $filtersParams = $this->buildFiltersParamsByRequest($request);
 
         /** @var PostGridFactory $bookingGridFactory */
-        $bookingGridFactory = $this->get('prestashop.module.asblog.grid.factory');
-        $grid = $bookingGridFactory->getGrid($filtersParams);
+        $postGridFactory = $this->get('prestashop.module.asblog.grid.factory');
+
+        $grid = $postGridFactory->getGrid($filtersParams);
         $presentedGrid = $this->presentGrid($grid);
 
         return $this->render('@Modules/asblog/views/templates/admin/list.html.twig', [
@@ -187,6 +188,8 @@ class PostController extends FrameworkBundleAdminController
     private function buildFiltersParamsByRequest(Request $request)
     {
         $filtersParams = array_merge(PostFilters::getDefaults(), $request->query->all());
+        $filtersParams['filters']['id_lang'] = $this->getContext()->language->id;
+
         return $filtersParams;
     }
 }

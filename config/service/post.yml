@@ -66,4 +66,4 @@ services:
             $hookDispatcher: '@prestashop.core.hook.dispatcher'
             $dataFactory: '@prestashop.module.asblog.grid.data_factory'
             $filterFormFactory: '@prestashop.core.grid.filter.form_factory'
-
+            $shopContext: '@prestashop.adapter.shop.context'

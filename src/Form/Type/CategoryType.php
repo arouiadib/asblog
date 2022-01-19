@@ -73,6 +73,7 @@ class CategoryType extends TranslatorAwareType
             ])
            ->add('id_parent', ParentCategoryChoiceTreeType::class, [
                 'disabled_values' => [],
+               'required' => true,
                 'label' => $this->trans('Parent category', 'Modules.AsBlog.Admin'),
             ])
             ->add('description',  TranslateType::class, [

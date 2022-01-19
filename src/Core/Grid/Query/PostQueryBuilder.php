@@ -36,7 +36,7 @@ final class PostQueryBuilder extends AbstractDoctrineQueryBuilder
                 ->setMaxResults($searchCriteria->getLimit())
             ;
         }
-
+        //var_dump($qb->getSQL());die;
         return $qb;
     }
 
@@ -46,7 +46,8 @@ final class PostQueryBuilder extends AbstractDoctrineQueryBuilder
      * @return QueryBuilder
      */
     public function getCountQueryBuilder(SearchCriteriaInterface $searchCriteria = null)
-    {
+    {        //echo "'jddd";
+        //var_dump($searchCriteria->getFilters());die;
         $qb = $this->getQueryBuilder($searchCriteria->getFilters());
         $qb->select('COUNT(p.id_post)');
 
@@ -67,7 +68,7 @@ final class PostQueryBuilder extends AbstractDoctrineQueryBuilder
             ->from($this->dbPrefix . 'post', 'p')
             ->innerJoin('p', $this->dbPrefix . 'post_lang', 'pl', 'p.id_post = pl.id_post')
         ;
-
+        //var_dump($filters);die;
         foreach ($filters as $name => $value) {
             if ('id_lang' === $name) {
                 $qb

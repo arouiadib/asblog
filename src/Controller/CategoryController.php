@@ -135,15 +135,16 @@ class CategoryController extends FrameworkBundleAdminController
                 if (0 === count($saveErrors)) {
                     $this->addFlash('success', $this->trans($successMessage, 'Admin.Notifications.Success'));
 
-                    return  $this->redirectToRoute('admin_blog_category_list');
+                    return $this->redirectToRoute('admin_blog_category_list');
                 }
-                $formErrors = [];
-                foreach ($form->getErrors(true) as $error) {
-                    $formErrors[] = $error->getMessage();
-                }
-
-                $this->flashErrors($formErrors);
+                $this->flashErrors($saveErrors);
             }
+            $formErrors = [];
+            foreach ($form->getErrors(true) as $error) {
+                $formErrors[] = $error->getMessage();
+            }
+
+            $this->flashErrors($formErrors);
         }
 
         return $this->render('@Modules/asblog/views/templates/admin/blog_category/form.html.twig', [
@@ -178,6 +179,8 @@ class CategoryController extends FrameworkBundleAdminController
     private function buildFiltersParamsByRequest(Request $request)
     {
         $filtersParams = array_merge(CategoryFilters::getDefaults(), $request->query->all());
+        $filtersParams['filters']['id_lang'] = $this->getContext()->language->id;
+
         return $filtersParams;
     }
 }

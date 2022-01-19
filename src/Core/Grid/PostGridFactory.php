@@ -11,6 +11,7 @@ use PrestaShop\PrestaShop\Core\Grid\Grid;
 use PrestaShop\PrestaShop\Core\Grid\GridFactory;
 use PrestaShop\PrestaShop\Core\Hook\HookDispatcherInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use PrestaShop\PrestaShop\Adapter\Shop\Context;
 
 /**
  * Class PostGridFactory.
@@ -38,6 +39,10 @@ final class PostGridFactory
     private $filterFormFactory;
 
     /**
+     * @var Context
+     */
+    private $shopContext;
+    /**
      * HookGridFactory constructor.
      *
      * @param TranslatorInterface $translator
@@ -49,12 +54,14 @@ final class PostGridFactory
         TranslatorInterface $translator,
         GridDataFactoryInterface $dataFactory,
         HookDispatcherInterface $hookDispatcher,
-        GridFilterFormFactoryInterface $filterFormFactory
+        GridFilterFormFactoryInterface $filterFormFactory,
+        Context $shopContext
     ) {
         $this->translator = $translator;
         $this->hookDispatcher = $hookDispatcher;
         $this->dataFactory = $dataFactory;
         $this->filterFormFactory = $filterFormFactory;
+        $this->shopContext = $shopContext;
     }
 
     /**
@@ -78,7 +85,7 @@ final class PostGridFactory
      */
     private function buildGridFactory()
     {
-        $definitionFactory = new PostDefinitionFactory();
+        $definitionFactory = new PostDefinitionFactory(null, $this->shopContext);
         $definitionFactory->setTranslator($this->translator);
         $definitionFactory->setHookDispatcher($this->hookDispatcher);
 

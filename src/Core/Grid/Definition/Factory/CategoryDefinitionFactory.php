@@ -45,18 +45,12 @@ final class CategoryDefinitionFactory extends AbstractGridDefinitionFactory
                     'field' => 'id_category',
                 ])
             )
-/*            ->add((new DataColumn('date'))
-                ->setName($this->trans('Date', [], 'Modules.Asblog.Admin'))
+            ->add((new DataColumn('name'))
+                ->setName($this->trans('Name', [], 'Modules.Asblog.Admin'))
                 ->setOptions([
-                    'field' => 'date_add',
+                    'field' => 'name',
                 ])
             )
-            ->add((new DataColumn('title'))
-                ->setName($this->trans('Title', [], 'Modules.Asblog.Admin'))
-                ->setOptions([
-                    'field' => 'title',
-                ])
-            )*/
             ->add((new ActionColumn('actions'))
                 ->setOptions([
                     'actions' => (new RowActionCollection())
