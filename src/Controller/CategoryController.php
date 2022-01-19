@@ -47,7 +47,9 @@ class CategoryController extends FrameworkBundleAdminController
      */
     public function createAction(Request $request)
     {
+
         $this->get('prestashop.module.asblog.category.form_provider')->setIdCategory(null);
+
         $form = $this->get('prestashop.module.asblog.category.form_handler')->getForm();
 
         return $this->render('@Modules/asblog/views/templates/admin/blog_category/form.html.twig', [

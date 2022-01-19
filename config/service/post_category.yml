@@ -21,6 +21,13 @@ services:
         arguments:
           $parentCategoryChoices: '@=service("prestashop.module.asblog.category.choice_provider.parent_category").getChoices()'
 
+    prestashop.module.asblog.category.parent_category.form_type:
+      class: PrestaShop\Module\AsBlog\Form\Type\ParentCategoryChoiceTreeType
+      arguments:
+        - '@=service("prestashop.module.asblog.category.choice_provider.parent_category").getChoices()'
+      tags:
+        - { name: form.type }
+
     prestashop.module.asblog.category.choice_provider.parent_category:
         class: PrestaShop\Module\AsBlog\Form\ChoiceProvider\ParentCategoryChoiceProvider
         arguments:

@@ -69,6 +69,8 @@ class CategoryRepository
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_category`(
     			`id_category` int(10) unsigned NOT NULL auto_increment,
     			`id_parent` int(10) unsigned,
+    			`nleft` int(10) unsigned,
+    			`nright` int(10) unsigned,
     			PRIMARY KEY (`id_category`)
             ) ENGINE=$engine DEFAULT CHARSET=utf8",
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_category_lang`(

@@ -12,7 +12,7 @@ use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints\Length;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\DefaultLanguage;
-use PrestaShopBundle\Form\Admin\Type\CategoryChoiceTreeType;
+use PrestaShop\Module\AsBlog\Form\Type\ParentCategoryChoiceTreeType;
 
 class CategoryType extends TranslatorAwareType
 {
@@ -72,7 +72,7 @@ class CategoryType extends TranslatorAwareType
                     ],
                 ],
             ])
-            ->add('id_parent', CategoryChoiceTreeType::class, [
+           ->add('id_parent', ParentCategoryChoiceTreeType::class, [
                 'disabled_values' => [],
             ])
             ->add('description',  TranslateType::class, [
@@ -187,4 +187,5 @@ class CategoryType extends TranslatorAwareType
     {
         return 'module_post_category';
     }
+
 }

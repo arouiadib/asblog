@@ -3,7 +3,7 @@
 namespace PrestaShop\Module\AsBlog\Form;
 
 
-use Category;
+use PrestaShop\Module\AsBlog\Model\Category;
 use PrestaShop\PrestaShop\Adapter\Configuration;
 use PrestaShop\PrestaShop\Core\Addon\Module\ModuleRepository;
 use PrestaShop\Module\AsBlog\Repository\CategoryRepository;
@@ -137,7 +137,6 @@ class CategoryFormDataProvider implements FormDataProviderInterface
                 }
             }
         }
-
 
         return $category;
     }

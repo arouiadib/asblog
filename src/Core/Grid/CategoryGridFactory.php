@@ -3,7 +3,7 @@
 
 namespace PrestaShop\Module\AsBlog\Core\Grid;
 
-use PrestaShop\Module\AsBlog\Core\Grid\Definition\Factory\PostDefinitionFactory;
+use PrestaShop\Module\AsBlog\Core\Grid\Definition\Factory\CategoryDefinitionFactory;
 use PrestaShop\Module\AsBlog\Core\Search\Filters\PostFilters;
 use PrestaShop\PrestaShop\Core\Grid\Data\Factory\GridDataFactoryInterface;
 use PrestaShop\PrestaShop\Core\Grid\Filter\GridFilterFormFactoryInterface;
@@ -78,7 +78,7 @@ final class CategoryGridFactory
      */
     private function buildGridFactory()
     {
-        $definitionFactory = new PostDefinitionFactory();
+        $definitionFactory = new CategoryDefinitionFactory();
         $definitionFactory->setTranslator($this->translator);
         $definitionFactory->setHookDispatcher($this->hookDispatcher);
 

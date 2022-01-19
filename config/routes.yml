@@ -79,4 +79,8 @@ admin_blog_category_process_edit:
     _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::processEditAction'
     _legacy_controller: 'AsBlogCategoryController'
 
-
+admin_blog_category_delete:
+  path: /blog_post/{category_id}/delete
+  methods: [POST]
+  defaults:
+    _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::deleteAction'
