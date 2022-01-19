@@ -74,11 +74,12 @@ class CategoryType extends TranslatorAwareType
             ])
            ->add('id_parent', ParentCategoryChoiceTreeType::class, [
                 'disabled_values' => [],
+                'label' => $this->trans('Parent category', 'Modules.AsBlog.Admin'),
             ])
             ->add('description',  TranslateType::class, [
                 'required' => false,
                 'locales' => $this->locales,
-                'label' => $this->trans('Summary', 'Admin.Global'),
+                'label' => $this->trans('Summary', 'Modules.AsBlog.Admin'),
                 'type' => FormattedTextareaType::class,
                 'options' => [
                     'limit' => 150000,
@@ -125,7 +126,7 @@ class CategoryType extends TranslatorAwareType
             ->add('meta_title', TranslateTextType::class, [
                 'locales' => $this->locales,
                 'required' => true,
-                'label' => $this->trans('Meta Keywords', 'Modules.Asblog.Admin'),
+                'label' => $this->trans('Meta Title', 'Modules.Asblog.Admin'),
                 'constraints' => [
                     new DefaultLanguage(),
                 ],
