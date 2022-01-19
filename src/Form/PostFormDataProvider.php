@@ -65,6 +65,7 @@ class PostFormDataProvider implements FormDataProviderInterface
         $this->languages = $languages;
         $this->shopId = $shopId;
         $this->configuration = $configuration;
+
     }
 
     /**
@@ -81,7 +82,6 @@ class PostFormDataProvider implements FormDataProviderInterface
 
         $post = new Post($this->idPost);
         $arrayPost = $post->toArray();
-
 
         return ['post' => [
             'id_post' => $arrayPost['id_post'],
@@ -138,7 +138,6 @@ class PostFormDataProvider implements FormDataProviderInterface
             $this->repository->update($postId, $post);
         }
 
-
         return [];
     }
 
@@ -158,7 +157,6 @@ class PostFormDataProvider implements FormDataProviderInterface
     public function setIdPost($idPost)
     {
         $this->idPost = $idPost;
-
         return $this;
     }
 
@@ -180,6 +178,7 @@ class PostFormDataProvider implements FormDataProviderInterface
         } else {
             foreach ($this->languages as $language) {
                 if (empty($data['title'][$language['id_lang']])) {
+
                     $errors[] = [
                         'key' => 'Missing title for language %s',
                         'domain' => 'Admin.Catalog.Notification',

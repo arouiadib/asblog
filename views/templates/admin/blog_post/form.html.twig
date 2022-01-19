@@ -27,6 +27,10 @@
                             {{ form_row(postForm.post.content) }}
                             {{ form_row(postForm.post.date_add) }}
                             {{ form_rest(postForm.post) }}
+
+                          {{ form_rest(postForm.post) }}
+                          {% do postForm.post.setRendered %}
+                          {{ form_rest(postForm) }}
                         </div>
                     </div>
                     <div class="card-footer">

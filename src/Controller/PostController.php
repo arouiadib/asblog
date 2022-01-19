@@ -141,18 +141,18 @@ class PostController extends FrameworkBundleAdminController
             if ($form->isValid()) {
                 $saveErrors = $formHandler->save($form->getData());
 
-                    if (0 === count($saveErrors)) {
+                if (0 === count($saveErrors)) {
                     $this->addFlash('success', $this->trans($successMessage, 'Admin.Notifications.Success'));
 
-                    return  $this->redirectToRoute('admin_blog_post_list');
+                    return $this->redirectToRoute('admin_blog_post_list');
                 }
-                $formErrors = [];
-                foreach ($form->getErrors(true) as $error) {
-                    $formErrors[] = $error->getMessage();
-                }
-
-                $this->flashErrors($formErrors);
+                $this->flashErrors($saveErrors);
             }
+            $formErrors = [];
+            foreach ($form->getErrors(true) as $error) {
+                $formErrors[] = $error->getMessage();
+            }
+            $this->flashErrors($formErrors);
         }
 
         return $this->render('@Modules/asblog/views/templates/admin/blog_post/form.html.twig', [

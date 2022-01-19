@@ -12,7 +12,6 @@ use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints\Length;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\DefaultLanguage;
-use PrestaShop\Module\AsBlog\Form\Type\ParentCategoryChoiceTreeType;
 
 class CategoryType extends TranslatorAwareType
 {
