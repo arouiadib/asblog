@@ -10,6 +10,7 @@ use PrestaShopBundle\Form\Admin\Type\TranslateTextType;
 use PrestaShopBundle\Form\Admin\Type\TranslateType;
 use PrestaShopBundle\Form\Admin\Type\FormattedTextareaType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
+use PrestaShopBundle\Form\Admin\Type\SwitchType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints\Length;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\DefaultLanguage;
@@ -65,6 +66,10 @@ class PostType extends TranslatorAwareType
                     ],
                 ],
             ])
+            ->add('id_category', CategoriesChoiceTreeType::class, [
+                'required' => true,
+                'label' => $this->trans('Categories', 'Modules.AsBlog.Admin'),
+            ])
             ->add('content',  TranslateType::class, [
                 'required' => false,
                 'locales' => $this->locales,
@@ -98,6 +103,14 @@ class PostType extends TranslatorAwareType
                     'data-provide' => 'datepicker',
                     'data-format' => 'dd-mm-yyyy HH:ii',
                 )
+            ])
+            ->add('active', SwitchType::class, [
+                // Customized choices with ON/OFF instead of Yes/No
+                'label' => $this->trans('Active', 'Modules.AsBlog.Admin'),
+                'choices' => [
+                    'ON' => true,
+                    'OFF' => false,
+                ],
             ])
         ;
 

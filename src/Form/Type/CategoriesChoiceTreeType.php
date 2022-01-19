@@ -2,14 +2,14 @@
 
 namespace PrestaShop\Module\AsBlog\Form\Type;
 
-use PrestaShopBundle\Form\Admin\Type\Material\MaterialChoiceTreeType;
+use PrestaShopBundle\Form\Admin\Type\Material\MaterialChoiceTableType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class ParentCategoryChoiceTreeType.
+ * Class CategoriesChoiceTreeType.
  */
-class ParentCategoryChoiceTreeType extends AbstractType
+class CategoriesChoiceTreeType extends AbstractType
 {
     /**
      * @var array
@@ -21,6 +21,8 @@ class ParentCategoryChoiceTreeType extends AbstractType
      */
     public function __construct(array $categoryTreeChoices)
     {
+        //echo "<pre>";
+        //var_dump($categoryTreeChoices);die;
         $this->categoryTreeChoices = $categoryTreeChoices;
     }
 
@@ -41,6 +43,6 @@ class ParentCategoryChoiceTreeType extends AbstractType
      */
     public function getParent()
     {
-        return MaterialChoiceTreeType::class;
+        return MaterialChoiceTableType::class;
     }
 }

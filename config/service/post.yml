@@ -40,6 +40,12 @@ services:
         tags:
             - { name: form.type }
 
+    prestashop.module.asblog.category.categories.form_type:
+      class: PrestaShop\Module\AsBlog\Form\Type\CategoriesChoiceTreeType
+      arguments:
+        - '@=service("prestashop.module.asblog.category.choice_provider.parent_category").getChoices()'
+      tags:
+        - { name: form.type }
 
     ## Post grid
     # Grid data query builder

@@ -8,6 +8,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 use PrestaShopBundle\Form\Admin\Type\TranslateTextType;
 use PrestaShopBundle\Form\Admin\Type\TranslateType;
 use PrestaShopBundle\Form\Admin\Type\FormattedTextareaType;
+use PrestaShopBundle\Form\Admin\Type\SwitchType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints\Length;
@@ -165,6 +166,14 @@ class CategoryType extends TranslatorAwareType
                             ),
                         ]),
                     ],
+                ],
+            ])
+            ->add('active', SwitchType::class, [
+                // Customized choices with ON/OFF instead of Yes/No
+                'label' => $this->trans('Active', 'Modules.AsBlog.Admin'),
+                'choices' => [
+                    'ON' => true,
+                    'OFF' => false,
                 ],
             ])
         ;
