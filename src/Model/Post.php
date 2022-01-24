@@ -23,6 +23,11 @@ class Post extends \ObjectModel
     public $content;
 
     /**
+     * @var boolean
+     */
+    public $active = true;
+
+    /**
      * @var \DateTime
      */
     public $date_add;
@@ -38,6 +43,7 @@ class Post extends \ObjectModel
         'fields' => array(
             'title' => array('type' => self::TYPE_STRING, 'lang' => true, 'required' => true, 'size' => 40),
             'content' => array('type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isString', 'required' => true),
+            'active'           => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
             'date_add' => array('type' => self::TYPE_DATE, 'required' => true),
         ),
     );
@@ -68,6 +74,7 @@ class Post extends \ObjectModel
             'id_post' => $this->id_post,
             'title' => $this->title,
             'content' => $this->content,
+            'active' => $this->active,
             'date_add' => $this->date_add
         ];
     }

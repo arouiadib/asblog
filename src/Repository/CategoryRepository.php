@@ -71,6 +71,7 @@ class CategoryRepository
     			`id_parent` int(10) unsigned,
     			`nleft` int(10) unsigned,
     			`nright` int(10) unsigned,
+    			`active` bool,
     			PRIMARY KEY (`id_category`)
             ) ENGINE=$engine DEFAULT CHARSET=utf8",
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_category_lang`(
