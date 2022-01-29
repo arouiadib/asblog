@@ -146,6 +146,7 @@ class PostRepository
     			`id_post` int(10) unsigned NOT NULL auto_increment,
     			`active` bool,
     			`date_add` datetime,
+    			`id_category` int(10) unsigned NOT NULL,
     			PRIMARY KEY (`id_post`)
             ) ENGINE=$engine DEFAULT CHARSET=utf8",
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_lang`(

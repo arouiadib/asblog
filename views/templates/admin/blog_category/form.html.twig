@@ -3,7 +3,7 @@
 {% form_theme categoryForm '@Modules/asblog/views/templates/admin/fields.html.twig' %}
 
 {% block content %}
-    {% if categoryForm.vars.data.category.id_category is defined and categoryForm.vars.data.category.id_category is not null %}
+  {% if categoryForm.vars.data.category.id_category is defined and categoryForm.vars.data.category.id_category is not null %}
         {% set formAction = url('admin_blog_category_process_edit', {'category_id': categoryForm.vars.data.category.id_category}) %}
     {% else %}
         {% set formAction = url('admin_blog_category_process_create') %}

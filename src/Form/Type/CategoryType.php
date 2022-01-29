@@ -79,6 +79,7 @@ class CategoryType extends TranslatorAwareType
             ])
             ->add('description',  TranslateType::class, [
                 'required' => false,
+                'hideTabs' => false,
                 'locales' => $this->locales,
                 'label' => $this->trans('Summary', 'Modules.AsBlog.Admin'),
                 'type' => FormattedTextareaType::class,

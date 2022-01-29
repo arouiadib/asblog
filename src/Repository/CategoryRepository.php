@@ -146,10 +146,14 @@ class CategoryRepository
         $qb
             ->insert($this->dbPrefix . 'post_category')
             ->values([
-                'id_parent' => ':idParent'
+                'id_parent' => ':idParent',
+                'active' => ':active',
+                'nleft' => 1,
+                'nright' => 1
             ])
             ->setParameters([
-                'idParent' => $data['id_parent']
+                'idParent' => $data['id_parent'],
+                'active' => $data['active'],
             ])
         ;
 
@@ -169,14 +173,17 @@ class CategoryRepository
      */
     public function update($categoryId, array $data)
     {
+
         $qb = $this->connection->createQueryBuilder();
         $qb
             ->update($this->dbPrefix . 'post_category', 'pc')
             ->andWhere('pc.id_category = :categoryId')
             ->set('id_parent', ':idParent')
+            ->set('active', ':active')
             ->setParameters([
                 'categoryId' => $categoryId,
-                'idParent' => $data['id_parent']
+                'idParent' => $data['id_parent'],
+                'active' => $data['active']
             ])
         ;
 
@@ -194,7 +201,58 @@ class CategoryRepository
      */
     private function updateLanguages($categoryId, array $categoryData)
     {
+        foreach ($this->languages as $language) {
+            $qb = $this->connection->createQueryBuilder();
+            $qb
+                ->select('pcl.id_category')
+                ->from($this->dbPrefix . 'post_category_lang', 'pcl')
+                ->andWhere('pcl.id_category = :cateogryId')
+                ->andWhere('pcl.id_lang = :langId')
+                ->setParameter('cateogryId', $categoryId)
+                ->setParameter('langId', $language['id_lang'])
+            ;
+            $foundRows = $qb->execute()->rowCount();
 
+            $qb = $this->connection->createQueryBuilder();
+            if (!$foundRows) {
+                $qb
+                    ->insert($this->dbPrefix . 'post_category_lang')
+                    ->values([
+                        'id_category' => ':cateogryId',
+                        'id_lang' => ':langId',
+                        'name' => ':name',
+                        'description' => ':description',
+                        'meta_title' => ':metaTitle',
+                        'meta_description' => ':metaDescription',
+                        'meta_keywords' => ':metaKeywords'
+                    ])
+                ;
+            } else {
+                $qb
+                    ->update($this->dbPrefix . 'post_category_lang', 'pcl')
+                    ->set('name', ':name')
+                    ->set('description', ':description')
+                    ->set('meta_title', ':metaTitle')
+                    ->set('meta_description', ':metaDescription')
+                    ->set('meta_keywords', ':metaKeywords')
+                    ->andWhere('pcl.id_category = :categoryId')
+                    ->andWhere('pcl.id_lang = :langId')
+                ;
+            }
+
+            $qb
+                ->setParameters([
+                    'categoryId' => $categoryId,
+                    'langId' => $language['id_lang'],
+                    'name' => $categoryData['name'][$language['id_lang']],
+                    'description' => $categoryData['description'][$language['id_lang']],
+                    'metaTitle' => $categoryData['meta_title'][$language['id_lang']],
+                    'metaDescription' => $categoryData['meta_description'][$language['id_lang']],
+                    'metaKeywords' => $categoryData['meta_keywords'][$language['id_lang']],
+                ]);
+
+            $this->executeQueryBuilder($qb, 'Category language error');
+        }
     }
 
     /**

@@ -82,7 +82,6 @@ class CategoryFormDataProvider implements FormDataProviderInterface
         $category = new Category($this->idCategory);
         $arrayCategory = $category->toArray();
 
-
         return ['category' => [
             'id_category' => $arrayCategory['id_category'],
             'id_parent' => $arrayCategory['id_parent'],
@@ -137,6 +136,8 @@ class CategoryFormDataProvider implements FormDataProviderInterface
                 }
             }
         }
+        
+        $category['active'] = (int) $category['active'];
 
         return $category;
     }
@@ -150,6 +151,7 @@ class CategoryFormDataProvider implements FormDataProviderInterface
      */
     public function setData(array $data)
     {
+
         $category = $this->prepareData($data['category']);
 
         $errors = $this->validateCategory($category);
