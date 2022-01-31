@@ -55,82 +55,6 @@ class PostRepository
     }
 
     /**
-     * @param array $data
-     *
-     * @return string
-     *
-     * @throws DatabaseException
-     */
-    public function create(array $data)
-    {
-        $qb = $this->connection->createQueryBuilder();
-        $qb
-            ->insert($this->dbPrefix . 'post')
-            ->values([
-                    'date_add' => ':dateAdd'
-            ])
-            ->setParameters([
-                'dateAdd' => date('Y-m-d H:i:s')
-            ])
-        ;
-
-        $this->executeQueryBuilder($qb, 'Post error');
-        $postId = $this->connection->lastInsertId();
-
-        $this->updateLanguages($postId, $data['title'], $data['content']);
-
-        return $postId;
-    }
-
-    /**
-     * @param int $postId
-     * @param array $data
-     *
-     * @throws DatabaseException
-     */
-    public function update($postId, array $data)
-    {
-        $qb = $this->connection->createQueryBuilder();
-        $qb
-            ->update($this->dbPrefix . 'post', 'p')
-            ->andWhere('p.id_post = :postId')
-            ->set('date_add', ':dateAdd')
-            ->setParameters([
-                'postId' => $postId,
-                'dateAdd' => $data['date_add']->format('d-m-y H:i')
-            ])
-        ;
-
-        $this->executeQueryBuilder($qb, 'Blog post update error');
-
-        $this->updateLanguages($postId, $data['title'], $data['content']);
-    }
-
-    /**
-     * @param int $idPost
-     *
-     * @throws DatabaseException
-     */
-    public function delete($idPost)
-    {
-        $tableNames = [
-            'post_shop',
-            'post_lang',
-            'post',
-        ];
-
-        foreach ($tableNames as $tableName) {
-            $qb = $this->connection->createQueryBuilder();
-            $qb
-                ->delete($this->dbPrefix . $tableName)
-                ->andWhere('id_post = :idPost')
-                ->setParameter('idPost', $idPost)
-            ;
-            $this->executeQueryBuilder($qb, 'Delete error');
-        }
-    }
-
-    /**
      * @return array
      *
      * @throws \Doctrine\DBAL\DBALException
@@ -206,13 +130,97 @@ class PostRepository
     }
 
     /**
+     * @param array $data
+     *
+     * @return string
+     *
+     * @throws DatabaseException
+     */
+    public function create(array $data)
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->insert($this->dbPrefix . 'post')
+            ->values([
+                    'date_add' => ':dateAdd',
+                    'active' => ':active',
+                    'id_category' => ':id_category'
+            ])
+            ->setParameters([
+                'dateAdd' => date('Y-m-d H:i:s'),
+                'active' => $data['active'],
+                'id_category' => $data['id_category']
+            ])
+        ;
+
+        $this->executeQueryBuilder($qb, 'Post error');
+        $postId = $this->connection->lastInsertId();
+
+        $this->updateLanguages($postId, $data);
+
+        return $postId;
+    }
+
+    /**
+     * @param int $postId
+     * @param array $data
+     *
+     * @throws DatabaseException
+     */
+    public function update($postId, array $data)
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->update($this->dbPrefix . 'post', 'p')
+            ->andWhere('p.id_post = :postId')
+            ->set('date_add', ':dateAdd')
+            ->set('active', ':active')
+            ->set('id_category', ':idCategory')
+            ->setParameters([
+                'postId' => $postId,
+                'active' => $data['active'],
+                'dateAdd' => $data['date_add']->format('d-m-y H:i'),
+                'idCategory' => $data['id_category']
+            ])
+        ;
+
+        $this->executeQueryBuilder($qb, 'Blog post update error');
+
+        $this->updateLanguages($postId, $data['title'], $data['content']);
+    }
+
+    /**
+     * @param int $idPost
+     *
+     * @throws DatabaseException
+     */
+    public function delete($idPost)
+    {
+        $tableNames = [
+            'post_shop',
+            'post_lang',
+            'post',
+        ];
+
+        foreach ($tableNames as $tableName) {
+            $qb = $this->connection->createQueryBuilder();
+            $qb
+                ->delete($this->dbPrefix . $tableName)
+                ->andWhere('id_post = :idPost')
+                ->setParameter('idPost', $idPost)
+            ;
+            $this->executeQueryBuilder($qb, 'Delete error');
+        }
+    }
+
+    /**
      * @param int $postId
      * @param array $blockName
      * @param array $custom
      *
      * @throws DatabaseException
      */
-    private function updateLanguages($postId, array $postTitle, array $postContent)
+    private function updateLanguages($postId, array $postData)
     {
 
         foreach ($this->languages as $language) {
@@ -235,7 +243,7 @@ class PostRepository
                         'id_post' => ':postId',
                         'id_lang' => ':langId',
                         'title' => ':title',
-                        'content' => ':content',
+                        'content' => ':content'
                     ])
                 ;
             } else {
@@ -252,8 +260,8 @@ class PostRepository
                 ->setParameters([
                     'postId' => $postId,
                     'langId' => $language['id_lang'],
-                    'title' => $postTitle[$language['id_lang']],
-                    'content' => empty($postContent) ? null : $postContent[$language['id_lang']],
+                    'title' => $postData['title'][$language['id_lang']],
+                    'content' => empty($postData['content'][$language['id_lang']]) ? null : $postData['content'][$language['id_lang']],
                 ]);
 
             $this->executeQueryBuilder($qb, 'Post language error');

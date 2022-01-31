@@ -13,6 +13,11 @@ class Post extends \ObjectModel
     public $id_post;
 
     /**
+     * @var int
+     */
+    public $id_category;
+
+    /**
      * @var string
      */
     public $title;
@@ -45,6 +50,7 @@ class Post extends \ObjectModel
             'content' => array('type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isString', 'required' => true),
             'active'           => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
             'date_add' => array('type' => self::TYPE_DATE, 'required' => true),
+            'id_category' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
         ),
     );
 
@@ -72,6 +78,7 @@ class Post extends \ObjectModel
     {
         return [
             'id_post' => $this->id_post,
+            'id_category' => $this->id_category,
             'title' => $this->title,
             'content' => $this->content,
             'active' => $this->active,

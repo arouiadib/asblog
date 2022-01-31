@@ -83,12 +83,15 @@ class PostFormDataProvider implements FormDataProviderInterface
         $post = new Post($this->idPost);
         $arrayPost = $post->toArray();
 
-        return ['post' => [
-            'id_post' => $arrayPost['id_post'],
-            'title' => $arrayPost['title'],
-            'content' => $arrayPost['content'],
-            'date_add' => new DateTime($arrayPost['date_add'])
-        ]];
+        return [
+            'post' => [
+                    'id_post' => $arrayPost['id_post'],
+                    'title' => $arrayPost['title'],
+                    'content' => $arrayPost['content'],
+                    'date_add' => new DateTime($arrayPost['date_add']),
+                    'active' => $arrayPost['active'],
+                    'id_category' => $arrayPost['id_category']
+            ]];
     }
 
     /**
@@ -110,6 +113,15 @@ class PostFormDataProvider implements FormDataProviderInterface
             }
         }
 
+        if (!empty($post['content'])) {
+            foreach ($this->languages as $language) {
+                if (empty($post['content'][$language['id_lang']])) {
+                    $post['content'][$language['id_lang']] = $post['content'][$defaultLanguageId];
+                }
+            }
+        }
+
+        $post['active'] = (int) $post['active'];
         return $post;
     }
 

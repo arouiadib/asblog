@@ -136,7 +136,7 @@ class CategoryFormDataProvider implements FormDataProviderInterface
                 }
             }
         }
-        
+
         $category['active'] = (int) $category['active'];
 
         return $category;
