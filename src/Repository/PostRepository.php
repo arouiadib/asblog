@@ -186,7 +186,7 @@ class PostRepository
 
         $this->executeQueryBuilder($qb, 'Blog post update error');
 
-        $this->updateLanguages($postId, $data['title'], $data['content']);
+        $this->updateLanguages($postId, $data);
     }
 
     /**

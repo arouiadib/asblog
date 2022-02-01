@@ -68,7 +68,7 @@ class PostType extends TranslatorAwareType
             ])
             ->add('id_category', ParentCategoryChoiceTreeType::class, [
                 'required' => true,
-                'label' => $this->trans('Categories', 'Modules.AsBlog.Admin'),
+                'label' => $this->trans('Category', 'Modules.AsBlog.Admin'),
             ])
             ->add('content',  TranslateType::class, [
                 'required' => false,
