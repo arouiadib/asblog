@@ -2,6 +2,7 @@
 
 namespace PrestaShop\Module\AsBlog\Controller;
 
+use PrestaShop\Module\AsBlog\Entity\CategoryImage;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -9,6 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use PrestaShopBundle\Security\Annotation\ModuleActivated;
 use PrestaShop\Module\AsBlog\Core\Search\Filters\CategoryFilters;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 /**
  * Class CategoryController.
  *
@@ -63,7 +66,7 @@ class CategoryController extends FrameworkBundleAdminController
     /**
      *
      * @param Request $request
-     * @param int $categoryId
+     * @param int $category_id
      *
      * @return Response
      *
@@ -76,6 +79,7 @@ class CategoryController extends FrameworkBundleAdminController
 
         return $this->render('@Modules/asblog/views/templates/admin/blog_category/form.html.twig', [
             'categoryForm' => $form->createView(),
+            'categoryCoverImage' => $this->getCategoryCoverImageUrl($category_id),
             'enableSidebar' => true,
             'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
@@ -130,7 +134,10 @@ class CategoryController extends FrameworkBundleAdminController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $saveErrors = $formHandler->save($form->getData());
+                $data = $form->getData();
+                $this->uploadImage($data);
+
+                $saveErrors = $formHandler->save($data);
 
                 if (0 === count($saveErrors)) {
                     $this->addFlash('success', $this->trans($successMessage, 'Admin.Notifications.Success'));
@@ -149,6 +156,7 @@ class CategoryController extends FrameworkBundleAdminController
 
         return $this->render('@Modules/asblog/views/templates/admin/blog_category/form.html.twig', [
             'categoryForm' => $form->createView(),
+            'categoryCoverImagePath' => $this->getCategoryCoverImageUrl($categoryId),
             'enableSidebar' => true,
             'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
@@ -182,5 +190,39 @@ class CategoryController extends FrameworkBundleAdminController
         $filtersParams['filters']['id_lang'] = $this->getContext()->language->id;
 
         return $filtersParams;
+    }
+
+    /**
+     * @param array $params
+     */
+    private function uploadImage(array $params): void
+    {
+
+        /** @var ImageUploaderInterface $marqueImageUploader */
+        $imageUploader = $this->get('prestashop.module.asblog.uploader.image_uploader');
+
+        /** @var UploadedFile $uploadedFile */
+        $uploadedFile = $params['category']['upload_image_file'];
+
+        $imageData['type'] = 'category';
+        $imageData['id'] = $params['category']['id_category'];
+
+        if ($uploadedFile instanceof UploadedFile) {
+            $imageUploader->upload($imageData, $uploadedFile);
+        }
+    }
+
+    private  function getCategoryCoverImageUrl($categoryId) : string {
+
+        $categoryImageRepository = $this->get('doctrine.orm.entity_manager')->getRepository(CategoryImage::class);
+
+        $imageUrl = '';
+        $image = $categoryImageRepository->findOneBy(['categoryId' => $categoryId]);
+
+        if ($image && file_exists(_PS_IMG_DIR_ . '/blog/category/' . $categoryId . '.jpeg')) {
+            $imageUrl = '/img/blog/category/' . $categoryId . '.jpeg';
+        }
+
+        return $imageUrl;
     }
 }

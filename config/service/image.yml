@@ -1,0 +1,22 @@
+services:
+    _defaults:
+        public: true
+
+    prestashop.module.asblog.uploader.image_uploader:
+      class: PrestaShop\Module\AsBlog\Uploader\ImageUploader
+      arguments:
+        - '@prestashop.module.asblog.uploader.image_repository'
+
+    prestashop.module.asblog.uploader.image_repository:
+      class: PrestaShop\Module\AsBlog\Repository\ImageRepository
+      factory: ['@doctrine.orm.entity_manager', getRepository]
+      arguments:
+        - PrestaShop\Module\AsBlog\Entity\Image
+        -
+    prestashop.module.asblog.image_object.repository:
+      class: PrestaShop\Module\AsBlog\Repository\ImageObjectRepository
+      arguments:
+        $connection: '@doctrine.dbal.default_connection'
+        $dbPrefix: '%database_prefix%'
+        $languages: '@=service("prestashop.adapter.legacy.context").getLanguages(true, service("prestashop.adapter.shop.context").getContextShopID())'
+        $translator: '@translator'

@@ -13,6 +13,7 @@ use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Validator\Constraints\Length;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\DefaultLanguage;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class CategoryType extends TranslatorAwareType
 {
@@ -76,6 +77,10 @@ class CategoryType extends TranslatorAwareType
                 'disabled_values' => [],
                'required' => true,
                 'label' => $this->trans('Parent category', 'Modules.AsBlog.Admin'),
+            ])
+            ->add('upload_image_file', FileType::class, [
+                'label' => $this->trans('Upload featured image', 'Modules.AsBlog.Admin'),
+                'required' => false,
             ])
             ->add('description',  TranslateType::class, [
                 'required' => false,

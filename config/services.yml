@@ -1,3 +1,4 @@
 imports:
     - { resource: service/post.yml }
     - { resource: service/post_category.yml }
+    - { resource: service/image.yml }

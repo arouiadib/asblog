@@ -17,7 +17,11 @@ use PrestaShop\PrestaShop\Adapter\LegacyContext;
 use PrestaShop\PrestaShop\Adapter\Shop\Context;
 use PrestaShop\Module\AsBlog\Repository\PostRepository;
 use PrestaShop\Module\AsBlog\Repository\CategoryRepository;
+use PrestaShop\Module\AsBlog\Repository\ImageObjectRepository;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
+
+define('_PS_BLOG_CATEGORY_IMG_DIR_', _PS_IMG_DIR_.'blog/category/');
+define('_PS_BLOG_POST_IMG_DIR_', _PS_IMG_DIR_.'blog/post/');
 
 class Asblog extends Module implements WidgetInterface
 {
@@ -42,6 +46,9 @@ class Asblog extends Module implements WidgetInterface
 
     /* @var CategoryRepository */
     private $categoryRepository;
+
+    /* @var ImageRepository */
+    private $imageRepository;
 
     public $templates = [
         'blog_post_list' => 'blog_post_list.tpl',
@@ -68,12 +75,22 @@ class Asblog extends Module implements WidgetInterface
 
     public function install()
     {
+        if (!file_exists(_PS_BLOG_CATEGORY_IMG_DIR_)) {
+            mkdir(_PS_BLOG_CATEGORY_IMG_DIR_, 0775, true);
+        }
+
+        if (!file_exists(_PS_BLOG_POST_IMG_DIR_)) {
+            mkdir(_PS_BLOG_POST_IMG_DIR_, 0775, true);
+        }
 
         if (!parent::install() || !$this->registerHook('moduleRoutes')) {
             return false;
         }
 
-        if (null !== $this->getPostRepository() && null !== $this->getCategoryRepository()) {
+        if (null !== $this->getPostRepository()
+            && null !== $this->getCategoryRepository()
+            && null !== $this->getImageRepository()
+        ) {
             $installed = $this->installDatabase();
         }
 
@@ -92,7 +109,8 @@ class Asblog extends Module implements WidgetInterface
 
         $errorsPostTables = $this->postRepository->createTables();
         $errorsCategoryTables = $this->categoryRepository->createTables();
-        $errors = array_merge($errorsPostTables, $errorsCategoryTables);
+        $errorsImageTables = $this->imageRepository->createTables();
+        $errors = array_merge($errorsPostTables, $errorsCategoryTables, $errorsImageTables);
 
         if (!empty($errors)) {
             $this->addModuleErrors($errors);
@@ -246,6 +264,33 @@ class Asblog extends Module implements WidgetInterface
 
         return $this->categoryRepository;
     }
+
+    /**
+     * @return ImageObjectRepository|null
+     */
+    private function getImageRepository()
+    {
+        if (null === $this->imageRepository) {
+            try {
+                $this->imageRepository = $this->get('prestashop.module.asblog.image_object.repository');
+            } catch (Throwable $e) {
+                /** @var LegacyContext $context */
+                $legacyContext = $this->get('prestashop.adapter.legacy.context');
+                /** @var Context $shopContext */
+                $shopContext = $this->get('prestashop.adapter.shop.context');
+
+                $this->imageRepository = new ImageObjectRepository(
+                    $this->get('doctrine.dbal.default_connection'),
+                    SymfonyContainer::getInstance()->getParameter('database_prefix'),
+                    $legacyContext->getLanguages(true, $shopContext->getContextShopID()),
+                    $this->get('translator')
+                );
+            }
+        }
+
+        return $this->imageRepository;
+    }
+
 
     public function enable($force_all = false)
     {
