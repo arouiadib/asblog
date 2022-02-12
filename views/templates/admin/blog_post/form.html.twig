@@ -26,6 +26,30 @@
                             {{ form_row(postForm.post.title) }}
                             {{ form_row(postForm.post.content) }}
                             {{ form_row(postForm.post.date_add) }}
+
+                            {% if postCoverImage is defined and postCoverImage is not null %}
+                                <div class="form-group row">
+                                    <form action="">
+                                        <figure class="figure">
+                                            <img src="{{ postCoverImage }}" class="figure-img img-fluid img-thumbnail">
+                                            <figcaption class="figure-caption">
+                                                {#<p>{{ 'File size'|trans({}, 'Admin.Advparameters.Feature') }} {{ coverImage.size }}</p>#}
+                                                <button class="btn btn-outline-danger btn-sm js-form-submit-btn"
+                                                        {#data-form-submit-url="{{ path('admin_categories_delete_cover_image', {'categoryId': app.request.get('categoryId')}) }}"
+                                                        data-form-csrf-token="{{ csrf_token('delete-cover-image') }}"#}
+                                                        type="button"
+                                                >
+                                                    <i class="material-icons">
+                                                        delete_forever
+                                                    </i>
+                                                    {{ 'Delete'|trans({}, 'Admin.Actions') }}
+                                                </button>
+                                            </figcaption>
+                                        </figure>
+                                    </form>
+                                </div>
+                            {% endif %}
+                            {{ form_row(postForm.post.upload_image_file) }}
                             {{ form_rest(postForm.post) }}
 
                           {{ form_rest(postForm.post) }}

@@ -79,7 +79,7 @@ class CategoryType extends TranslatorAwareType
                 'label' => $this->trans('Parent category', 'Modules.AsBlog.Admin'),
             ])
             ->add('upload_image_file', FileType::class, [
-                'label' => $this->trans('Upload featured image', 'Modules.AsBlog.Admin'),
+                'label' => $this->trans('Featured image', 'Modules.AsBlog.Admin'),
                 'required' => false,
             ])
             ->add('description',  TranslateType::class, [

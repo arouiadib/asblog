@@ -2,7 +2,6 @@
 
 namespace PrestaShop\Module\AsBlog\Controller;
 
-use PrestaShop\Module\AsBlog\Entity\CategoryImage;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use PrestaShopBundle\Security\Annotation\ModuleActivated;
 use PrestaShop\Module\AsBlog\Core\Search\Filters\CategoryFilters;
+use PrestaShop\Module\AsBlog\Entity\CategoryImage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -156,7 +156,7 @@ class CategoryController extends FrameworkBundleAdminController
 
         return $this->render('@Modules/asblog/views/templates/admin/blog_category/form.html.twig', [
             'categoryForm' => $form->createView(),
-            'categoryCoverImagePath' => $this->getCategoryCoverImageUrl($categoryId),
+            'categoryCoverImage' => $this->getCategoryCoverImageUrl($categoryId),
             'enableSidebar' => true,
             'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),

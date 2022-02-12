@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use PrestaShopBundle\Security\Annotation\ModuleActivated;
 use PrestaShop\Module\AsBlog\Core\Search\Filters\PostFilters;
+use PrestaShop\Module\AsBlog\Entity\PostImage;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 
 /**
@@ -76,6 +78,7 @@ class PostController extends FrameworkBundleAdminController
 
         return $this->render('@Modules/asblog/views/templates/admin/blog_post/form.html.twig', [
             'postForm' => $form->createView(),
+            'postCoverImage' => $this->getPostCoverImageUrl($post_id),
             'enableSidebar' => true,
             'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
@@ -140,7 +143,10 @@ class PostController extends FrameworkBundleAdminController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $saveErrors = $formHandler->save($form->getData());
+                $data = $form->getData();
+                $this->uploadImage($data);
+
+                $saveErrors = $formHandler->save($data);
 
                 if (0 === count($saveErrors)) {
                     $this->addFlash('success', $this->trans($successMessage, 'Admin.Notifications.Success'));
@@ -158,6 +164,7 @@ class PostController extends FrameworkBundleAdminController
 
         return $this->render('@Modules/asblog/views/templates/admin/blog_post/form.html.twig', [
             'postForm' => $form->createView(),
+            'postCoverImage' => $this->getPostCoverImageUrl($blogPostId),
             'enableSidebar' => true,
             'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
@@ -191,5 +198,38 @@ class PostController extends FrameworkBundleAdminController
         $filtersParams['filters']['id_lang'] = $this->getContext()->language->id;
 
         return $filtersParams;
+    }
+
+    /**
+     * @param array $params
+     */
+    private function uploadImage(array $params): void
+    {
+        /** @var ImageUploaderInterface $marqueImageUploader */
+        $imageUploader = $this->get('prestashop.module.asblog.uploader.image_uploader');
+
+        /** @var UploadedFile $uploadedFile */
+        $uploadedFile = $params['post']['upload_image_file'];
+
+        $imageData['type'] = 'post';
+        $imageData['id'] = $params['post']['id_post'];
+
+        if ($uploadedFile instanceof UploadedFile) {
+            $imageUploader->upload($imageData, $uploadedFile);
+        }
+    }
+
+    private  function getPostCoverImageUrl($postId) : string {
+
+        $postImageRepository = $this->get('doctrine.orm.entity_manager')->getRepository(PostImage::class);
+
+        $imageUrl = '';
+        $image = $postImageRepository->findOneBy(['postId' => $postId]);
+
+        if ($image && file_exists(_PS_IMG_DIR_ . '/blog/post/' . $postId . '.jpeg')) {
+            $imageUrl = '/img/blog/post/' . $postId . '.jpeg';
+        }
+
+        return $imageUrl;
     }
 }

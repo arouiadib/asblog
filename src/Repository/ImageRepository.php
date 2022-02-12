@@ -21,15 +21,17 @@ class ImageRepository extends EntityRepository
     {
         /** @var Image $image */
         $image = $this->findOneBy(['id' => $imageData['id']]);
-
+        var_dump($image);die;
         if (!$image) {
+            var_dump($imageData['type']);die;
             if ($imageData['type'] === 'category') {
                 $image = new CategoryImage();
                 $image->setCategoryId($imageData['id']);
             }
-            elseif ($imageData['type'] === 'post') {
+            if ($imageData['type'] === 'post') {
                 $image = new PostImage();
                 $image->setPostId($imageData['id']);
+
             }
         }
 
