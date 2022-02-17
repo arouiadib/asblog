@@ -246,7 +246,10 @@ class PostRepository
                         'id_post' => ':postId',
                         'id_lang' => ':langId',
                         'title' => ':title',
-                        'content' => ':content'
+                        'content' => ':content',
+                        'meta_title' => ':metaTitle',
+                        'meta_description' => ':metaDescription',
+                        'meta_keywords' => ':metaKeywords'
                     ])
                 ;
             } else {
@@ -254,6 +257,9 @@ class PostRepository
                     ->update($this->dbPrefix . 'post_lang', 'pl')
                     ->set('title', ':title')
                     ->set('content', ':content')
+                    ->set('meta_title', ':metaTitle')
+                    ->set('meta_description', ':metaDescription')
+                    ->set('meta_keywords', ':metaKeywords')
                     ->andWhere('pl.id_post = :postId')
                     ->andWhere('pl.id_lang = :langId')
                 ;
@@ -265,6 +271,9 @@ class PostRepository
                     'langId' => $language['id_lang'],
                     'title' => $postData['title'][$language['id_lang']],
                     'content' => empty($postData['content'][$language['id_lang']]) ? null : $postData['content'][$language['id_lang']],
+                    'metaTitle' => $postData['meta_title'][$language['id_lang']],
+                    'metaDescription' => $postData['meta_description'][$language['id_lang']],
+                    'metaKeywords' => $postData['meta_keywords'][$language['id_lang']],
                 ]);
 
             $this->executeQueryBuilder($qb, 'Post language error');
