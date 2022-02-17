@@ -164,6 +164,35 @@ class CategoryController extends FrameworkBundleAdminController
     }
 
     /**
+     *
+     * @param int $category_id
+     *
+     * @return RedirectResponse
+     */
+    public function deleteAction($category_id)
+    {
+        $postRepository = $this->get('prestashop.module.asblog.category.repository');
+        $errors = [];
+        try {
+            $postRepository->delete($category_id);
+        }
+        catch (DatabaseException $exception) {
+            $errors[] = [
+                'key' => 'Cannot delete category with ID #%i',
+                'domain' => 'Admin.Catalog.Notification',
+                'parameters' => [$category_id]
+            ];
+        }
+
+        if (!count($errors)) {
+            $this->addFlash('Success', 'Admin.Notifications.Success' );
+        } else {
+            $this->flashErrors($errors);
+        }
+        return $this->redirectToRoute('admin_blog_post_list');
+    }
+
+    /**
      * Gets the header toolbar buttons.
      *
      * @return array
