@@ -88,6 +88,9 @@ class PostFormDataProvider implements FormDataProviderInterface
                     'id_post' => $arrayPost['id_post'],
                     'title' => $arrayPost['title'],
                     'content' => $arrayPost['content'],
+                    'meta_title' => $arrayPost['meta_title'],
+                    'meta_description' => $arrayPost['meta_description'],
+                    'meta_keywords' => $arrayPost['meta_keywords'],
                     'date_add' => new DateTime($arrayPost['date_add']),
                     'active' => $arrayPost['active'],
                     'id_category' => $arrayPost['id_category']
