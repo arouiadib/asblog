@@ -31,6 +31,28 @@ abstract class Image
      */
     private $id;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id_child", type="integer")
+     */
+    private $idChild;
+
+    /**
+     * @return int
+     */
+    public function getIdChild(): int
+    {
+        return $this->idChild;
+    }
+
+    /**
+     * @param int $idChild
+     */
+    public function setIdChild(int $idChild): void
+    {
+        $this->idChild = $idChild;
+    }
 
     /**
      * @return int

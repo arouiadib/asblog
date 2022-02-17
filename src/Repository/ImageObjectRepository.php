@@ -66,8 +66,7 @@ class ImageObjectRepository{
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}blog_image`(
     			`id_image` int(10) unsigned NOT NULL auto_increment,
     			`type` varchar(10) NOT NULL default '',
-    			`id_category` int(10) unsigned,
-    			`id_post` int(10) unsigned,
+    			`id_child` int(10) unsigned,
     			PRIMARY KEY (`id_image`)
             ) ENGINE=$engine DEFAULT CHARSET=utf8"
         ];

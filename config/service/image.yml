@@ -12,7 +12,7 @@ services:
       factory: ['@doctrine.orm.entity_manager', getRepository]
       arguments:
         - PrestaShop\Module\AsBlog\Entity\Image
-        -
+
     prestashop.module.asblog.image_object.repository:
       class: PrestaShop\Module\AsBlog\Repository\ImageObjectRepository
       arguments:

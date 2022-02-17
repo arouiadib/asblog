@@ -212,17 +212,54 @@ class CategoryController extends FrameworkBundleAdminController
         }
     }
 
-    private  function getCategoryCoverImageUrl($categoryId) : string {
+    private  function getCategoryCoverImageUrl($categoryId) {
 
         $categoryImageRepository = $this->get('doctrine.orm.entity_manager')->getRepository(CategoryImage::class);
 
-        $imageUrl = '';
         $image = $categoryImageRepository->findOneBy(['categoryId' => $categoryId]);
 
         if ($image && file_exists(_PS_IMG_DIR_ . '/blog/category/' . $categoryId . '.jpeg')) {
             $imageUrl = '/img/blog/category/' . $categoryId . '.jpeg';
         }
 
-        return $imageUrl;
+        return (isset($imageUrl)) ? $imageUrl : null;
+    }
+
+    /**
+     * Deletes post cover image.
+     *
+     * @param Request $request
+     * @param int $postId
+     *
+     * @return RedirectResponse
+     */
+    public function deleteCoverImageAction(Request $request, $id_category)
+    {
+        $imageData = [];
+        if (!$this->isCsrfTokenValid('delete-cover-image', $request->request->get('_csrf_token'))) {
+            return $this->redirectToRoute('admin_security_compromised', [
+                'uri' => $this->generateUrl('admin_blog_category_edit', [
+                    'category_id' => $id_category,
+                ], UrlGeneratorInterface::ABSOLUTE_URL),
+            ]);
+        }
+
+        try {
+            $imageUploader = $this->get('prestashop.module.asblog.uploader.image_uploader');
+            $imageData['type'] = 'category';
+            $imageData['id'] = $id_category;
+
+            $imageUploader->deleteImage($imageData);
+            $this->addFlash(
+                'success',
+                $this->trans('The image was successfully deleted.', 'Admin.Notifications.Success')
+            );
+        } catch (Exception $e) {
+            $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages()));
+        }
+
+        return $this->redirectToRoute('admin_blog_category_edit', [
+            'category_id' =>  $id_category,
+        ]);
     }
 }

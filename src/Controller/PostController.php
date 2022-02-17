@@ -219,17 +219,54 @@ class PostController extends FrameworkBundleAdminController
         }
     }
 
-    private  function getPostCoverImageUrl($postId) : string {
+    private  function getPostCoverImageUrl($postId) {
 
         $postImageRepository = $this->get('doctrine.orm.entity_manager')->getRepository(PostImage::class);
 
-        $imageUrl = '';
-        $image = $postImageRepository->findOneBy(['postId' => $postId]);
+        $image = $postImageRepository->findOneBy(['idChild' => $postId]);
 
         if ($image && file_exists(_PS_IMG_DIR_ . '/blog/post/' . $postId . '.jpeg')) {
             $imageUrl = '/img/blog/post/' . $postId . '.jpeg';
         }
 
-        return $imageUrl;
+        return (isset($imageUrl)) ? $imageUrl : null;
+    }
+
+    /**
+     * Deletes post cover image.
+     *
+     * @param Request $request
+     * @param int $postId
+     *
+     * @return RedirectResponse
+     */
+    public function deleteCoverImageAction(Request $request, $id_post)
+    {
+        $imageData = [];
+        if (!$this->isCsrfTokenValid('delete-cover-image', $request->request->get('_csrf_token'))) {
+            return $this->redirectToRoute('admin_security_compromised', [
+                'uri' => $this->generateUrl('admin_blog_post_edit', [
+                    'post_id' => $id_post,
+                ], UrlGeneratorInterface::ABSOLUTE_URL),
+            ]);
+        }
+
+        try {
+            $imageUploader = $this->get('prestashop.module.asblog.uploader.image_uploader');
+            $imageData['type'] = 'post';
+            $imageData['id'] = $id_post;
+
+            $imageUploader->deleteImage($imageData);
+            $this->addFlash(
+                'success',
+                $this->trans('The image was successfully deleted.', 'Admin.Notifications.Success')
+            );
+        } catch (Exception $e) {
+            $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages()));
+        }
+
+        return $this->redirectToRoute('admin_blog_post_edit', [
+            'post_id' =>  $id_post,
+        ]);
     }
 }

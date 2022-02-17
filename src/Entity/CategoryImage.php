@@ -12,24 +12,4 @@ use PrestaShop\Module\AsBlog\Entity\Image;
 
 class CategoryImage extends Image
 {
-    /**
-     * @ORM\Column(name="id_category", type="integer")
-     */
-    private $categoryId;
-
-    /**
-     * @return mixed
-     */
-    public function getCategoryId()
-    {
-        return $this->categoryId;
-    }
-
-    /**
-     * @param mixed $categoryId
-     */
-    public function setCategoryId($categoryId): void
-    {
-        $this->categoryId = $categoryId;
-    }
 }

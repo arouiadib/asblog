@@ -1,18 +1,19 @@
+
 # Admin blog post routes
 admin_blog_post_list:
-  path: /blog_post/list
-  methods: [GET]
-  defaults:
-      _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::listAction'
-      _legacy_controller: 'AsBlogPostController'
-      _legacy_link: 'AsBlogPostController'
+    path: /blog_post/list
+    methods: [GET]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::listAction'
+        _legacy_controller: 'AsBlogPostController'
+        _legacy_link: 'AsBlogPostController'
 
 admin_blog_post_create:
-  path: /blog_post/create
-  methods: [GET]
-  defaults:
-    _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::createAction'
-    _legacy_controller: 'AsBlogPostController'
+    path: /blog_post/create
+    methods: [GET]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::createAction'
+        _legacy_controller: 'AsBlogPostController'
 
 admin_blog_post_process_create:
     path: /blog_post/create
@@ -41,46 +42,61 @@ admin_blog_post_delete:
     defaults:
         _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::createAction'
 
+admin_blog_post_delete_cover_image:
+    path: /blog_post/{id_post}/delete-cover-image
+    methods: [POST]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::deleteCoverImageAction'
+    requirements:
+        categoryId: \d+
 
 # Admin blog Category  routes
 admin_blog_category_list:
-  path: /blog_category/list
-  methods: [GET]
-  defaults:
-    _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::listAction'
-    _legacy_controller: 'AsBlogCategoryController'
-    _legacy_link: 'AsBlogCategoryController'
+    path: /blog_category/list
+    methods: [GET]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::listAction'
+        _legacy_controller: 'AsBlogCategoryController'
+        _legacy_link: 'AsBlogCategoryController'
 
 admin_blog_category_create:
-  path: /blog_category/create
-  methods: [GET]
-  defaults:
-    _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::createAction'
-    _legacy_controller: 'AsBlogCategoryController'
+    path: /blog_category/create
+    methods: [GET]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::createAction'
+        _legacy_controller: 'AsBlogCategoryController'
 
 admin_blog_category_process_create:
-  path: /blog_category/create
-  methods: [POST]
-  defaults:
-    _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::processCreateAction'
-    _legacy_controller: 'AsBlogCategoryController'
+    path: /blog_category/create
+    methods: [POST]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::processCreateAction'
+        _legacy_controller: 'AsBlogCategoryController'
 
 admin_blog_category_edit:
-  path: /blog_category/{category_id}/edit
-  methods: [GET]
-  defaults:
-    _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::editAction'
-    _legacy_controller: 'AsBlogCategoryController'
+    path: /blog_category/{category_id}/edit
+    methods: [GET]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::editAction'
+        _legacy_controller: 'AsBlogCategoryController'
 
 admin_blog_category_process_edit:
-  path: /blog_category/{category_id}/edit
-  methods: [POST]
-  defaults:
-    _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::processEditAction'
-    _legacy_controller: 'AsBlogCategoryController'
+    path: /blog_category/{category_id}/edit
+    methods: [POST]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::processEditAction'
+        _legacy_controller: 'AsBlogCategoryController'
 
 admin_blog_category_delete:
-  path: /blog_post/{category_id}/delete
-  methods: [POST]
-  defaults:
-    _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::deleteAction'
+    path: /blog_category/{category_id}/delete
+    methods: [POST]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::deleteAction'
+
+admin_blog_category_delete_cover_image:
+    path: /blog_category/{id_category}/delete-cover-image
+    methods: [POST]
+    defaults:
+        _controller: 'PrestaShop\Module\AsBlog\Controller\CategoryController::deleteCoverImageAction'
+    requirements:
+        categoryId: \d+

@@ -39,7 +39,7 @@ class ImageUploader implements ImageUploaderInterface
     {
         $this->checkImageIsAllowedForUpload($image);
         $tempImageName = $this->createTemporaryImage($image);
-        //$this->deleteOldImage($imageData);
+        //$this->deleteImage($imageData);
 
         $originalImageName = $image->getClientOriginalName();
         $destination = _PS_IMG_DIR_ . 'blog/' . $imageData['type'] . '/' . $imageData['id']. '.jpeg';
@@ -91,20 +91,6 @@ class ImageUploader implements ImageUploaderInterface
     }
 
     /**
-     * Deletes old image
-     *
-     * @param $supplierId
-     */
-    private function deleteOldImage($marqueId)
-    {
-        /** @var MarqueImage $marqueImage */
-        $marqueImage = $this->imageRepository->findOneBy(['marqueId' => $marqueId]);
-        if ($marqueImage && file_exists(_PS_SUPP_IMG_DIR_ . $marqueId . '.jpeg')) {
-            unlink(_PS_SUPP_IMG_DIR_ . $marqueId . '.jpeg');
-        }
-    }
-
-    /**
      * Check if image is allowed to be uploaded.
      *
      * @param UploadedFile $image
@@ -124,6 +110,21 @@ class ImageUploader implements ImageUploaderInterface
             || preg_match('/\%00/', $image->getClientOriginalName()) // prevent null byte injection
         ) {
             throw new UploadedImageConstraintException(sprintf('Image format "%s", not recognized, allowed formats are: .gif, .jpg, .png', $image->getClientOriginalExtension()), UploadedImageConstraintException::UNRECOGNIZED_FORMAT);
+        }
+    }
+
+    /**
+     * Deletes old image
+     *
+     * @param $imageData
+     */
+    public function deleteImage($imageData)
+    {
+        //var_dump($imageData);die;
+        /** @var Image $image */
+        $this->imageRepository->deleteImage($imageData);
+        if (file_exists(_PS_IMG_DIR_ . 'blog/' . $imageData['type'] . '/' . $imageData['id']. '.jpeg')) {
+            unlink(_PS_IMG_DIR_ . 'blog/' . $imageData['type'] . '/' . $imageData['id']. '.jpeg');
         }
     }
 }

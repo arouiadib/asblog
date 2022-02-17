@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PrestaShop\Module\AsBlog\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use PrestaShop\Module\AsBlog\Entity\PostImage;
 use PrestaShop\Module\AsBlog\Entity\CategoryImage;
+use PrestaShop\Module\AsBlog\Entity\PostImage;
 
 /**
  * Class ImageRepository
@@ -20,23 +20,30 @@ class ImageRepository extends EntityRepository
     public function upsertImage($imageData)
     {
         /** @var Image $image */
-        $image = $this->findOneBy(['id' => $imageData['id']]);
-        var_dump($image);die;
-        if (!$image) {
-            var_dump($imageData['type']);die;
-            if ($imageData['type'] === 'category') {
-                $image = new CategoryImage();
-                $image->setCategoryId($imageData['id']);
-            }
-            if ($imageData['type'] === 'post') {
-                $image = new PostImage();
-                $image->setPostId($imageData['id']);
+        $image = $this->findOneBy(['idChild' => $imageData['id']]);
 
-            }
+        if (!$image) {
+            $className = 'PrestaShop\\Module\\AsBlog\\Entity\\'. ucwords($imageData['type']) . 'Image';
+            $image = new $className();
+            $image->setIdChild((int)$imageData['id']);
         }
 
         $em = $this->getEntityManager();
         $em->persist($image);
+        $em->flush();
+    }
+
+    public function deleteImage($imageData)
+    {
+        $image = $this->findOneBy(['idChild' => $imageData['id']]);
+
+        if (!$image) {
+            // throw exception
+            //$this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages()));
+        }
+
+        $em = $this->getEntityManager();
+        $em->remove($image);
         $em->flush();
     }
 }
