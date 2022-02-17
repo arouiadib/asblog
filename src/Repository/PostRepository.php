@@ -78,6 +78,9 @@ class PostRepository
     			`id_lang` int(10) unsigned NOT NULL,
     			`title` varchar(40) NOT NULL default '',
     			`content` text default NULL,
+    			`meta_title` text default NULL,
+    			`meta_keywords` text default NULL,
+    			`meta_description` text default NULL,
     			PRIMARY KEY (`id_post`, `id_lang`)
             ) ENGINE=$engine DEFAULT CHARSET=utf8",
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_shop` (
