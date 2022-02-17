@@ -189,7 +189,7 @@ class CategoryController extends FrameworkBundleAdminController
         } else {
             $this->flashErrors($errors);
         }
-        return $this->redirectToRoute('admin_blog_post_list');
+        return $this->redirectToRoute('admin_blog_category_list');
     }
 
     /**

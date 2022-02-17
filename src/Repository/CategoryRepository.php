@@ -256,6 +256,30 @@ class CategoryRepository
     }
 
     /**
+     * @param int #idCategory
+     *
+     * @throws DatabaseException
+     */
+    public function delete($idCategory)
+    {
+        $tableNames = [
+            'post_category',
+            'post_category_lang',
+            'post_category_shop'
+        ];
+
+        foreach ($tableNames as $tableName) {
+            $qb =   $this->connection->createQueryBuilder();
+            $qb
+                ->delete($this->dbPrefix . $tableName)
+                ->andWhere('id_category = :idCategory')
+                ->setParameter('idCategory', $idCategory)
+            ;
+            $this->executeQueryBuilder($qb, 'Delete error');
+        }
+
+    }
+    /**
      * @param QueryBuilder $qb
      * @param string $errorPrefix
      *
