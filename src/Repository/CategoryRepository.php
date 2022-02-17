@@ -206,9 +206,9 @@ class CategoryRepository
             $qb
                 ->select('pcl.id_category')
                 ->from($this->dbPrefix . 'post_category_lang', 'pcl')
-                ->andWhere('pcl.id_category = :cateogryId')
+                ->andWhere('pcl.id_category = :categoryId')
                 ->andWhere('pcl.id_lang = :langId')
-                ->setParameter('cateogryId', $categoryId)
+                ->setParameter('categoryId', $categoryId)
                 ->setParameter('langId', $language['id_lang'])
             ;
             $foundRows = $qb->execute()->rowCount();
@@ -218,7 +218,7 @@ class CategoryRepository
                 $qb
                     ->insert($this->dbPrefix . 'post_category_lang')
                     ->values([
-                        'id_category' => ':cateogryId',
+                        'id_category' => ':categoryId',
                         'id_lang' => ':langId',
                         'name' => ':name',
                         'description' => ':description',
