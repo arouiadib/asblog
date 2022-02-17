@@ -35,8 +35,8 @@
                                             <figcaption class="figure-caption">
                                                 {#<p>{{ 'File size'|trans({}, 'Admin.Advparameters.Feature') }} {{ coverImage.size }}</p>#}
                                                 <button class="btn btn-outline-danger btn-sm js-form-submit-btn"
-                                                        {#data-form-submit-url="{{ path('admin_categories_delete_cover_image', {'categoryId': app.request.get('categoryId')}) }}"
-                                                        data-form-csrf-token="{{ csrf_token('delete-cover-image') }}"#}
+                                                        data-form-submit-url="{{ path('admin_blog_post_delete_cover_image', {'id_post': postForm.vars.data.post.id_post}) }}"
+                                                        data-form-csrf-token="{{ csrf_token('delete-cover-image') }}"
                                                         type="button"
                                                 >
                                                     <i class="material-icons">

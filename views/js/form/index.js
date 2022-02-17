@@ -1,6 +1,7 @@
 
 import TranslatableInput from '@components/translatable-input';
 import ChoiceTree from '@components/form/choice-tree';
+import FormSubmitButton from '@components/form-submit-button';
 
 const $ = window.$;
 
@@ -26,6 +27,6 @@ $(() => {
   new ChoiceTree('#form_category_id_parent');
   new ChoiceTree('#form_post_id_category');
   new ChoiceTree('#form_category_shop_association').enableAutoCheckChildren();
-
+  new FormSubmitButton();
 });
 
