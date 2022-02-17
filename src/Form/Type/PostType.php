@@ -97,6 +97,72 @@ class PostType extends TranslatorAwareType
                 ],
                 //'label_tag_name' => 'h2',
             ])
+            ->add('meta_keywords', TranslateTextType::class, [
+                'locales' => $this->locales,
+                'required' => false,
+                'label' => $this->trans('Meta Keywords', 'Modules.Asblog.Admin'),
+                'constraints' => [
+                    new DefaultLanguage(),
+                ],
+                'options' => [
+                    'constraints' => [
+                        new Length([
+                            'max' => 40,
+                            'maxMessage' => $this->translator->trans(
+                                'Meta Keywords cannot be more than %limit% characters',
+                                [
+                                    '%limit%' => 40
+                                ],
+                                'Modules.Asblog.Admin'
+                            ),
+                        ]),
+                    ],
+                ],
+            ])
+            ->add('meta_title', TranslateTextType::class, [
+                'locales' => $this->locales,
+                'required' => false,
+                'label' => $this->trans('Meta Title', 'Modules.Asblog.Admin'),
+                'constraints' => [
+                    new DefaultLanguage(),
+                ],
+                'options' => [
+                    'constraints' => [
+                        new Length([
+                            'max' => 40,
+                            'maxMessage' => $this->translator->trans(
+                                'Meta Keywords cannot be more than %limit% characters',
+                                [
+                                    '%limit%' => 40
+                                ],
+                                'Modules.Asblog.Admin'
+                            ),
+                        ]),
+                    ],
+                ],
+            ])
+            ->add('meta_description', TranslateTextType::class, [
+                'locales' => $this->locales,
+                'required' => false,
+                'label' => $this->trans('Meta Description', 'Modules.Asblog.Admin'),
+                'constraints' => [
+                    new DefaultLanguage(),
+                ],
+                'options' => [
+                    'constraints' => [
+                        new Length([
+                            'max' => 40,
+                            'maxMessage' => $this->translator->trans(
+                                'Meta description cannot be more than %limit% characters',
+                                [
+                                    '%limit%' => 40
+                                ],
+                                'Modules.Asblog.Admin'
+                            ),
+                        ]),
+                    ],
+                ],
+            ])
             ->add('upload_image_file', FileType::class, [
                 'label' => $this->trans('Featured image', 'Modules.AsBlog.Admin'),
                 'required' => false,
