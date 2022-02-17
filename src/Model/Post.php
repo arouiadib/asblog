@@ -37,6 +37,20 @@ class Post extends \ObjectModel
      */
     public $date_add;
 
+    /**
+     * @var string
+     */
+    public $meta_title;
+
+    /**
+     * @var string
+     */
+    public $meta_keywords;
+
+    /**
+     * @var string
+     */
+    public $meta_description;
 
     /**
      * @see ObjectModel::$definition
@@ -48,6 +62,9 @@ class Post extends \ObjectModel
         'fields' => array(
             'title' => array('type' => self::TYPE_STRING, 'lang' => true, 'required' => true, 'size' => 40),
             'content' => array('type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isString', 'required' => true),
+            'meta_title'       => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName'),
+            'meta_keywords'     => array('type' => self::TYPE_STRING, 'validate' => 'isGenericName', 'lang' => true),
+            'meta_description' => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName'),
             'active'           => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
             'date_add' => array('type' => self::TYPE_DATE, 'required' => true),
             'id_category' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
@@ -82,7 +99,10 @@ class Post extends \ObjectModel
             'title' => $this->title,
             'content' => $this->content,
             'active' => $this->active,
-            'date_add' => $this->date_add
+            'date_add' => $this->date_add,
+            'meta_title' => $this->meta_title,
+            'meta_keywords' => $this->meta_keywords,
+            'meta_description' => $this->meta_description,
         ];
     }
 }
