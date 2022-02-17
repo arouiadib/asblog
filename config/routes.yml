@@ -40,7 +40,7 @@ admin_blog_post_delete:
     path: /blog_post/{post_id}/delete
     methods: [POST]
     defaults:
-        _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::createAction'
+        _controller: 'PrestaShop\Module\AsBlog\Controller\PostController::deleteAction'
 
 admin_blog_post_delete_cover_image:
     path: /blog_post/{id_post}/delete-cover-image

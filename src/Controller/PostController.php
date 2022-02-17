@@ -120,6 +120,24 @@ class PostController extends FrameworkBundleAdminController
      */
     public function deleteAction($post_id)
     {
+        $postRepository = $this->get('prestashop.module.asblog.post.repository');
+        $errors = [];
+        try {
+            $postRepository->delete($post_id);
+        }
+        catch (DatabaseException $exception) {
+            $errors[] = [
+                'key' => 'Cannot delete post with ID #%i',
+                'domain' => 'Admin.Catalog.Notification',
+                'parameters' => [$post_id]
+            ];
+        }
+
+        if (!count($errors)) {
+            $this->addFlash('Success', 'Admin.Notifications.Success' );
+        } else {
+            $this->flashErrors($errors);
+        }
         return $this->redirectToRoute('admin_blog_post_list');
     }
 
