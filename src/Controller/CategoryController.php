@@ -216,7 +216,7 @@ class CategoryController extends FrameworkBundleAdminController
 
         $categoryImageRepository = $this->get('doctrine.orm.entity_manager')->getRepository(CategoryImage::class);
 
-        $image = $categoryImageRepository->findOneBy(['categoryId' => $categoryId]);
+        $image = $categoryImageRepository->findOneBy(['idChild' => $categoryId]);
 
         if ($image && file_exists(_PS_IMG_DIR_ . '/blog/category/' . $categoryId . '.jpeg')) {
             $imageUrl = '/img/blog/category/' . $categoryId . '.jpeg';
