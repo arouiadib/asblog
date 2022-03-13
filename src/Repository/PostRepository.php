@@ -303,14 +303,16 @@ class PostRepository
         $qb
             ->select('p.id_post, pl.meta_title')
             ->from($this->dbPrefix . 'post', 'p')
-            ->innerJoin('bpl', $this->dbPrefix . 'post_lang', 'pl', 'p.id_post = pl.id_post')
-            ->innerJoin('bps', $this->dbPrefix . 'post_shop', 'ps', 'p.id_post = ps.id_post')
-            ->andWhere('c.active = 1')
-            ->andWhere('cl.id_lang = :idLang')
-            ->andWhere('cs.id_shop IN (:shopIds)')
+            ->innerJoin('pl', $this->dbPrefix . 'post_lang', 'pl', 'p.id_post = pl.id_post')
+            ->innerJoin('ps', $this->dbPrefix . 'post_shop', 'ps', 'p.id_post = ps.id_post')
+            ->andWhere('p.active = 1')
+            ->andWhere('p.position = 1 + :position')
+            ->andWhere('pl.id_lang = :idLang')
+            ->andWhere('ps.id_shop IN (:shopIds)')
             ->setParameter('idLang', $this->idLang)
+            ->setParameter('position', $position)
             ->setParameter('shopIds', implode(',', $this->shopIds))
-            ->orderBy('c.position')
+            ->orderBy('p.position')
         ;
 
         $posts = $qb->execute()->fetchAll();
