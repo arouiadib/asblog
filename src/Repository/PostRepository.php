@@ -297,4 +297,22 @@ class PostRepository
 
         return $statement;
     }
+
+    protected function findPreviousPosts($id_lang = null, $position =  0) {
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('p.id_post, pl.meta_title')
+            ->from($this->dbPrefix . 'post', 'p')
+            ->innerJoin('bpl', $this->dbPrefix . 'post_lang', 'pl', 'p.id_post = pl.id_post')
+            ->innerJoin('bps', $this->dbPrefix . 'post_shop', 'ps', 'p.id_post = ps.id_post')
+            ->andWhere('c.active = 1')
+            ->andWhere('cl.id_lang = :idLang')
+            ->andWhere('cs.id_shop IN (:shopIds)')
+            ->setParameter('idLang', $this->idLang)
+            ->setParameter('shopIds', implode(',', $this->shopIds))
+            ->orderBy('c.position')
+        ;
+
+        $posts = $qb->execute()->fetchAll();
+    }
 }

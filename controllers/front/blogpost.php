@@ -31,11 +31,11 @@ class AsBlogBlogPostModuleFrontController extends ModuleFrontController
 
         if (!$this->errors) {
             $id_lang = $this->context->language->id;
-
+            $currentPostPosition = $this->post['position'];
             //$post['post_img'] = null; // --extra added
 
             //$id_category      = $post['id_category'];
-
+            $posts_previous = $this->container->get('prestashop.module.asblog.post.repository')->findPreviousPost( $id_lang, $currentPostPosition);
             if (file_exists(_PS_IMG_SOURCE_DIR_ . 'blog/post/' . $id_post . '.jpg')) {
                 $post_img = $id_post;
             } else {
