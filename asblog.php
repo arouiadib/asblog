@@ -36,7 +36,7 @@ class Asblog extends Module implements WidgetInterface
                 'fc' => 'module',
                 'module' => 'asblog',
             )
-        )
+        ),
     );
 
     protected $config_form = false;
