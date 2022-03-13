@@ -56,9 +56,11 @@ class Category extends \ObjectModel
         'multilang' => true,
         'fields' => array(
             'id_parent' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
+            'nleft' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
+            'nright' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
+            'active'           => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
             'name' => array('type' => self::TYPE_STRING, 'lang' => true, 'required' => true, 'size' => 40),
             'description' => array('type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isString', 'required' => true),
-            'active'           => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
             'meta_title'       => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName'),
             'meta_keywords'     => array('type' => self::TYPE_STRING, 'validate' => 'isGenericName', 'lang' => true),
             'meta_description' => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName'),

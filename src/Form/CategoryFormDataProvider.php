@@ -153,7 +153,6 @@ class CategoryFormDataProvider implements FormDataProviderInterface
     {
 
         $category = $this->prepareData($data['category']);
-
         $errors = $this->validateCategory($category);
 
         if (!empty($errors)) {

@@ -179,10 +179,6 @@ class PostType extends TranslatorAwareType
             ->add('active', SwitchType::class, [
                 // Customized choices with ON/OFF instead of Yes/No
                 'label' => $this->trans('Active', 'Modules.AsBlog.Admin'),
-                'choices' => [
-                    'ON' => true,
-                    'OFF' => false,
-                ],
             ])
         ;
 

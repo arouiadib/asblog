@@ -5,9 +5,11 @@ namespace PrestaShop\Module\AsBlog\Repository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Query\QueryBuilder;
+use PNX\NestedSet\Node;
+use PNX\NestedSet\NodeKey;
 use PrestaShop\PrestaShop\Core\Exception\DatabaseException;
 use Symfony\Component\Translation\TranslatorInterface;
-
+use PrestaShop\Module\AsBlog\Model\Category;
 
 /**
  * Class CategoryRepository.
@@ -142,29 +144,191 @@ class CategoryRepository
      */
     public function create(array $data)
     {
-        $qb = $this->connection->createQueryBuilder();
-        $qb
-            ->insert($this->dbPrefix . 'post_category')
-            ->values([
-                'id_parent' => ':idParent',
-                'active' => ':active',
-                'nleft' => 1,
-                'nright' => 1
-            ])
-            ->setParameters([
-                'idParent' => $data['id_parent'],
-                'active' => $data['active'],
-            ])
-        ;
-
-        $this->executeQueryBuilder($qb, 'Category error');
-        $categoryId = $this->connection->lastInsertId();
+        $idParent = (int) $data['id_parent'];
+        $parentCategory = new Category($idParent);
+        $categoryId = $this->addNewCategoryBelow($parentCategory, $data);
 
         $this->updateLanguages($categoryId, $data);
 
         return $categoryId;
     }
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addNewCategoryBelow(Category $target, $data) {
+
+        //$target = $this->ensureNodeIsFresh($target);
+        $newLeftPosition = $target->nright;
+        //$depth = $target->getDepth() + 1;
+        return $this->insertCategoryAtPosition($newLeftPosition, $data);//, $depth);
+    }
+
+    /**
+     * Inserts a node to the target position.
+     *
+     * @param int $newLeftPosition
+     *   The new left position.
+     * @param int $depth
+     *   The new depth.
+     *
+     * @return \PNX\NestedSet\Node
+     *   The new node with updated position.
+     *
+     * @throws \Exception
+     *   If a transaction error occurs.
+     */
+    protected function insertCategoryAtPosition($newLeftPosition, $data) {
+        try {
+            $this->connection->setAutoCommit(FALSE);
+            $this->connection->beginTransaction();
+
+            $this->connection->executeUpdate('UPDATE ' . $this->dbPrefix . 'post_category SET nright = nright + 2 WHERE nright >= ?',
+                [$newLeftPosition]
+            );
+            $this->connection->executeUpdate('UPDATE ' . $this->dbPrefix . 'post_category SET nleft = nleft + 2  WHERE nleft >= ?',
+                [$newLeftPosition]
+            );
+
+            $newCategory = $this->doInsertNewCategory($data,  $newLeftPosition, $newLeftPosition + 1);//, $depth);
+
+            $this->connection->commit();
+        }
+        catch (\Exception $e) {
+            $this->connection->rollBack();
+            throw $e;
+        } finally {
+            $this->connection->setAutoCommit(TRUE);
+        }
+        return $newCategory;
+
+    }
+
+
+    /**
+     * Moves a subtree to a new position.
+     *
+     * @param int $newLeftPosition
+     *   The new left position.
+     * @param Category $node
+     *   The node to move.
+     * @param int $newDepth
+     *   Depth of new position.
+     *
+     * @throws \Exception
+     *   If a transaction error occurs.
+     */
+    protected function moveSubTreeToPosition($newLeftPosition, Category $node) {
+        $this->moveMultipleSubTreesToPosition($newLeftPosition, [$node]);
+    }
+
+    /**
+     * Moves multiple subtrees to a new position.
+     *
+     * @param int $newLeftPosition
+     *   The new left position.
+     * @param Category $nodes
+     *   The nodes to move.
+     * @param int $newDepth
+     *   Depth of new position.
+     *
+     * @throws \Exception
+     *   If a transaction error occurs.
+     */
+    protected function moveMultipleSubTreesToPosition($newLeftPosition, array $nodes) {
+        try {
+            $firstNode = reset($nodes);
+            $lastNode = end($nodes);
+
+            // Calculate position adjustment variables.
+            $width = $lastNode->nright - $firstNode->nleft + 1;
+            $distance = $newLeftPosition - $firstNode->nleft;
+            $tempPos = $firstNode->nleft;
+
+            $this->connection->setAutoCommit(FALSE);
+            $this->connection->beginTransaction();
+
+            // Calculate depth difference.
+            //$depthDiff = $newDepth - $firstNode->getDepth();
+
+            // Backwards movement must account for new space.
+            if ($distance < 0) {
+                $distance -= $width;
+                $tempPos += $width;
+            }
+
+            // Create new space for subtree.
+            $this->connection->executeUpdate('UPDATE ' . $this->dbPrefix . 'post_category SET nleft = nleft + ? WHERE nleft >= ?',
+                [$width, $newLeftPosition]
+            );
+
+            $this->connection->executeUpdate('UPDATE ' . $this->dbPrefix . 'post_category SET nright = nright + ? WHERE nright >= ?',
+                [$width, $newLeftPosition]
+            );
+
+            // Move subtree into new space.
+            $this->connection->executeUpdate('UPDATE ' . $this->dbPrefix . 'post_category SET nleft = nleft + ?, nright = nright + ? WHERE nleft >= ? AND nright < ?',
+                [$distance, $distance, $tempPos, $tempPos + $width]
+            );
+
+            // Remove old space vacated by subtree.
+            $this->connection->executeUpdate('UPDATE ' . $this->dbPrefix . 'post_category SET  nleft = nleft - ? WHERE nleft > ?',
+                [$width, $lastNode->nright]
+            );
+
+            $this->connection->executeUpdate('UPDATE ' . $this->dbPrefix . 'post_category SET nright = nright  - ? WHERE nright > ?',
+                [$width, $lastNode->nright]
+            );
+            $this->connection->commit();
+        }
+        catch (\Exception $e) {
+            $this->connection->rollBack();
+            throw $e;
+        } finally {
+            $this->connection->setAutoCommit(TRUE);
+        }
+    }
+
+    /**
+     * Inserts a new node by its parameters.
+     *
+     * @param int $left
+     *   The left position.
+     * @param int $right
+     * @param int $depth
+     *   The right position.
+     *   The depth.
+     *
+     * @return int $categoryId
+     *
+     */
+    protected function doInsertNewCategory($data, $left, $right) {
+
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->insert($this->dbPrefix . 'post_category')
+            ->values([
+                'id_parent' => ':idParent',
+                'active' => ':active',
+                'nleft' => ':nleft',
+                'nright' => ':nright',
+                //'depth' => ':depth'
+            ])
+            ->setParameters([
+                'idParent' => $data['id_parent'],
+                'active' => $data['active'],
+                'nleft' => $left,
+                'nright' => $right,
+               // 'depth' => 0
+            ])
+        ;
+
+        $this->executeQueryBuilder($qb, 'Category error');
+        $categoryId = $this->connection->lastInsertId();
+
+        return $categoryId;
+    }
     /**
      * @param int $categoryId
      * @param array $data
@@ -173,6 +337,14 @@ class CategoryRepository
      */
     public function update($categoryId, array $data)
     {
+        $editedCategory = new Category($categoryId);
+        $parentCategoryEdited = $editedCategory->id_parent;
+
+        $parentCategory = new Category($data['id_parent']);
+
+        if ( $data['id_parent'] !== $parentCategoryEdited) {
+            $this->moveSubTree($parentCategory, $editedCategory);
+        }
 
         $qb = $this->connection->createQueryBuilder();
         $qb
@@ -190,6 +362,17 @@ class CategoryRepository
         $this->executeQueryBuilder($qb, 'Category update error');
 
         $this->updateLanguages($categoryId, $data);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function moveSubTree(Category $parent, Category $target) {
+
+        //$target = $this->ensureNodeIsFresh($target);
+        $newLeftPosition = $parent->nright;
+        //$depth = $target->getDepth() + 1;
+        return $this->moveSubTreeToPosition($newLeftPosition, $target);//, $depth);
     }
 
     /**
@@ -262,6 +445,11 @@ class CategoryRepository
      */
     public function delete($idCategory)
     {
+        $editedCategory = new Category($idCategory);
+        $parentCategory = new Category($editedCategory->id_parent);
+
+        $this->deleteNode($editedCategory);
+
         $tableNames = [
             'post_category',
             'post_category_lang',
@@ -278,6 +466,79 @@ class CategoryRepository
             $this->executeQueryBuilder($qb, 'Delete error');
         }
 
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteNode(Category $node) {
+        //$node = $this->ensureNodeIsFresh($node);
+        if ($node->nleft < 1 || $node->nright < 1) {
+            throw new \InvalidArgumentException("Left and right values must be > 0");
+        }
+        $left = $node->nleft;
+        $right = $node->nright;
+        //$width = $right - $left + 1;
+
+        try {
+            $this->connection->setAutoCommit(FALSE);
+            $this->connection->beginTransaction();
+
+            // Delete the node.
+            $this->connection->executeUpdate('DELETE FROM ' . $this->dbPrefix . 'post_category  WHERE nleft = ?',
+                [$left]
+            );
+
+            // Move children up a level.
+            $this->connection->executeUpdate('UPDATE ' . $this->dbPrefix . 'post_category SET nright = nright - 1, nleft = nleft - 1 WHERE nleft BETWEEN ? AND ?',
+                [$left, $right]
+            );
+
+            // Move everything back two places.
+            $this->connection->executeUpdate('UPDATE ' . $this->dbPrefix . 'post_category SET nright = nright - 2 WHERE nright > ?',
+                [$right]
+            );
+            $this->connection->executeUpdate('UPDATE ' . $this->dbPrefix . 'post_category SET nleft = nleft - 2 WHERE nleft > ?',
+                [$right]
+            );
+
+            $this->connection->commit();
+
+        }
+        catch (\Exception $e) {
+            $this->connection->rollBack();
+            throw $e;
+        } finally {
+            $this->connection->setAutoCommit(TRUE);
+        }
+
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findDescendants(NodeKey $nodeKey, $depth = 0, $start = 1) {
+        $descendants = [];
+        $query = $this->connection->createQueryBuilder();
+        $query->select('child.id_category', 'child.nleft', 'child.nright', 'child.depth')
+            ->from($this->tableName, 'child')
+            ->from($this->tableName, 'parent')
+            ->andWhere('parent.id = :id')
+            ->andwhere('child.left_pos > parent.left_pos')
+            ->andWhere('child.right_pos < parent.right_pos')
+            ->orderBy('child.left_pos', 'ASC')
+            ->setParameter(':id', $nodeKey->getId());
+        if ($start > 0) {
+            $query->andWhere('child.depth >= :start_depth + parent.depth')
+                ->setParameter(':start_depth', $start);
+        }
+
+        $stmt = $query->execute();
+        while ($row = $stmt->fetch()) {
+            $descendants[] = new Node(new NodeKey($row['id'], $row['revision_id']), $row['left_pos'], $row['right_pos'], $row['depth']);
+        }
+        return $descendants;
     }
     /**
      * @param QueryBuilder $qb
