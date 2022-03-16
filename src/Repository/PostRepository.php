@@ -71,6 +71,7 @@ class PostRepository
     			`active` bool,
     			`date_add` datetime,
     			`id_category` int(10) unsigned NOT NULL,
+    			`position` int(10) unsigned NOT NULL default '0',
     			PRIMARY KEY (`id_post`)
             ) ENGINE=$engine DEFAULT CHARSET=utf8",
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_lang`(
@@ -160,7 +161,7 @@ class PostRepository
         $postId = $this->connection->lastInsertId();
 
         $this->updateLanguages($postId, $data);
-
+        $this->updateMaxPosition((int) $postId);
         return $postId;
     }
 
@@ -298,23 +299,40 @@ class PostRepository
         return $statement;
     }
 
-    protected function findPreviousPosts($id_lang = null, $position =  0) {
+    /**
+     * @param int $linkBlockId
+     * @param array $shopIds
+     *
+     * @throws DatabaseException
+     */
+    private function updateMaxPosition(int $postId): void
+    {
         $qb = $this->connection->createQueryBuilder();
-        $qb
-            ->select('p.id_post, pl.meta_title')
+            $qb
+                ->update($this->dbPrefix . 'post p')
+                ->set('position', ':position')
+                ->andWhere('p.id_post = :postId')
+                ->setParameter('position', $this->getMaxPosition())
+                ->setParameter('postId', $postId);
+
+            $this->executeQueryBuilder($qb, 'Link block max position update error');
+    }
+
+    /**
+     * @param int $idHook
+     * @param int $idShop
+     *
+     * @return int
+     */
+    private function getMaxPosition(): int
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->select('MAX(p.position)')
             ->from($this->dbPrefix . 'post', 'p')
-            ->innerJoin('pl', $this->dbPrefix . 'post_lang', 'pl', 'p.id_post = pl.id_post')
-            ->innerJoin('ps', $this->dbPrefix . 'post_shop', 'ps', 'p.id_post = ps.id_post')
-            ->andWhere('p.active = 1')
-            ->andWhere('p.position = 1 + :position')
-            ->andWhere('pl.id_lang = :idLang')
-            ->andWhere('ps.id_shop IN (:shopIds)')
-            ->setParameter('idLang', $this->idLang)
-            ->setParameter('position', $position)
-            ->setParameter('shopIds', implode(',', $this->shopIds))
-            ->orderBy('p.position')
         ;
 
-        $posts = $qb->execute()->fetchAll();
+        $maxPosition = $qb->execute()->fetchColumn(0);
+
+        return null !== $maxPosition ? $maxPosition + 1 : 0;
     }
 }

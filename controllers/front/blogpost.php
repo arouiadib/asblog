@@ -35,7 +35,8 @@ class AsBlogBlogPostModuleFrontController extends ModuleFrontController
             //$post['post_img'] = null; // --extra added
 
             //$id_category      = $post['id_category'];
-            $posts_previous = $this->container->get('prestashop.module.asblog.post.repository')->findPreviousPost( $id_lang, $currentPostPosition);
+            $posts_previous = $this->get('prestashop.module.asblog.post.repository')->findPreviousPost( $id_lang, $currentPostPosition);
+            var_dump($posts_previous);die;
             if (file_exists(_PS_IMG_SOURCE_DIR_ . 'blog/post/' . $id_post . '.jpg')) {
                 $post_img = $id_post;
             } else {
