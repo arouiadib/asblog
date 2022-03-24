@@ -1,6 +1,7 @@
 <?php
 
 use PrestaShop\Module\AsBlog\Model\Post;
+use PrestaShop\Module\AsBlog\Link\BlogLink;
 
 class AsBlogBlogPostModuleFrontController extends ModuleFrontController
 {
@@ -35,8 +36,15 @@ class AsBlogBlogPostModuleFrontController extends ModuleFrontController
             //$post['post_img'] = null; // --extra added
 
             //$id_category      = $post['id_category'];
-            $posts_previous = $this->get('prestashop.module.asblog.post.repository')->findPreviousPost( $id_lang, $currentPostPosition);
-            var_dump($posts_previous);die;
+            $posts_previous = Post::getPreviousPostsById($id_lang, $currentPostPosition);
+            $posts_next = Post::getNextPostsById($id_lang, $currentPostPosition);
+
+            /* Server Params */
+            $protocol_link    = (Configuration::get('PS_SSL_ENABLED')) ? 'https://' : 'http://';
+            $protocol_content = (isset($useSSL) and $useSSL and Configuration::get('PS_SSL_ENABLED')) ? 'https://' : 'http://';
+
+            $bloglink = new BlogLink($protocol_link, $protocol_content);
+
             if (file_exists(_PS_IMG_SOURCE_DIR_ . 'blog/post/' . $id_post . '.jpg')) {
                 $post_img = $id_post;
             } else {
@@ -45,13 +53,13 @@ class AsBlogBlogPostModuleFrontController extends ModuleFrontController
 
             $this->context->smarty->assign(
                 array(
-                    //'link_rewrite_'              => SmartBlogPost::GetPostSlugById($id_post, $this->context->language->id),
-                    //'smartbloglink'              => $smartbloglink,
+                    //'link_rewrite_'            => SmartBlogPost::GetPostSlugById($id_post, $this->context->language->id),
+                    'bloglink'                   => $bloglink,
                     'baseDir'                    => _PS_BASE_URL_SSL_ . __PS_BASE_URI__,
                     'modules_dir'                => _PS_BASE_URL_SSL_ . __PS_BASE_URI__ . 'modules/',
                     'post'                       => $this->post,
-                    'posts_next'                 => [],//$posts_next,
-                    'posts_previous'             => [],//$posts_previous
+                    'posts_next'                 => $posts_next,
+                    'posts_previous'             => $posts_previous,
                     //'title_category'             => (isset($title_category[0][0]['name'])) ? $title_category[0][0]['name'] : '',
                     //'cat_link_rewrite'           => (isset($title_category[0][0]['link_rewrite'])) ? $title_category[0][0]['link_rewrite'] : '',
                     'meta_title'                 => $this->post['meta_title'],

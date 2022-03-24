@@ -86,20 +86,21 @@
   <div id="product_comments_block_tab">
     <ul class="footer_links smart-blog-posts-navigation">
       {foreach from=$posts_previous item="post"}
-        {if isset($post.id_smart_blog_post)}
+        {$post|var_dump}
+        {if isset($post.id_post)}
           <li>
             <a title="{l s='Prevoius Post' d='Modules.Asblog.Shop'}"
-               href="{'$smartbloglink->getSmartBlogPostLink($post.id_smart_blog_post,$post.link_rewrite)'|escape:'htmlall':'UTF-8'}"
+               href="{$bloglink->getBlogPostLink($post.id_post, $post.link_rewrite)|escape:'htmlall':'UTF-8'}"
                class="btn btn-default button button-small">
               <span><i class="icon-chevron-left"></i> {l s='Prev Post' d='Modules.Asblog.Shop'}</span></a>
           </li>
         {/if}
       {/foreach}
       {foreach from=$posts_next item="post"}
-        {if isset($post.id_smart_blog_post)}
+        {if isset($post.id_post)}
           <li class="pull-right">
             <a title="{l s='Next Post' d='Modules.Asblog.Shop'}"
-               href="{'$smartbloglink->getSmartBlogPostLink($post.id_smart_blog_post,$post.link_rewrite)'|escape:'htmlall':'UTF-8'}"
+               href="{$bloglink->getBlogPostLink($post.id_post,$post.link_rewrite)|escape:'htmlall':'UTF-8'}"
                class="btn btn-default button button-small"><span>{l s='Next Post' d='Modules.Asblog.Shop'}
                 <i class="icon-chevron-right"></i>
               </span></a>

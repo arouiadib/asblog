@@ -1,6 +1,10 @@
 <?php
+namespace PrestaShop\Module\AsBlog\Link;
 
 use PrestaShop\Module\AsBlog\Model\Post;
+use Configuration;
+use Context;
+use Dispatcher;
 
 class BlogLink
 {
@@ -59,7 +63,7 @@ class BlogLink
 
         $params = array();
         $params['slug'] = $blogpost->link_rewrite;
-        $params['id_post'] = $blogpost->id_smart_blog_post;
+        $params['id_post'] = $blogpost->id_post;
 
         if ($params != null) {
             return /*$url .*/ $dispatcher->createUrl('module-asblog-blogpost', $id_lang, $params, $this->allow);

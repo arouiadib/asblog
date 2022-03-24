@@ -2,6 +2,7 @@
 
 namespace PrestaShop\Module\AsBlog\Model;
 
+use Db;
 /**
  * Class Post
  */
@@ -117,10 +118,10 @@ class Post extends \ObjectModel
     public static function getNextPostsById($id_lang = null, $position =  0)
     {
 
-        $sql = 'SELECT  p.id_smart_blog_post, pl.meta_title, pl.link_rewrite
-                FROM ' . _DB_PREFIX_ . 'smart_blog_post p
-                INNER JOIN ' . _DB_PREFIX_ . 'smart_blog_post_lang pl
-                ON p.id_smart_blog_post=pl.id_smart_blog_post
+        $sql = 'SELECT  p.id_post, pl.link_rewrite, pl.title
+                FROM ' . _DB_PREFIX_ . 'post p
+                INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl
+                ON p.id_post=pl.id_post
                 WHERE pl.id_lang=' . (int) $id_lang . '
                 AND p.active = 1
                 AND p.position = ' . (int) $position . ' + 1';
@@ -135,10 +136,10 @@ class Post extends \ObjectModel
     public static function getPreviousPostsById($id_lang = null, $position =  0)
     {
 
-        $sql = 'SELECT  p.id_smart_blog_post, pl.meta_title, pl.link_rewrite
-                FROM ' . _DB_PREFIX_ . 'smart_blog_post p
-                INNER JOIN ' . _DB_PREFIX_ . 'smart_blog_post_lang pl
-                ON p.id_smart_blog_post=pl.id_smart_blog_post
+        $sql = 'SELECT  p.id_post, pl.link_rewrite, pl.title
+                FROM ' . _DB_PREFIX_ . 'post p
+                INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl
+                ON p.id_post=pl.id_post
                 WHERE pl.id_lang=' . (int) $id_lang . '
                 AND p.active = 1
                 AND p.position = ' . (int) $position . '- 1';
