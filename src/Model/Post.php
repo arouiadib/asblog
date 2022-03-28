@@ -58,6 +58,10 @@ class Post extends \ObjectModel
      */
     public $position;
 
+    /**
+     * @var string
+     */
+    public $link_rewrite;
 
     /**
      * @see ObjectModel::$definition
@@ -76,6 +80,7 @@ class Post extends \ObjectModel
             'date_add' => array('type' => self::TYPE_DATE, 'required' => true),
             'id_category' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
             'position' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
+            'link_rewrite' => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isString')
         ),
     );
 
@@ -112,13 +117,14 @@ class Post extends \ObjectModel
             'meta_title' => $this->meta_title,
             'meta_keywords' => $this->meta_keywords,
             'meta_description' => $this->meta_description,
+            'link_rewrite' => $this->link_rewrite,
         ];
     }
 
     public static function getNextPostsById($id_lang = null, $position =  0)
     {
-
-        $sql = 'SELECT  p.id_post, pl.link_rewrite, pl.title
+        // select also link rewrite
+        $sql = 'SELECT  p.id_post, pl.title
                 FROM ' . _DB_PREFIX_ . 'post p
                 INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl
                 ON p.id_post=pl.id_post
@@ -135,8 +141,8 @@ class Post extends \ObjectModel
 
     public static function getPreviousPostsById($id_lang = null, $position =  0)
     {
-
-        $sql = 'SELECT  p.id_post, pl.link_rewrite, pl.title
+        // select also link rewrite
+        $sql = 'SELECT  p.id_post, pl.title
                 FROM ' . _DB_PREFIX_ . 'post p
                 INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl
                 ON p.id_post=pl.id_post

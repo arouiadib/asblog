@@ -180,6 +180,14 @@ class PostType extends TranslatorAwareType
                 // Customized choices with ON/OFF instead of Yes/No
                 'label' => $this->trans('Active', 'Modules.AsBlog.Admin'),
             ])
+            ->add('link_rewrite', TranslateTextType::class, [
+                'locales' => $this->locales,
+                'required' => false,
+                'label' => $this->trans('Link rewrite', 'Modules.Asblog.Admin'),
+                'constraints' => [
+                    new DefaultLanguage(),
+                ],
+            ])
         ;
 
         $builder->get('date_add')

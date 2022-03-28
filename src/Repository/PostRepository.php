@@ -82,6 +82,7 @@ class PostRepository
     			`meta_title` text default NULL,
     			`meta_keywords` text default NULL,
     			`meta_description` text default NULL,
+    			`link_rewrite` varchar(40) NOT NULL default '',
     			PRIMARY KEY (`id_post`, `id_lang`)
             ) ENGINE=$engine DEFAULT CHARSET=utf8",
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_shop` (
@@ -226,7 +227,6 @@ class PostRepository
      */
     private function updateLanguages($postId, array $postData)
     {
-
         foreach ($this->languages as $language) {
             $qb = $this->connection->createQueryBuilder();
             $qb
@@ -250,7 +250,8 @@ class PostRepository
                         'content' => ':content',
                         'meta_title' => ':metaTitle',
                         'meta_description' => ':metaDescription',
-                        'meta_keywords' => ':metaKeywords'
+                        'meta_keywords' => ':metaKeywords',
+                        'link_rewrite' => ':linkRewrite'
                     ])
                 ;
             } else {
@@ -261,6 +262,7 @@ class PostRepository
                     ->set('meta_title', ':metaTitle')
                     ->set('meta_description', ':metaDescription')
                     ->set('meta_keywords', ':metaKeywords')
+                    ->set('link_rewrite', ':linkRewrite')
                     ->andWhere('pl.id_post = :postId')
                     ->andWhere('pl.id_lang = :langId')
                 ;
@@ -275,6 +277,7 @@ class PostRepository
                     'metaTitle' => $postData['meta_title'][$language['id_lang']],
                     'metaDescription' => $postData['meta_description'][$language['id_lang']],
                     'metaKeywords' => $postData['meta_keywords'][$language['id_lang']],
+                    'linkRewrite' => $postData['link_rewrite'][$language['id_lang']]
                 ]);
 
             $this->executeQueryBuilder($qb, 'Post language error');

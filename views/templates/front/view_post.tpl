@@ -86,7 +86,6 @@
   <div id="product_comments_block_tab">
     <ul class="footer_links smart-blog-posts-navigation">
       {foreach from=$posts_previous item="post"}
-        {$post|var_dump}
         {if isset($post.id_post)}
           <li>
             <a title="{l s='Prevoius Post' d='Modules.Asblog.Shop'}"

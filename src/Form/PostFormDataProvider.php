@@ -81,6 +81,7 @@ class PostFormDataProvider implements FormDataProviderInterface
         }
 
         $post = new Post($this->idPost);
+
         $arrayPost = $post->toArray();
 
         return [
@@ -93,7 +94,8 @@ class PostFormDataProvider implements FormDataProviderInterface
                     'meta_keywords' => $arrayPost['meta_keywords'],
                     'date_add' => new DateTime($arrayPost['date_add']),
                     'active' => $arrayPost['active'],
-                    'id_category' => $arrayPost['id_category']
+                    'id_category' => $arrayPost['id_category'],
+                    'link_rewrite' => $arrayPost['link_rewrite'],
             ]];
     }
 
@@ -120,6 +122,14 @@ class PostFormDataProvider implements FormDataProviderInterface
             foreach ($this->languages as $language) {
                 if (empty($post['content'][$language['id_lang']])) {
                     $post['content'][$language['id_lang']] = $post['content'][$defaultLanguageId];
+                }
+            }
+        }
+
+        if (!empty($post['link_rewrite'])) {
+            foreach ($this->languages as $language) {
+                if (empty($post['link_rewrite'][$language['id_lang']])) {
+                    $post['link_rewrite'][$language['id_lang']] = $post['link_rewrite'][$defaultLanguageId];
                 }
             }
         }
