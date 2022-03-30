@@ -123,8 +123,7 @@ class Post extends \ObjectModel
 
     public static function getNextPostsById($id_lang = null, $position =  0)
     {
-        // select also link rewrite
-        $sql = 'SELECT  p.id_post, pl.title
+        $sql = 'SELECT  p.id_post, pl.title, pl.link_rewrite
                 FROM ' . _DB_PREFIX_ . 'post p
                 INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl
                 ON p.id_post=pl.id_post
@@ -141,8 +140,7 @@ class Post extends \ObjectModel
 
     public static function getPreviousPostsById($id_lang = null, $position =  0)
     {
-        // select also link rewrite
-        $sql = 'SELECT  p.id_post, pl.title
+        $sql = 'SELECT  p.id_post, pl.title, pl.link_rewrite
                 FROM ' . _DB_PREFIX_ . 'post p
                 INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl
                 ON p.id_post=pl.id_post
@@ -155,6 +153,4 @@ class Post extends \ObjectModel
         }
         return $posts_previous;
     }
-
-
 }

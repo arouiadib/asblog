@@ -25,20 +25,6 @@ define('_PS_BLOG_POST_IMG_DIR_', _PS_IMG_DIR_.'blog/post/');
 
 class Asblog extends Module implements WidgetInterface
 {
-    public static $ModuleRoutes = array(
-        'module-asblog-blogpost' => array(
-            'controller' => 'blogpost',
-            'rule' => 'blog_post{/:id_post}',
-            'keywords' => array(
-                'id_post' => array('regexp' => '[0-9]+', 'param' => 'id_post'),
-            ),
-            'params' => array(
-                'fc' => 'module',
-                'module' => 'asblog',
-            )
-        ),
-    );
-
     protected $config_form = false;
 
     /* @var PostRepository */
@@ -445,13 +431,35 @@ class Asblog extends Module implements WidgetInterface
 
     public function hookModuleRoutes($route = '', $detail = array())
     {
-        return $this->getStaticModuleRoutes('ModuleRoutes');
+        return $this->getModuleRoutes('ModuleRoutes', 'blog');
     }
 
-    public function getStaticModuleRoutes($ModuleRoutes)
+    public function getModuleRoutes($ModuleRoutes, $alias)
     {
+/*        $alias   = Configuration::get('mainblogurl');
+        $usehtml = (int) Configuration::get('usehtml');
+        if ($usehtml != 0) {
+            $html = '.html';
+        } else {
+            $html = '';
+        }
+        $blogurlpattern = (int) Configuration::get('blogurlpattern');*/
+
         if ($ModuleRoutes == 'ModuleRoutes') {
-            return self::$ModuleRoutes;
+            return array(
+                'module-asblog-blogpost' => array(
+                    'controller' => 'blogpost',
+                    'rule' => $alias .'/{:id_post}_{:rewrite}',
+                    'keywords' => array(
+                        'id_post' => array('regexp' => '[0-9]+', 'param' => 'id_post'),
+                        'rewrite'    => array('regexp' => '[_a-zA-Z0-9-\pL]*', 'param'  => 'rewrite'),
+                    ),
+                    'params' => array(
+                        'fc' => 'module',
+                        'module' => 'asblog',
+                    )
+                ),
+            );
         }
     }
 }

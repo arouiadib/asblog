@@ -5,6 +5,7 @@ use PrestaShop\Module\AsBlog\Model\Post;
 use Configuration;
 use Context;
 use Dispatcher;
+use Language;
 
 class BlogLink
 {
@@ -43,33 +44,54 @@ class BlogLink
     }
 
 
-    public  function getBlogPostLink($blogpost, $alias = null, $ssl = null, $id_lang = null, $id_shop = null, $relative_protocol = false)
+    public  function getBlogPostLink($blogpost, $rewrite = null, $ssl = null, $id_lang = null, $id_shop = null, $relative_protocol = false)
     {
         if (!$id_lang) {
             $id_lang = Context::getContext()->language->id;
         }
 
-        //$url = $this->getBaseLink($id_shop, $ssl, $relative_protocol).$this->getLangLink($id_lang, null, $id_shop);
-        //$url = smartblog::GetSmartBlogUrl();
-
+        $url = $this->getBlogUrl();
         $dispatcher = Dispatcher::getInstance();
 
         if (!is_object($blogpost)) {
-            if ($alias !== null && !$dispatcher->hasKeyword('module-asblog-blogpost', $id_lang, 'meta_keywords', $id_shop) && !$dispatcher->hasKeyword('smartblog_post_rule', $id_lang, 'meta_title', $id_shop)) {
-                return  /*$url .*/  $dispatcher->createUrl('module-asblog-blogpost', $id_lang, array('id_post' => (int)$blogpost, 'slug' => $alias), $this->allow, '', $id_shop);
+            if ($rewrite !== null) {
+                return  $url .  $dispatcher->createUrl('module-asblog-blogpost', $id_lang, array('id_post' => (int)$blogpost, 'rewrite' => $rewrite), $this->allow, '', $id_shop);
             }
             $blogpost = new Post($blogpost, $id_lang);
         }
 
         $params = array();
-        $params['slug'] = $blogpost->link_rewrite;
+        $params['rewrite'] = $blogpost->link_rewrite;
         $params['id_post'] = $blogpost->id_post;
+        //return 'adib';
+        return $url . $dispatcher->createUrl('module-asblog-blogpost', $id_lang, $params, $this->allow);
+    }
 
-        if ($params != null) {
-            return /*$url .*/ $dispatcher->createUrl('module-asblog-blogpost', $id_lang, $params, $this->allow);
-        } else {
-            $params = array();
-            return /*$url .*/  $dispatcher->createUrl('module-asblog-blogpost', $id_lang, $params,  $this->allow);
+    public static function getBlogUrl()
+    {
+        $ssl_enable       = Configuration::get('PS_SSL_ENABLED');
+        $id_lang          = (int) Context::getContext()->language->id;
+        $id_shop          = (int) Context::getContext()->shop->id;
+        $rewrite_set      = (int) Configuration::get('PS_REWRITING_SETTINGS');
+        $ssl              = null;
+        static $force_ssl = null;
+        if ($ssl === null) {
+            if ($force_ssl === null) {
+                $force_ssl = (Configuration::get('PS_SSL_ENABLED') && Configuration::get('PS_SSL_ENABLED_EVERYWHERE'));
+            }
+            $ssl = $force_ssl;
         }
+        if (Configuration::get('PS_MULTISHOP_FEATURE_ACTIVE') && $id_shop !== null) {
+            $shop = new Shop($id_shop);
+        } else {
+            $shop = Context::getContext()->shop;
+        }
+        $base    = ($ssl == 1 && $ssl_enable == 1) ? 'https://' . $shop->domain_ssl : 'http://' . $shop->domain;
+        $langUrl = Language::getIsoById($id_lang) . '/';
+        if ((!$rewrite_set && in_array($id_shop, array((int) Context::getContext()->shop->id, null))) || !Language::isMultiLanguageActivated($id_shop) || !(int) Configuration::get('PS_REWRITING_SETTINGS', null, null, $id_shop)) {
+            $langUrl = '';
+        }
+
+        return $base . $shop->getBaseURI() . $langUrl;
     }
 }

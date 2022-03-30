@@ -83,6 +83,8 @@
       <div class="sdsarticleBottom"></div>
     </div>
   </div>
+
+
   <div id="product_comments_block_tab">
     <ul class="footer_links smart-blog-posts-navigation">
       {foreach from=$posts_previous item="post"}

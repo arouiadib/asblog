@@ -53,7 +53,7 @@ class AsBlogBlogPostModuleFrontController extends ModuleFrontController
 
             $this->context->smarty->assign(
                 array(
-                    //'link_rewrite_'            => SmartBlogPost::GetPostSlugById($id_post, $this->context->language->id),
+                    'link_rewrite'               => $this->post['link_rewrite'],
                     'bloglink'                   => $bloglink,
                     'baseDir'                    => _PS_BASE_URL_SSL_ . __PS_BASE_URI__,
                     'modules_dir'                => _PS_BASE_URL_SSL_ . __PS_BASE_URI__ . 'modules/',
