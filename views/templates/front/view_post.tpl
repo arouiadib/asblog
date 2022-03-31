@@ -60,19 +60,26 @@
       </div>
       <div itemprop="articleBody">
         <div class="articleContent">
-          {if isset($ispost) && !empty($ispost)}
+          {* {if isset($ispost) && !empty($ispost)}
           <a itemprop="url" href="{'$smartbloglink->getSmartBlogPostLink($post.id_post,$post.cat_link_rewrite)'|escape:'htmlall':'UTF-8'}" title="{$post.meta_title|escape:'htmlall':'UTF-8'}" class="imageFeaturedLink">
             {/if}
 
-{*            {if $smartbloglink->getImageLink($post.link_rewrite, $post.id_post, 'single-default') != 'false'}
+           {if $smartbloglink->getImageLink($post.link_rewrite, $post.id_post, 'single-default') != 'false'}
               <img itemprop="image" alt="{$post.meta_title|escape:'htmlall':'UTF-8'}"
                    src="{$smartbloglink->getImageLink($post.link_rewrite, $post.id_post, 'single-default')}"
                    class="imageFeatured">
-            {/if}*}
+            {/if}
 
             {if isset($ispost) && !empty($ispost)}
           </a>
-          {/if}
+          {/if}*}
+          {assign var="url" value="`$urls.img_ps_url`blog/post/`$post_img`.jpeg"}
+          <img itemprop="image" alt="{$post.meta_title|escape:'htmlall':'UTF-8'}"
+               src="{$url}"
+               class="imageFeatured"
+               width="500"
+          >
+
           <div class="sdsarticle-des smart-blog-sing-blog-content" style="text-align: left;">
             {$post.content nofilter}
           </div>

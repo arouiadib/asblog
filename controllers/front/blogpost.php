@@ -45,11 +45,12 @@ class AsBlogBlogPostModuleFrontController extends ModuleFrontController
 
             $bloglink = new BlogLink($protocol_link, $protocol_content);
 
-            if (file_exists(_PS_IMG_SOURCE_DIR_ . 'blog/post/' . $id_post . '.jpg')) {
+            if (file_exists(_PS_IMG_DIR_ . 'blog/post/' . $id_post . '.jpeg')) {
                 $post_img = $id_post;
             } else {
                 $post_img = 'no';
             }
+
 
             $this->context->smarty->assign(
                 array(

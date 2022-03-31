@@ -67,6 +67,69 @@ class BlogLink
         return $url . $dispatcher->createUrl('module-asblog-blogpost', $id_lang, $params, $this->allow);
     }
 
+
+    /**
+     * Returns a link to a product image for display
+     * Note: the new image filesystem stores product images in subdirectories of img/p/
+     *
+     * @param string $name rewrite link of the image
+     * @param string $ids id part of the image filename - can be "id_product-id_image" (legacy support, recommended) or "id_image" (new)
+     * @param string $type
+     */
+    public function getImageLink($name, $ids, $type = null)
+    {
+        $return_val = 'false';
+        $not_default = false;
+        if (Configuration::get('PS_SSL_ENABLED') && Configuration::get('PS_SSL_ENABLED_EVERYWHERE')) {
+            $this->protocol_content = 'https://';
+        }
+        // legacy mode or default image
+        $theme = ((Shop::isFeatureActive() && file_exists(_MODULE_SMARTBLOG_DIR_ . $ids . ($type ? '-' . $type : '') . '-' . (int) Context::getContext()->shop->theme_name . '.jpg')) ? '-' . Context::getContext()->shop->theme_name : '');
+        if ((Configuration::get('PS_LEGACY_IMAGES') && (file_exists(_MODULE_SMARTBLOG_DIR_ . $ids . ($type ? '-' . $type : '') . $theme . '.jpg'))) || ($not_default = strpos($ids, 'default') !== false)) {
+            if ($this->allow == 1 && !$not_default) {
+                $uri_path = __PS_BASE_URI__ . 'blog/' . $ids . ($type ? '-' . $type : '') . $theme . '/' . $name . '.jpg';
+            } else {
+                $uri_path = _THEME_PROD_DIR_ . $ids . ($type ? '-' . $type : '') . $theme . '.jpg';
+            }
+        } else {
+            $split_ids = array();
+            $split_ids = explode('-', $ids);
+            $id_image = '0';
+            if(isset($split_ids[1])){
+                $id_image = $split_ids[1];
+            }else{
+                $id_image = $split_ids[0];
+            }
+
+            $theme = '';
+            if ($this->allow == 1) {
+                $uri_path = __PS_BASE_URI__ . 'blog/' . $id_image . ($type ? '-' . $type : '') . $theme . '/' . $name . '.jpg';
+            } else {
+                $uri_path = __PS_BASE_URI__ . 'modules/smartblog/images/' . $id_image . ($type ? '-' . $type : '') . $theme . '.jpg';
+            }
+        }
+        $main_img_exist = _PS_ROOT_DIR_ . '/modules/smartblog/images/'.$id_image.'.jpg';
+
+        if(file_exists($main_img_exist)){
+            $media_uri_path = Tools::getMediaServer($uri_path);
+            $protocol_content = ($this->ssl_enable) ? 'https://' : 'http://';
+            $return_val = $protocol_content . $media_uri_path . $uri_path;
+        }else{
+            if(Configuration::get('smartshownoimg')){
+                $no_img_exist = _PS_ROOT_DIR_ . '/modules/smartblog/images/no.jpg';
+                if(file_exists($no_img_exist)){
+                    $return_val = __PS_BASE_URI__ . 'modules/smartblog/images/no' . ($type ? '-' . $type : '') . '.jpg';
+                } else {
+                    $return_val = "false";
+                }
+            } else {
+                $return_val = "false";
+            }
+        }
+
+        return (isset($return_val))? $return_val : 'false';
+    }
+
     public static function getBlogUrl()
     {
         $ssl_enable       = Configuration::get('PS_SSL_ENABLED');
