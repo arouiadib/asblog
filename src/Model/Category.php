@@ -48,6 +48,11 @@ class Category extends \ObjectModel
     public $meta_description;
 
     /**
+     * @var string
+     */
+    public $link_rewrite;
+
+    /**
      * @see ObjectModel::$definition
      */
     public static $definition = array(
@@ -64,6 +69,7 @@ class Category extends \ObjectModel
             'meta_title'       => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName'),
             'meta_keywords'     => array('type' => self::TYPE_STRING, 'validate' => 'isGenericName', 'lang' => true),
             'meta_description' => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName'),
+            'link_rewrite' => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isString')
         ),
     );
 
@@ -98,6 +104,7 @@ class Category extends \ObjectModel
             'meta_title' => $this->meta_title,
             'meta_keywords' => $this->meta_keywords,
             'meta_description' => $this->meta_description,
+            'link_rewrite' => $this->link_rewrite,
         ];
     }
 }

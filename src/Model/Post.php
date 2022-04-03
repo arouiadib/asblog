@@ -153,4 +153,131 @@ class Post extends \ObjectModel
         }
         return $posts_previous;
     }
+
+    public static function getTotal($id_lang = null)
+    {
+        if ($id_lang == null) {
+            $id_lang = (int) Context::getContext()->language->id;
+        }
+        $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'post p
+                INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl ON p.id_post = pl.id_post
+                INNER JOIN ' . _DB_PREFIX_ . 'post_shop ps ON pl.id_post = ps.id_post AND ps.id_shop = ' . (int) Context::getContext()->shop->id . '
+                WHERE pl.id_lang =' . (int) $id_lang . '
+                AND p.active = 1';
+
+        if (!$posts = Db::getInstance()->executeS($sql)) {
+            return false;
+        }
+
+        return count($posts);
+
+    }
+
+    public static function getTotalByCategory($id_lang = null, $id_category = null)
+    {
+        if ($id_lang == null) {
+            $id_lang = (int) Context::getContext()->language->id;
+        }
+        if ($id_category == null) {
+            $id_category = 1;
+        }
+        $sql = 'SELECT COUNT(*) AS num
+                FROM ' . _DB_PREFIX_ . 'post p
+                INNER JOIN ' . _DB_PREFIX_ . 'post_category pc ON p.id_post=pc.id_post
+                INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl ON pc.id_post=pl.id_post
+                INNER JOIN ' . _DB_PREFIX_ . 'post_shop ps ON pl.id_post = ps.id_post AND ps.id_shop = ' . (int) Context::getContext()->shop->id . '
+                WHERE pl.id_lang=' . (int) $id_lang . '
+                AND p.active= 1 AND pc.id_smart_blog_category = ' . (int) $id_category;
+        return Db::getInstance()->getValue($sql);
+    }
+
+    public static function getAllPost($id_lang = null, $limit_start, $limit, $orderby = "id_smart_blog_post", $order = "DESC")
+    {
+        if ($id_lang == null) {
+            $id_lang = (int) Context::getContext()->language->id;
+        }
+        if ($limit_start == '' || $limit_start < 0) {
+            $limit_start = 0;
+        }
+        if ($limit == '') {
+            $limit = 5;
+        }
+        $result       = array();
+        $BlogCategory = '';
+
+        if($orderby == "name"){
+            $orderby = "pl.meta_title";
+        }else{
+            $orderby = 'p.' . $orderby;
+        }
+
+        $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'smart_blog_post p INNER JOIN
+                ' . _DB_PREFIX_ . 'smart_blog_post_lang pl ON p.id_smart_blog_post=pl.id_smart_blog_post INNER JOIN
+                ' . _DB_PREFIX_ . 'smart_blog_post_shop ps ON pl.id_smart_blog_post = ps.id_smart_blog_post AND ps.id_shop = ' . (int) Context::getContext()->shop->id . '
+                WHERE pl.id_lang=' . (int) $id_lang . '
+                AND p.active= 1
+                ORDER BY '. $orderby .' ' . $order . '
+                LIMIT ' . (int) $limit_start . ',' . (int) $limit;
+
+        if (!$posts = Db::getInstance()->executeS($sql)) {
+            return false;
+        }
+
+        $BlogCategory = new BlogCategory();
+        $i            = 0;
+        foreach ($posts as $post) {
+
+            $link_rewrite = $post['link_rewrite'];
+
+            if ($link_rewrite == '') {
+                $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'smart_blog_post p INNER JOIN
+					' . _DB_PREFIX_ . 'smart_blog_post_lang pl ON p.id_smart_blog_post=pl.id_smart_blog_post INNER JOIN
+					' . _DB_PREFIX_ . 'smart_blog_post_shop ps ON pl.id_smart_blog_post = ps.id_smart_blog_post
+					WHERE  p.active= 1 AND p.id_smart_blog_post = ' . (int) $post['id_smart_blog_post'];
+
+                if (!$post1 = Db::getInstance()->executeS($sql)) {
+                    return false;
+                }
+                $link_rewrite = $post1[0]['link_rewrite'];
+            }
+
+            $selected_cat = BlogCategory::getPostCategoriesFull((int) $post['id_smart_blog_post'], Context::getContext()->language->id);
+
+            $result[$i]['id_category']      = 1;
+            $result[$i]['cat_link_rewrite'] = '';
+            $result[$i]['cat_name']         = '';
+
+            foreach ($selected_cat as $key => $value) {
+                $result[$i]['id_category']      = $selected_cat[$key]['id_category'];
+                $result[$i]['cat_link_rewrite'] = $selected_cat[$key]['link_rewrite'];
+                $result[$i]['cat_name']         = $selected_cat[$key]['name'];
+            }
+
+            $result[$i]['id_post']           = $post['id_smart_blog_post'];
+            $result[$i]['is_featured']       = $post['is_featured'];
+            $result[$i]['viewed']            = $post['viewed'];
+            $result[$i]['meta_title']        = $post['meta_title'];
+            $result[$i]['meta_description']  = $post['meta_description'];
+            $result[$i]['short_description'] = $post['short_description'];
+            $result[$i]['position']          = $post['position'];
+            $result[$i]['content']           = $post['content'];
+            $result[$i]['meta_keyword']      = $post['meta_keyword'];
+            $result[$i]['link_rewrite']      = $link_rewrite;
+            $employee                          = new Employee($post['id_author']);
+
+            $result[$i]['lastname']  = $employee->lastname;
+            $result[$i]['firstname'] = $employee->firstname;
+            if (file_exists(_PS_MODULE_DIR_ . 'smartblog/images/' . $post['id_smart_blog_post'] . '.jpg')) {
+                $image                    = $post['id_smart_blog_post'];
+                $result[$i]['post_img'] = $image;
+            } else {
+                $result[$i]['post_img'] = 'no';
+            }
+            $result[$i]['created'] = $post['created'];
+
+            $i++;
+        }
+
+        return $result;
+    }
 }

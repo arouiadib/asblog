@@ -459,6 +459,32 @@ class Asblog extends Module implements WidgetInterface
                         'module' => 'asblog',
                     )
                 ),
+                'module-asblog-category'            => array(
+                    'controller' => 'category',
+                    'rule'       => $alias . '/category/{rewrite}',
+                    'keywords'   => array(
+                        'rewrite'        => array('regexp' => '[_a-zA-Z0-9-\pL]*'),
+                    ),
+                    'params'     => array(
+                        'fc'     => 'module',
+                        'module' => 'asblog',
+                    ),
+                ),
+                'module-asblog-category_rule'       => array(
+                    'controller' => 'category',
+                    'rule'       => $alias . '/category/{id_category}_{rewrite}',
+                    'keywords'   => array(
+                        'id_category' => array(
+                            'regexp' => '[_a-zA-Z0-9-\pL]*',
+                            'param'  => 'id_category',
+                        ),
+                        'rewrite}'        => array('regexp' => '[_a-zA-Z0-9-\pL]*'),
+                    ),
+                    'params'     => array(
+                        'fc'     => 'module',
+                        'module' => 'asblog',
+                    ),
+                ),
             );
         }
     }

@@ -91,6 +91,7 @@ class CategoryFormDataProvider implements FormDataProviderInterface
             'meta_title' => $arrayCategory['meta_title'],
             'meta_keywords' => $arrayCategory['meta_keywords'],
             'meta_description' => $arrayCategory['meta_description'],
+            'link_rewrite' => $arrayCategory['link_rewrite'],
         ]];
     }
 
@@ -133,6 +134,14 @@ class CategoryFormDataProvider implements FormDataProviderInterface
             foreach ($this->languages as $language) {
                 if (empty($category['meta_title'][$language['id_lang']])) {
                     $category['meta_title'][$language['id_lang']] = $category['meta_title'][$defaultLanguageId];
+                }
+            }
+        }
+
+        if (!empty($category['link_rewrite'])) {
+            foreach ($this->languages as $language) {
+                if (empty($category['link_rewrite'][$language['id_lang']])) {
+                    $category['link_rewrite'][$language['id_lang']] = $category['link_rewrite'][$defaultLanguageId];
                 }
             }
         }
