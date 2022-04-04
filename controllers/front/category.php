@@ -25,9 +25,11 @@
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
-require_once dirname(__FILE__) . '/../../classes/controllers/FrontController.php';
+use PrestaShop\Module\AsBlog\Model\Post;
+use PrestaShop\Module\AsBlog\Model\Category;
+use PrestaShop\Module\AsBlog\Link\BlogLink;
 
-class smartblogCategoryModuleFrontController extends smartblogModuleFrontController
+class AsBlogCategoryModuleFrontController extends ModuleFrontController
 {
 
 
@@ -102,12 +104,13 @@ class smartblogCategoryModuleFrontController extends smartblogModuleFrontControl
 		$limit          = $posts_per_page;
 
 		if (!$id_category) {
-
 			$total = (int) $post->getTotal($this->context->language->id);
 		} else {
-			$total = (int) $post->getTotalByCategory($this->context->language->id, $id_category);
+			$total = (int) $post->getTotalByCategory($id_category);
 			//Hook::exec('actionsbcat', array('id_category' => pSQL(Tools::getvalue('id_category'))));
 		}
+
+
 		if ($total != '' || $total != 0) {
 			$totalpages = ceil($total / $posts_per_page);
 		}
@@ -115,12 +118,15 @@ class smartblogCategoryModuleFrontController extends smartblogModuleFrontControl
 			$c           = (int) Tools::getValue('page');
 			$limit_start = $posts_per_page * ($c - 1);
 		}
+
+
 		if (!$id_category) {
 			//$meta_title       = Configuration::get('smartblogmetatitle');
 			//$meta_keyword     = Configuration::get('smartblogmetakeyword');
 			//$meta_description = Configuration::get('smartblogmetadescrip');
 
 			$allNews = $post->getAllPost($this->context->language->id, $limit_start, $limit, $orderby, $order);
+
 		} else {
 			if (file_exists(_PS_IMG_DIR_ . 'blog/category/' . $id_category . '.jpg')) {
 				$cat_image = $id_category;
@@ -133,20 +139,28 @@ class smartblogCategoryModuleFrontController extends smartblogModuleFrontControl
 				$cat_image = 'no';
 			}
             $category     = new Category($id_category);
+
 			$categoryinfo   = $category->toArray();
-			$title_category = $categoryinfo[0]['name'];
 
-			$meta_title       = $categoryinfo[0]['meta_title'];
-			$meta_keyword     = $categoryinfo[0]['meta_keyword'];
-			$meta_description = $categoryinfo[0]['meta_description'];
+			$title_category = $categoryinfo['name'][$this->context->language->id];
 
-			$category_status  = $categoryinfo[0]['active'];
-			$cat_link_rewrite = $categoryinfo[0]['link_rewrite'];
-			if ($category_status == 1) {
-				$allNews = $post->getToltalByCategory($this->context->language->id, $id_category, $limit_start, $limit);
+
+			$meta_title       = $categoryinfo['meta_title'][$this->context->language->id];
+			$meta_keyword     = $categoryinfo['meta_keywords'][$this->context->language->id];
+			$meta_description = $categoryinfo['meta_description'][$this->context->language->id];
+
+			$category_status  = $categoryinfo['active'];
+			$cat_link_rewrite = $categoryinfo['link_rewrite'][$this->context->language->id];
+
+
+			/*if ($category_status == 1) {
+				$allNews = $post->getTotalByCategory($this->context->language->id, $id_category, $limit_start, $limit);
 			} elseif ($category_status == 0) {
 				$allNews = '';
-			}
+			}*/
+
+            $allNews = $post->getAllPost($this->context->language->id, $limit_start, $limit, $orderby, $order);
+
 		}
 		/*$i  = 0;
 		$to = array();*/
@@ -156,7 +170,7 @@ class smartblogCategoryModuleFrontController extends smartblogModuleFrontControl
 				//$to[$i] = $blogcomment->getToltalComment($item['id_post']);
 				//$i++;
 
-				if (file_exists(_PS_IMGDIR_ . 'blog/post/' . $item['id_post'] . '.jpeg')) {
+				if (file_exists(_PS_IMG_DIR_ . 'blog/post/' . $item['id_post'] . '.jpeg')) {
 					$item['post_img'] = $item['id_post'] . '.jpg';
 				} else {
 					$item['post_img'] = 'no';
@@ -175,34 +189,36 @@ class smartblogCategoryModuleFrontController extends smartblogModuleFrontControl
 		$protocol_link        = (Configuration::get('PS_SSL_ENABLED')) ? 'https://' : 'http://';
 		$protocol_content = (isset($useSSL) and $useSSL and Configuration::get('PS_SSL_ENABLED')) ? 'https://' : 'http://';
 
-		$smartbloglink = new SmartBlogLink($protocol_link, $protocol_content);
-		$i             = 0;
-		if (!empty($allNews)) {
-			if (count($allNews) >= 1) {
-				if (is_array($allNews)) {
-					foreach ($allNews as $post) {
-						$allNews[$i]['created'] = Smartblog::displayDate($post['created']);
-						if (new DateTime() >= new DateTime($post['created'])) {
-							$allNews[$i]['published'] = true;
-						} else {
-							$allNews[$i]['published'] = false;
-						}
-						$i++;
-					}
-				}
-			}
-		}
+		$bloglink = new BlogLink($protocol_link, $protocol_content);
+        /*$i             = 0;
+        if (!empty($allNews)) {
+            if (count($allNews) >= 1) {
+                if (is_array($allNews)) {
+                    foreach ($allNews as $post) {
+                        $allNews[$i]['created'] = Smartblog::displayDate($post['created']);
+                        if (new DateTime() >= new DateTime($post['created'])) {
+                            $allNews[$i]['published'] = true;
+                        } else {
+                            $allNews[$i]['published'] = false;
+                        }
+                        $i++;
+                    }
+                }
+            }
+        }*/
 
 		$this->post_id = $id_category;
 		parent::initContent();
 		if(isset($limit_start) && $limit_start != 0){
-			$limit_start = $limit_start+1;
+			$limit_start = $limit_start + 1;
 		}else{
 			$limit_start = 0;
 		}
+
+
 		$this->context->smarty->assign(
 			array(
-				'smartbloglink'        => $smartbloglink,
+				'smartbloglink'        => $bloglink,
 				'postcategory'         => $allNews,
 				'category_status'      => $category_status,
 				'title_category'       => $title_category,
@@ -236,14 +252,17 @@ class smartblogCategoryModuleFrontController extends smartblogModuleFrontControl
 		)) {
 			$this->setTemplate($overridden_template);
 		} else {*/
-			$theme = Configuration::get('smarttheme') ? Configuration::get('smarttheme') : 'default';
-			$templatepath = $this->get_template_path("postcategory.tpl", $theme);
+/*			$theme = Configuration::get('smarttheme') ? Configuration::get('smarttheme') : 'default';
+			var_dump($theme);die;
+			$templatepath = $this->getTemplatePath("postcategory.tpl", $theme);
 
 			if ($templatepath != "outside") {
 				$this->setTemplate("module:smartblog/views/templates/front/themes/" . $templatepath . "/postcategory.tpl");
 			} else {
 				$this->setTemplate("module:smartblog/views/templates/front/postcategory.tpl");
-			}
+			}*/
 		//}
+
+        $this->setTemplate('module:asblog/views/templates/front/view_category.tpl');
 	}
 }

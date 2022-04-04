@@ -84,6 +84,7 @@ class CategoryRepository
     			`meta_title` text default NULL,
     			`meta_keywords` text default NULL,
     			`meta_description` text default NULL,
+    			`link_rewrite` varchar(40) NOT NULL default '',
     			PRIMARY KEY (`id_category`, `id_lang`)
             ) ENGINE=$engine DEFAULT CHARSET=utf8",
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_category_shop` (
@@ -320,7 +321,7 @@ class CategoryRepository
                 'active' => $data['active'],
                 'nleft' => $left,
                 'nright' => $right,
-               // 'depth' => 0
+                // 'depth' => 0
             ])
         ;
 
@@ -407,7 +408,8 @@ class CategoryRepository
                         'description' => ':description',
                         'meta_title' => ':metaTitle',
                         'meta_description' => ':metaDescription',
-                        'meta_keywords' => ':metaKeywords'
+                        'meta_keywords' => ':metaKeywords',
+                        'link_rewrite' => ':linkRewrite'
                     ])
                 ;
             } else {
@@ -418,6 +420,7 @@ class CategoryRepository
                     ->set('meta_title', ':metaTitle')
                     ->set('meta_description', ':metaDescription')
                     ->set('meta_keywords', ':metaKeywords')
+                    ->set('link_rewrite', ':linkRewrite')
                     ->andWhere('pcl.id_category = :categoryId')
                     ->andWhere('pcl.id_lang = :langId')
                 ;
@@ -432,6 +435,7 @@ class CategoryRepository
                     'metaTitle' => $categoryData['meta_title'][$language['id_lang']],
                     'metaDescription' => $categoryData['meta_description'][$language['id_lang']],
                     'metaKeywords' => $categoryData['meta_keywords'][$language['id_lang']],
+                    'linkRewrite' => $categoryData['link_rewrite'][$language['id_lang']],
                 ]);
 
             $this->executeQueryBuilder($qb, 'Category language error');
