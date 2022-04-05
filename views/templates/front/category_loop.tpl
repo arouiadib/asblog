@@ -1,10 +1,10 @@
-
+{*{$post|var_dump}*}
 <div itemtype="#" itemscope="" class="sdsarticleCat clearfix">
-    <div id="smartblogpost-{$post.id_post|escape:'htmlall':'UTF-8'}" class="smart-blog-post-single-item">
+    <div id="smartblogpost-{$post.id_post|escape:'htmlall':'UTF-8'}" class="">
         <div class="sdsarticleHeader smart-blog-posts-header-area">
             <p class='title_block smart-blog-posts-title'>
               <a title="{$post.meta_title|escape:'htmlall':'UTF-8'}"
-                    href="{*{$smartbloglink->getSmartBlogPostLink($post.id_post,$post.link_rewrite)|escape:'htmlall':'UTF-8'}*}">
+                    href="{$bloglink->getBlogPostLink($post.id_post, $post.link_rewrite)|escape:'htmlall':'UTF-8'}">
                 {$post.meta_title|escape:'htmlall':'UTF-8'}</a>
             </p>
 
@@ -61,15 +61,19 @@
                 </a>
             {/if}
             <div class="sdsarticle-des smart-blog-posts-short-description" style="text-align: left;">
-{*                {$post.short_description}*}
+               {$post.content|escape:'htmlall':'UTF-8'|truncate:30:"...":true}
             </div>
         </div>
 
         <div class="sdsreadMore smart-blog-post-readmore-btn">
             <a title="{$post.meta_title|escape:'htmlall':'UTF-8'}"
                 href="{*{$smartbloglink->getSmartBlogPostLink($post.id_post,$post.link_rewrite)|escape:'htmlall':'UTF-8'}*}"
-                class="r_more btn btn-default button button-small"><span>{l s='Read More' mod='smartblog'}<i
-                        class="icon-chevron-right right"></i></span></a>
+                class="btn btn-default button button-small">
+
+              <span>{l s='Read More' d='Modules.Asblog.Shop'}
+                <i class="icon-chevron-right right"></i>
+              </span>
+            </a>
         </div>
     </div>
 </div>

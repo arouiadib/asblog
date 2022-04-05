@@ -84,12 +84,12 @@ class PostType extends TranslatorAwareType
                     ],
                     'constraints' => [
                         new Length([
-                            'max' => 500,
+                            'max' => 100000,
                             'maxMessage' => $this->trans(
                                 'This field cannot be longer than %limit% characters.',
                                 'Admin.Notifications.Error',
                                 [
-                                    '%limit%' => 500,
+                                    '%limit%' => 100000,
                                 ]
                             ),
                         ]),

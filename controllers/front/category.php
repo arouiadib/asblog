@@ -119,7 +119,6 @@ class AsBlogCategoryModuleFrontController extends ModuleFrontController
 			$limit_start = $posts_per_page * ($c - 1);
 		}
 
-
 		if (!$id_category) {
 			//$meta_title       = Configuration::get('smartblogmetatitle');
 			//$meta_keyword     = Configuration::get('smartblogmetakeyword');
@@ -128,23 +127,21 @@ class AsBlogCategoryModuleFrontController extends ModuleFrontController
 			$allNews = $post->getAllPost($this->context->language->id, $limit_start, $limit, $orderby, $order);
 
 		} else {
-			if (file_exists(_PS_IMG_DIR_ . 'blog/category/' . $id_category . '.jpg')) {
-				$cat_image = $id_category;
+            $cat_image = '';
+			if (file_exists(_PS_IMG_DIR_ . 'blog/category/' . $id_category . '.jpeg')) {
 				$ssl       = null;
 				$force_ssl = (Configuration::get('PS_SSL_ENABLED') && Configuration::get('PS_SSL_ENABLED_EVERYWHERE'));
 				$base_ssl  = ($force_ssl == 1) ? 'https://' : 'http://';
-				$uri_path  = __PS_BASE_URI__ . 'modules/smartblog/images/category/' . $id_category . '.jpg';
+				$uri_path  = __PS_BASE_URI__ . 'img/blog/category/' . $id_category . '.jpeg';
 				$cat_image = $base_ssl . Tools::getMediaServer($uri_path) . $uri_path;
-			} else {
-				$cat_image = 'no';
 			}
+
             $category     = new Category($id_category);
 
 			$categoryinfo   = $category->toArray();
 
 			$title_category = $categoryinfo['name'][$this->context->language->id];
-
-
+			$category_description = $categoryinfo['description'][$this->context->language->id];
 			$meta_title       = $categoryinfo['meta_title'][$this->context->language->id];
 			$meta_keyword     = $categoryinfo['meta_keywords'][$this->context->language->id];
 			$meta_description = $categoryinfo['meta_description'][$this->context->language->id];
@@ -218,25 +215,27 @@ class AsBlogCategoryModuleFrontController extends ModuleFrontController
 
 		$this->context->smarty->assign(
 			array(
-				'smartbloglink'        => $bloglink,
+				'bloglink'             => $bloglink,
 				'postcategory'         => $allNews,
 				'category_status'      => $category_status,
 				'title_category'       => $title_category,
+                'category_description' => $category_description,
+                'meta_title'           => $meta_title,
 				'cat_link_rewrite'     => $cat_link_rewrite,
 				'id_category'          => $id_category,
 				'cat_image'            => $cat_image,
 				'categoryinfo'         => $categoryinfo,
 				//'smartshowauthorstyle' => Configuration::get('smartshowauthorstyle'),
-				//'smartshowauthor'      => Configuration::get('smartshowauthor'),
+				//'smartshowauthor'    => Configuration::get('smartshowauthor'),
 				'limit'                => isset($limit) ? $limit : 0,
 				'limit_start'          => isset($limit_start) ? $limit_start : 0,
 				'c'                    => isset($c) ? $c : 1,
 				'total'                => $total,
-				//'smartblogliststyle'   => Configuration::get('smartblogliststyle'),
-				//'smartcustomcss'       => Configuration::get('smartcustomcss'),
-				//'smartshownoimg'       => Configuration::get('smartshownoimg'),
-				//'smartdisablecatimg'   => Configuration::get('smartdisablecatimg'),
-				//'smartshowviewed'      => Configuration::get('smartshowviewed'),
+				//'smartblogliststyle' => Configuration::get('smartblogliststyle'),
+				//'smartcustomcss'     => Configuration::get('smartcustomcss'),
+				//'smartshownoimg'     => Configuration::get('smartshownoimg'),
+				//'smartdisablecatimg' => Configuration::get('smartdisablecatimg'),
+				//'smartshowviewed'    => Configuration::get('smartshowviewed'),
 				'post_per_page'        => $posts_per_page,
 				'pagenums'             => $totalpages - 1,
 				'totalpages'           => $totalpages,

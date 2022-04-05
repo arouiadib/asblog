@@ -80,7 +80,7 @@
                width="500"
           >
 
-          <div class="sdsarticle-des smart-blog-sing-blog-content" style="text-align: left;">
+          <div class="blog-content">
             {$post.content nofilter}
           </div>
         </div>
@@ -90,7 +90,6 @@
       <div class="sdsarticleBottom"></div>
     </div>
   </div>
-
 
   <div id="product_comments_block_tab">
     <ul class="footer_links smart-blog-posts-navigation">

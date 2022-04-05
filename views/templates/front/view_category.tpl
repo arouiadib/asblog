@@ -30,42 +30,42 @@
 
 {block name='page_content'}
   {capture name=path}
-    <a href="{*{smartblog::GetSmartBlogLink('module-smartblog-list')|escape:'htmlall':'UTF-8'}*}">{l s='All Blog News' mod='smartblog'}</a>
+    <a href="{*{smartblog::GetSmartBlogLink('module-smartblog-list')|escape:'htmlall':'UTF-8'}*}">{l s='All Blog News' d='Modules.Asblog.Shop'}</a>
     {if $title_category != ''}<span class="navigation-pipe"></span>{$title_category|escape:'htmlall':'UTF-8'}{/if}
   {/capture}
   {if $postcategory == ''}
     {if $title_category != ''}
-      <div class="alert alert-danger"><p>There is 1 error</p><ol><li>{l s='No Post in Category' mod='smartblog'}</li></ol></div>
+      <div class="alert alert-danger"><p>There is 1 error</p><ol><li>{l s='No Post in Category' d='Modules.Asblog.Shop'}</li></ol></div>
     {else}
-      <div class="alert alert-danger"><p>There is 1 error</p><ol><li>{l s='No Post in Blog' mod='smartblog'}</li></ol></div>
+      <div class="alert alert-danger"><p>There is 1 error</p><ol><li>{l s='No Post in Blog' d='Modules.Asblog.Shop'}</li></ol></div>
     {/if}
   {else}
 
-      {if $title_category != ''}
-        {foreach from=$categoryinfo item=category}
-          <div id="sdsblogCategory" class="smartg-blog-category-banner-area">
-            <div class="smartg-blog-category-banner-images-and-content">
-              <img alt="{*{$category.meta_title|escape:'htmlall':'UTF-8'}*}" src="{$cat_image}" class="imageFeatured">
-              <div class="smartg-blog-category-banner-content">
-                <div class="smart-blog-category-banner-content-title">
-                  <span class="smart_blog-cat-text">Category:</span>
-                  {* {$category.meta_title|nl2br nofilter} *}
-                  <span class="smart_blog-cat-text">{*{$category.name|nl2br nofilter}*}</span>
-                </div>
-                <div class="smart-blog-cat-description">
-                  {*{$category.description|nl2br nofilter}*}
-                </div>
-              </div>
+
+  {if $title_category != ''}
+      <div id="" class="">
+        <div class="">
+          <img alt="{$meta_title|escape:'htmlall':'UTF-8'}" src="{$cat_image}" class="imageFeatured" width="300">
+          <div class="">
+            <div class="">
+              <span class="">Category:</span>
+              <span class="">{$title_category}</span>
+            </div>
+            <div class="">
+              {$category_description|nl2br nofilter}
             </div>
           </div>
-        {/foreach}
-      {/if}
+        </div>
+      </div>
+  {/if}
 
-    <div id="smartblogcat" class="block">
+
+    <div id="" class="">
       {foreach from=$postcategory item=post}
         {include file="module:asblog/views/templates/front/category_loop.tpl" postcategory=$postcategory}
       {/foreach}
     </div>
+
     {if !empty($pagenums)}
       <div class="row bottom-pagination-content smart-blog-bottom-pagination">
         <div class="post-page col-md-12">
@@ -90,16 +90,16 @@
             {l s='Showing' mod='smartblog'}
             {if $limit_start!=0}
               {$limit_start|escape:'htmlall':'UTF-8'}
-            {else}1{/if} {l s='to' mod='smartblog'}
+            {else}1{/if} {l s='to' d='Modules.Asblog.Shop'}
             {if $limit_start+$limit >= $total}
               {$total|escape:'htmlall':'UTF-8'}
             {else}
               {$limit_start+$limit|escape:'htmlall':'UTF-8'}
             {/if}
-            {l s='of' mod='smartblog'}
+            {l s='of' d='Modules.Asblog.Shop'}
             {$total|escape:'htmlall':'UTF-8'}
             ({$c|escape:'htmlall':'UTF-8'}
-            {l s='Pages' mod='smartblog'})
+            {l s='Pages' d='Modules.Asblog.Shop'})
           </div>
         </div>
       </div>

@@ -185,7 +185,7 @@ class Post extends \ObjectModel
                 FROM ' . _DB_PREFIX_ . 'post p
 /*                INNER JOIN ' . _DB_PREFIX_ . 'post_shop ps ON p.id_post = ps.id_post AND ps.id_shop = ' . (int) Context::getContext()->shop->id . '*/
                 WHERE p.id_category=' . (int) $id_category . '
-                AND p.active= 1';
+                AND p.active = 1';
 
         return Db::getInstance()->getValue($sql);
     }
