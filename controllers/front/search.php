@@ -39,17 +39,13 @@ class smartblogsearchModuleFrontController extends smartblogModuleFrontControlle
 
     public function initContent()
     {
-
-
         parent::initContent();
 
-        $blogcomment = new Blogcomment();
-
         $keyword = pSQL(Tools::getValue('smartsearch'));
-        Hook::exec('actionsbsearch', array('keyword' => $keyword));
+
         $id_lang = (int) $this->context->language->id;
         $title_category = '';
-        $posts_per_page = Configuration::get('smartpostperpage');
+        $posts_per_page = 5;
         $limit_start = 0;
         $limit = $posts_per_page;
 
@@ -58,75 +54,36 @@ class smartblogsearchModuleFrontController extends smartblogModuleFrontControlle
             $limit_start = $posts_per_page * ($c - 1);
         }
 
-        $result = SmartBlogPost::SmartBlogSearchPost($keyword, $id_lang, $limit_start, $limit);
+        $result = Post::search($keyword, $id_lang, $limit_start, $limit);
 
-        $total = SmartBlogPost::SmartBlogSearchPostCount($keyword, $id_lang);
+        $total = SmartBlogPost::sarchCount($keyword, $id_lang);
         $totalpages = ceil($total / $posts_per_page);
-        $i = 0;
-        $to = array();
-
-        if (!empty($result)) {
-            foreach ($result as $item) {
-                $to[$i] = $blogcomment->getToltalComment($item['id_post']);
-                $i++;
-            }
-            $j = 0;
-            foreach ($to as $item) {
-                if ($item == '') {
-                    $result[$j]['totalcomment'] = 0;
-                } else {
-                    $result[$j]['totalcomment'] = $item;
-                }
-                $j++;
-            }
-        }
 
 
         $protocol_link = (Configuration::get('PS_SSL_ENABLED')) ? 'https://' : 'http://';
         $protocol_content = (isset($useSSL) and $useSSL and Configuration::get('PS_SSL_ENABLED')) ? 'https://' : 'http://';
 
-        $smartbloglink = new SmartBlogLink($protocol_link, $protocol_content);
+        $bloglink = new BlogLink($protocol_link, $protocol_content);
         if(isset($limit_start) && $limit_start != 0){
 			$limit_start = $limit_start+1;
 		}else{
 			$limit_start = 0;
 		}
         $this->context->smarty->assign(array(
-            'smartbloglink' => $smartbloglink,
+            'bloglink' => $bloglink,
             'postcategory' => $result,
             'title_category' => $title_category,
-            'smartshowauthorstyle' => Configuration::get('smartshowauthorstyle'),
             'limit' => isset($limit) ? $limit : 0,
             'limit_start' => isset($limit_start) ? $limit_start : 0,
             'c' => isset($c) ? $c : 1,
             'total' => $total,
-            'smartshowviewed' => Configuration::get('smartshowviewed'),
-            'smartcustomcss' => Configuration::get('smartcustomcss'),
-            'smartshownoimg' => Configuration::get('smartshownoimg'),
-            'smartshowauthor' => Configuration::get('smartshowauthor'),
-            'smartblogliststyle' => Configuration::get('smartblogliststyle'),
             'post_per_page' => $posts_per_page,
             'smartsearch' => $keyword,
             'pagenums' => $totalpages - 1,
             'totalpages' => $totalpages
         ));
 
-        if ($overridden_template = Hook::exec(
-            'DisplayOverrideSmartBlogTemplate',
-            [
-                'controller' => $this,
-                'template_file' => "module:smartblog/searchresult",
-            ]
-        )) {
-            $this->setTemplate($overridden_template);
-        } else {
-            $theme = Configuration::get('smarttheme') ? Configuration::get('smarttheme') : 'default';
-            $templatepath = $this->get_template_path("searchresult.tpl", $theme);
-            if ($templatepath != "outside") {
-                $this->setTemplate("module:smartblog/views/templates/front/themes/" . $templatepath . "/searchresult.tpl");
-            } else {
                 $this->setTemplate("module:smartblog/views/templates/front/searchresult.tpl");
-            }
-        }
+
     }
 }
