@@ -36,7 +36,7 @@ final class PostQueryBuilder extends AbstractDoctrineQueryBuilder
                 ->setMaxResults($searchCriteria->getLimit())
             ;
         }
-        //var_dump($qb->getSQL());die;
+/*        var_dump($qb->getSQL());die;*/
         return $qb;
     }
 

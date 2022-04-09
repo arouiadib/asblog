@@ -1,4 +1,6 @@
 {extends file='page.tpl'}
+
+
 {block name='breadcrumb'}
   {if isset($breadcrumb)}
     <nav class="breadcrumb smart-blog-breadcrumb">
@@ -28,7 +30,15 @@
   {/if}
 {/block}
 
-{block name='page_content'}
+{block name='left_column'}
+
+  <div id="left-column" class="col-xs-12 col-sm-4 col-md-3">
+    {hook h='displayBlogSearch'}
+  </div>
+
+{/block}
+
+{block name='content'}
   {capture name=path}
     <a href="{*{smartblog::GetSmartBlogLink('module-smartblog-list')|escape:'htmlall':'UTF-8'}*}">{l s='All Blog News' d='Modules.Asblog.Shop'}</a>
     {if $title_category != ''}<span class="navigation-pipe"></span>{$title_category|escape:'htmlall':'UTF-8'}{/if}

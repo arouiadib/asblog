@@ -31,8 +31,6 @@ use PrestaShop\Module\AsBlog\Link\BlogLink;
 
 class AsBlogCategoryModuleFrontController extends ModuleFrontController
 {
-
-
 	public $ssl = false;
 	public $smartblogCategory;
 
@@ -59,7 +57,6 @@ class AsBlogCategoryModuleFrontController extends ModuleFrontController
 
 	public function initContent()
 	{
-
 		$category_status  = '';
 		$totalpages       = 0;
 		$cat_image        = 'no';
@@ -108,8 +105,17 @@ class AsBlogCategoryModuleFrontController extends ModuleFrontController
 
             $category     = new Category($id_category);
 
+
+			if (!Validate::isLoadedObject($category )) {
+                header('HTTP/1.1 404 Not Found');
+                header('Status: 404 Not Found');
+                $this->errors[] = Tools::displayError('Category not found');
+            }
+
 			$categoryinfo   = $category->toArray();
 
+/*			echo "<pre>";
+			var_dump($category);die;*/
 			$title_category = $categoryinfo['name'][$this->context->language->id];
 			$category_description = $categoryinfo['description'][$this->context->language->id];
 			$meta_title       = $categoryinfo['meta_title'][$this->context->language->id];
@@ -163,7 +169,6 @@ class AsBlogCategoryModuleFrontController extends ModuleFrontController
 				'limit_start'          => isset($limit_start) ? $limit_start : 0,
 				'c'                    => isset($c) ? $c : 1,
 				'total'                => $total,
-
 				'post_per_page'        => $posts_per_page,
 				'pagenums'             => $totalpages - 1,
 				'totalpages'           => $totalpages,

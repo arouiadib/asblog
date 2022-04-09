@@ -157,4 +157,21 @@ class BlogLink
 
         return $base . $shop->getBaseURI() . $langUrl;
     }
+
+
+    public static function GetBlogLink($rewrite = '', $params = null, $id_shop = null, $id_lang = null)
+    {
+        $url          = self::getBlogUrl();
+        $dispatcher   = Dispatcher::getInstance();
+        $id_lang      = (int) Context::getContext()->language->id;
+
+        $force_routes = (bool) Configuration::get('PS_REWRITING_SETTINGS');
+
+        if ($params != null) {
+            return $url . $dispatcher->createUrl($rewrite, $id_lang, $params, $force_routes);
+        } else {
+            $params = array();
+            return $url . $dispatcher->createUrl($rewrite, $id_lang, $params, $force_routes);
+        }
+    }
 }

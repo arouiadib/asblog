@@ -1,4 +1,3 @@
-{*{$post|var_dump}*}
 <div itemtype="#" itemscope="" class="sdsarticleCat clearfix">
     <div id="smartblogpost-{$post.id_post|escape:'htmlall':'UTF-8'}" class="">
         <div class="sdsarticleHeader smart-blog-posts-header-area">

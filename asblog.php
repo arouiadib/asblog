@@ -57,6 +57,7 @@ class Asblog extends Module implements WidgetInterface
         $this->confirmUninstall = $this->l('Uninstall?');
 
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
+        $this->controllers   = array('archive','archivemonth', 'blogpost', 'category', 'list', 'search', 'tagpost');
     }
 
     public function install()
@@ -69,7 +70,10 @@ class Asblog extends Module implements WidgetInterface
             mkdir(_PS_BLOG_POST_IMG_DIR_, 0775, true);
         }
 
-        if (!parent::install() || !$this->registerHook('moduleRoutes')) {
+        if (!parent::install()
+            || !$this->registerHook('moduleRoutes')
+            || !$this->registerHook('displayBlogSearch')
+        ) {
             return false;
         }
 
@@ -384,6 +388,21 @@ class Asblog extends Module implements WidgetInterface
         return $template_vars;
     }
 
+
+
+    public function hookDisplayBlogSearch($params)
+    {
+/*        $id_lang = $this->context->language->id;
+        $posts   = SmartBlogPost::getRelatedPostsByProduct($id_lang, Tools::getvalue('id_product'));
+        $this->smarty->assign(
+            array(
+                'posts' => $posts,
+            )
+        );*/
+
+        return $this->display(__FILE__, 'views/templates/front/plugins/search_form.tpl');
+    }
+
     /**
      * @return array
      */
@@ -429,7 +448,7 @@ class Asblog extends Module implements WidgetInterface
         return $this->display(__FILE__, 'views/templates/widget/' . $template_file);
     }
 
-    public function hookModuleRoutes($route = '', $detail = array())
+    public function hookModuleRoutes($params)
     {
         return $this->getModuleRoutes('ModuleRoutes', 'blog');
     }
@@ -480,6 +499,15 @@ class Asblog extends Module implements WidgetInterface
                         ),
                         'rewrite'        => array('regexp' => '[_a-zA-Z0-9-\pL]*'),
                     ),
+                    'params'     => array(
+                        'fc'     => 'module',
+                        'module' => 'asblog',
+                    ),
+                ),
+                'module-asblog-search_rule'         => array(
+                    'controller' => 'search',
+                    'rule'       => $alias . '/search',
+                    'keywords'   => array(),
                     'params'     => array(
                         'fc'     => 'module',
                         'module' => 'asblog',
