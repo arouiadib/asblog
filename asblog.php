@@ -388,7 +388,18 @@ class Asblog extends Module implements WidgetInterface
         return $template_vars;
     }
 
+    public function hookDisplayHomeBlog($params)
+    {
+        /*        $id_lang = $this->context->language->id;
+                $posts   = SmartBlogPost::getRelatedPostsByProduct($id_lang, Tools::getvalue('id_product'));
+                $this->smarty->assign(
+                    array(
+                        'posts' => $posts,
+                    )
+                );*/
 
+        return $this->display(__FILE__, 'views/templates/front/plugins/search_form.tpl');
+    }
 
     public function hookDisplayBlogSearch($params)
     {
@@ -466,6 +477,15 @@ class Asblog extends Module implements WidgetInterface
 
         if ($ModuleRoutes == 'ModuleRoutes') {
             return array(
+                'module-asblog-list'        => array(
+                    'controller' => 'list',
+                    'rule'       => $alias ,
+                    'keywords'   => array(),
+                    'params'     => array(
+                        'fc'     => 'module',
+                        'module' => 'smartblog',
+                    ),
+                ),
                 'module-asblog-blogpost' => array(
                     'controller' => 'blogpost',
                     'rule' => $alias .'/{:id_post}_{:rewrite}',

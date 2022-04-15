@@ -10,7 +10,7 @@
           </li>
           <li>
             <a href="{*{smartblog::GetSmartBlogLink('module-smartblog-list')}*}">
-            <span itemprop="name">{l s='All Post' mod='smartblog'}</span>
+            <span itemprop="name">{l s='All Post' d='Modules.Asblog.Shop'}</span>
             </a>
           </li>
           {if $title_category != ''}
@@ -27,13 +27,20 @@
     </nav>
   {/if}
 {/block}
+
+{block name='left_column'}
+  <div id="left-column" class="col-xs-12 col-sm-4 col-md-3">
+    {hook h='displayBlogSearch'}
+  </div>
+{/block}
+
 {block name='page_content'}
     {if $postcategory == ''}
-        {include file="module:smartblog/views/templates/front/search-not-found.tpl" postcategory=$postcategory}
+        {include file="module:asblog/views/templates/front/search-not-found.tpl" postcategory=$postcategory}
     {else}
         <div id="smartblogcat" class="block">
             {foreach from=$postcategory item=post}
-                {include file="module:smartblog/views/templates/front/category_loop.tpl" postcategory=$postcategory}
+                {include file="module:asblog/views/templates/front/category_loop.tpl" postcategory=$postcategory}
             {/foreach}
         </div>
     {/if}

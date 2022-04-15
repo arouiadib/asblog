@@ -88,7 +88,7 @@ class smartblogListModuleFrontController extends smartblogModuleFrontController
 				$id_category = Tools::getValue('id_category');
 		}
 
-		$posts_per_page = Configuration::get('smartpostperpage');
+		$posts_per_page = 5;
 		$limit_start    = 0;
 		$limit          = $posts_per_page;
 		if (!$id_category) {

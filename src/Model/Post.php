@@ -289,47 +289,53 @@ class Post extends \ObjectModel
             $id_lang = (int) Context::getContext()->language->id;
         }
 
-        $sql     = 'SELECT * FROM ' . _DB_PREFIX_ . 'smart_blog_post_lang pl, ' . _DB_PREFIX_ . 'smart_blog_post p
-                WHERE pl.id_lang= "' . pSQL($id_lang) . '"  AND p.active = 1
-                AND pl.id_smart_blog_post=p.id_smart_blog_post AND
-                (pl.meta_title LIKE \'%' . $keyword . '%\' OR
-                 pl.meta_keyword LIKE \'%' . $keyword . '%\' OR
-                 pl.meta_description LIKE \'%' . $keyword . '%\' OR
-                 pl.content LIKE \'%' . $keyword . '%\') ORDER BY p.id_smart_blog_post DESC';
+        $sql     = 'SELECT *
+                    FROM ' . _DB_PREFIX_ . 'post_lang pl, ' . _DB_PREFIX_ . 'post p
+                    WHERE pl.id_lang = "' . pSQL($id_lang) . '"
+                    AND p.active = 1
+                    AND pl.id_post = p.id_post
+                    AND (
+                            pl.title LIKE \'%' . $keyword . '%\' OR
+                            pl.meta_title LIKE \'%' . $keyword . '%\' OR
+                            pl.meta_keywords LIKE \'%' . $keyword . '%\' OR
+                            pl.meta_description LIKE \'%' . $keyword . '%\' OR
+                            pl.content LIKE \'%' . $keyword . '%\'
+                        )
+                    ORDER BY p.id_post DESC';
         if (!$posts = Db::getInstance()->executeS($sql)) {
             return false;
         }
 
-        $BlogCategory = new BlogCategory();
+        //$BlogCategory = new Category();
         $i            = 0;
 
         $result = array();
 
         foreach ($posts as $post) {
 
-            $result[$i]['id_post']           = $post['id_smart_blog_post'];
-            $result[$i]['viewed']            = $post['viewed'];
-            $result[$i]['is_featured']       = $post['is_featured'];
+            $result[$i]['id_post']           = $post['id_post'];
+            //$result[$i]['viewed']            = $post['viewed'];
+            //$result[$i]['is_featured']       = $post['is_featured'];
             $result[$i]['meta_title']        = $post['meta_title'];
-            $result[$i]['short_description'] = $post['short_description'];
+            //$result[$i]['short_description'] = $post['short_description'];
             $result[$i]['meta_description']  = $post['meta_description'];
             $result[$i]['content']           = $post['content'];
-            $result[$i]['meta_keyword']      = $post['meta_keyword'];
+            $result[$i]['meta_keywords']      = $post['meta_keywords'];
             $result[$i]['id_category']       = $post['id_category'];
             $result[$i]['link_rewrite']      = $post['link_rewrite'];
             //$result[ $i ]['cat_name']          = $BlogCategory->getCatName(  $post['id_smart_blog_post'] );
-            $result[$i]['cat_link_rewrite']  = $BlogCategory->getCatLinkRewrite($post['id_smart_blog_post']);
-            $employee                          = new Employee($post['id_author']);
+            //$result[$i]['cat_link_rewrite']  = $BlogCategory->getCatLinkRewrite($post['id_smart_blog_post']);
+/*            $employee                          = new Employee($post['id_author']);
 
             $result[$i]['lastname']  = $employee->lastname;
-            $result[$i]['firstname'] = $employee->firstname;
-            if (file_exists(_PS_MODULE_DIR_ . 'smartblog/images/' . $post['id_smart_blog_post'] . '.jpg')) {
-                $image                    = $post['id_smart_blog_post'];
+            $result[$i]['firstname'] = $employee->firstname;*/
+            if (file_exists(_PS_IMG_DIR_ . 'blog/post/' . $post['id_post'] . '.jpeg')) {
+                $image                    = $post['id_post'];
                 $result[$i]['post_img'] = $image;
             } else {
                 $result[$i]['post_img'] = 'no';
             }
-            $result[$i]['created'] = Smartblog::displayDate($post['created']);
+            //$result[$i]['created'] = Smartblog::displayDate($post['created']);
             $i++;
         }
         return $result;
@@ -343,13 +349,18 @@ class Post extends \ObjectModel
         if ($id_lang == null) {
             $id_lang = (int) Context::getContext()->language->id;
         }
-        $sql     = 'SELECT * FROM ' . _DB_PREFIX_ . 'smart_blog_post_lang pl, ' . _DB_PREFIX_ . 'smart_blog_post p
-                WHERE pl.id_lang=' . (int) $id_lang . '
-                AND pl.id_smart_blog_post=p.id_smart_blog_post AND p.active = 1 AND
-                (pl.meta_title LIKE \'%' . $keyword . '%\' OR
-                 pl.meta_keyword LIKE \'%' . $keyword . '%\' OR
-                 pl.meta_description LIKE \'%' . $keyword . '%\' OR
-                 pl.content LIKE \'%' . $keyword . '%\') ORDER BY p.id_smart_blog_post DESC';
+        $sql     = 'SELECT * FROM ' . _DB_PREFIX_ . 'post_lang pl, ' . _DB_PREFIX_ . 'post p
+                WHERE pl.id_lang =' . (int) $id_lang . '
+                AND pl.id_post = p.id_post
+                AND p.active = 1
+                AND (
+                        pl.title LIKE \'%' . $keyword . '%\' OR
+                        pl.meta_title LIKE \'%' . $keyword . '%\' OR
+                        pl.meta_keywords LIKE \'%' . $keyword . '%\' OR
+                        pl.meta_description LIKE \'%' . $keyword . '%\' OR
+                        pl.content LIKE \'%' . $keyword . '%\'
+                    )
+                ORDER BY p.id_post DESC';
         if (!$posts = Db::getInstance()->executeS($sql)) {
             return false;
         }

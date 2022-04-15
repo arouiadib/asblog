@@ -26,7 +26,7 @@
 <div id="pagenotfound" class="row">
     <div class="center_column col-xs-12 col-sm-12" id="center_column">
 		<div class="pagenotfound smart-blog-page-not-found">
-		
+
 			<div class="smart-search-result-not-found">
 				<svg width="167" height="152" viewBox="0 0 167 152" fill="none" xmlns="http://www.w3.org/2000/svg">
 				<path d="M166.664 137.795L148.278 109.37C147.041 107.457 145.133 106.142 142.905 105.668C141.751 105.422 140.586 105.429 139.465 105.654L134.047 97.2781C133.987 97.1845 133.895 97.1293 133.823 97.0489C139.736 91.588 143.841 84.4765 145.551 76.4402C147.734 66.1859 145.799 55.6933 140.104 46.9015C138.41 44.2632 136.342 41.7918 133.963 39.5608C127.868 33.8043 119.884 30.1232 111.486 29.1971C102.776 28.2065 94.2375 30.114 86.8782 34.6537C86.5154 34.8553 86.1943 35.0467 85.8579 35.2637C85.7917 35.3056 85.7285 35.3517 85.6683 35.4008C80.9418 38.4811 77.0155 42.4784 74.0544 47.1982C73.8302 47.5186 73.6447 47.8276 73.4306 48.1868C70.384 53.3252 68.5258 59.1973 68.0569 65.1677C67.5952 71.0326 68.4697 76.9958 70.5776 82.3931C71.5419 84.9423 72.7752 87.3729 74.2369 89.6048C81.7389 101.215 94.3568 107.543 107.224 107.543C112.404 107.543 117.618 106.495 122.56 104.377C122.603 104.472 122.615 104.575 122.674 104.666L128.088 113.036C127.419 113.975 126.936 115.043 126.691 116.204C126.222 118.429 126.648 120.704 127.888 122.602L146.274 151.045C146.673 151.663 147.343 152 148.027 152C148.415 152 148.809 151.892 149.158 151.664L166.046 140.696C166.512 140.393 166.838 139.917 166.954 139.374C167.069 138.829 166.965 138.261 166.664 137.795ZM77.7321 87.3125C76.4304 85.3251 75.3367 83.1699 74.4734 80.8836C72.5867 76.0533 71.8069 70.7328 72.2197 65.4972C72.6376 60.1644 74.297 54.9196 77.0318 50.3083C77.1755 50.0668 77.307 49.8426 77.5272 49.5223C80.2446 45.1955 83.7847 41.6035 88.0494 38.8465C88.1095 38.8076 88.1676 38.7656 88.2227 38.7206C88.4459 38.5814 88.6722 38.4474 88.9821 38.2734C95.6197 34.1809 103.246 32.4821 111.024 33.3632C118.534 34.1912 125.663 37.4762 131.108 42.6197C133.241 44.6193 135.087 46.8247 136.6 49.1805C141.689 57.037 143.418 66.407 141.469 75.5641C139.514 84.7438 134.1 92.6095 126.224 97.712L126.222 97.713C109.998 108.255 88.2502 103.589 77.7321 87.3125ZM128.489 101.233C129.232 100.752 129.927 100.217 130.631 99.6928L135.632 107.425L131.265 110.252L126.285 102.552C127.028 102.136 127.765 101.704 128.489 101.233ZM148.642 147.008L131.385 120.311C130.755 119.347 130.539 118.197 130.775 117.073C131.015 115.941 131.683 114.969 132.756 114.279L138.775 110.378C139.486 109.913 140.3 109.672 141.13 109.672C141.432 109.672 141.737 109.704 142.04 109.768C143.175 110.01 144.146 110.679 144.778 111.657L162.023 138.316L148.642 147.008Z" fill="#E8F1F3"/>
@@ -44,29 +44,42 @@
 				</svg>
 			</div>
 
-            <h1>{l s='Sorry, but nothing matched your search terms.' mod='smartblog'}</h1>
+            <h1>{l s='Sorry, but nothing matched your search terms.' d='Modules.Asblog.Shop'}</h1>
 
             <p>
-                {l s='Please try again with some different keywords.' mod='smartblog'}
+                {l s='Please try again with some different keywords.' d='Modules.Asblog.Shop'}
             </p>
 
+            <form class=""
+                  method="post"
+                  action="{$bloglink->getBlogLink('module-asblog-search_rule')|escape:'htmlall':'UTF-8'}">
+              <fieldset>
+                <div class="">
+                  <input type="text"
+                         class="form-control"
+                         value="{*{$search|escape:'htmlall':'UTF-8'}*}"
+                         name="search"
+                         id="search_query">
+                  <button class="btn btn-default button button-small"
+                          value="{l s='Ok'  d='Modules.Asblog.Shop'}"
+                          name="searchblogsubmit"
+                          type="submit">
+                    <span>{l s='Ok' d='Modules.Asblog.Shop'}</span>
+                  </button>
+                </div>
+              </fieldset>
+            </form>
 
-            <form class="std smart-blog-pang-not-found-search-area" method="post"
-                action="{smartblog::GetSmartBlogLink('smartblog_search')|escape:'htmlall':'UTF-8'}">
-                <fieldset>
-                    <div class="smart-blog-page-not-found-input">
-                        <input type="text" class="form-control smart-page-not-search-bar" value="{$smartsearch|escape:'htmlall':'UTF-8'}"
-                            name="smartsearch" id="search_query">
-                        <button class="btn btn-default button button-small" value="{l s='Ok' mod='smartblog'}"
-                            name="smartblogsubmit" type="submit"><span>{l s='Ok' mod='smartblog'}</span></button>
-                    </div>
-                </fieldset>
-			</form>
-
-            <div class="buttons smart-go-back-home"><a title="Home"
-                    href="{smartblog::GetSmartBlogLink('module-smartblog-list')|escape:'htmlall':'UTF-8'}"
-                    class="btn btn-default button button-medium"><span><i
-                            class="icon-chevron-left left"></i>{l s='Go Back to Home page' mod='smartblog'}</span></a></div>
+            <div class="buttons smart-go-back-home">
+              <a title="Home"
+                    href="{*{smartblog::GetSmartBlogLink('module-smartblog-list')|escape:'htmlall':'UTF-8'}*}"
+                    class="btn btn-default button button-medium">
+                <span>
+                  <i class="icon-chevron-left left"></i>
+                    {l s='Go Back to Home page' d='Modules.Asblog.Shop'}
+                </span>
+              </a>
+            </div>
         </div>
     </div>
 </div>

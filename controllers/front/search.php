@@ -61,7 +61,7 @@ class AsBlogSearchModuleFrontController extends ModuleFrontController
             'totalpages' => $totalpages
         ));
 
-        $this->setTemplate("module:smartblog/views/templates/front/searchresult.tpl");
+        $this->setTemplate("module:asblog/views/templates/front/searchresult.tpl");
 
     }
 }
