@@ -65,7 +65,7 @@ class CategoryRepository
     {
         $errors = [];
         $engine = _MYSQL_ENGINE_;
-        $this->dropTables();
+        //$this->dropTables();
 
         $queries = [
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_category`(

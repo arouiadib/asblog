@@ -57,7 +57,7 @@ class Asblog extends Module implements WidgetInterface
         $this->confirmUninstall = $this->l('Uninstall?');
 
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
-        $this->controllers   = array('archive','archivemonth', 'blogpost', 'category', 'list', 'search', 'tagpost');
+        $this->controllers   = array('blogArchive', 'blogArchiveMonth', 'blogPost', 'blogCategory', 'blogList', 'blogSearch', 'blogTag');
     }
 
     public function install()
@@ -477,17 +477,26 @@ class Asblog extends Module implements WidgetInterface
 
         if ($ModuleRoutes == 'ModuleRoutes') {
             return array(
-                'module-asblog-list'        => array(
-                    'controller' => 'list',
-                    'rule'       => $alias ,
+                'module-asblog-bloglist'        => array(
+                    'controller' => 'blogList',
+                    'rule'       => $alias . '/' ,
                     'keywords'   => array(),
                     'params'     => array(
                         'fc'     => 'module',
-                        'module' => 'smartblog',
+                        'module' => 'asblog',
+                    ),
+                ),
+                'module-asblog-bloglist_rule'        => array(
+                    'controller' => 'blogList',
+                    'rule'       => $alias,
+                    'keywords'   => array(),
+                    'params'     => array(
+                        'fc'     => 'module',
+                        'module' => 'asblog',
                     ),
                 ),
                 'module-asblog-blogpost' => array(
-                    'controller' => 'blogpost',
+                    'controller' => 'blogPost',
                     'rule' => $alias .'/{:id_post}_{:rewrite}',
                     'keywords' => array(
                         'id_post' => array('regexp' => '[0-9]+', 'param' => 'id_post'),
@@ -509,8 +518,8 @@ class Asblog extends Module implements WidgetInterface
                         'module' => 'asblog',
                     ),
                 ),*/
-                'module-asblog-category_rule'       => array(
-                    'controller' => 'category',
+                'module-asblog-blogcategory_rule'       => array(
+                    'controller' => 'blogCategory',
                     'rule'       => $alias . '/category/{id_category}_{rewrite}',
                     'keywords'   => array(
                         'id_category' => array(
@@ -524,8 +533,8 @@ class Asblog extends Module implements WidgetInterface
                         'module' => 'asblog',
                     ),
                 ),
-                'module-asblog-search_rule'         => array(
-                    'controller' => 'search',
+                'module-asblog-blogsearch_rule'         => array(
+                    'controller' => 'blogSearch',
                     'rule'       => $alias . '/search',
                     'keywords'   => array(),
                     'params'     => array(

@@ -60,7 +60,7 @@ class ImageObjectRepository{
     {
         $errors = [];
         $engine = _MYSQL_ENGINE_;
-        $this->dropTables();
+        //$this->dropTables();
 
         $queries = [
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}blog_image`(
