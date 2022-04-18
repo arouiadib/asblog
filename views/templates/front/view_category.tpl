@@ -33,6 +33,7 @@
 {block name='left_column'}
   <div id="left-column" class="col-xs-12 col-sm-4 col-md-3">
     {hook h='displayBlogSearch'}
+    {hook h='displayBlogCategories'}
   </div>
 {/block}
 

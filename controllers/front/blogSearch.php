@@ -4,7 +4,7 @@ use PrestaShop\Module\AsBlog\Model\Post;
 use PrestaShop\Module\AsBlog\Model\Category;
 use PrestaShop\Module\AsBlog\Link\BlogLink;
 
-class AsBlogSearchModuleFrontController extends ModuleFrontController
+class AsBlogBlogSearchModuleFrontController extends ModuleFrontController
 {
 
     public $ssl = false;

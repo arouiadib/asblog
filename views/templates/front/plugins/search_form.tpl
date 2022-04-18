@@ -3,7 +3,7 @@
     <div class="blog-search-form">
         <form class=""
               method="post"
-              action="{$bloglink->getBlogLink('module-asblog-search_rule')|escape:'htmlall':'UTF-8'}">
+              action="{$bloglink->getBlogLink('module-asblog-blogsearch')|escape:'htmlall':'UTF-8'}">
             <fieldset>
                 <div class="">
                     <input type="text"

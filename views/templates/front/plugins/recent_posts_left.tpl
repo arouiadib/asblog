@@ -1,7 +1,7 @@
 <div class="block">
     <h2 class='title_block'>{l s='Latest News' d='Modules.Asblog.Shop'}</h2>
     <div class="sdsblog-box-content">
-        {if isset($view_data) AND !empty($view_data)}
+        {*{if isset($view_data) AND !empty($view_data)}
             {assign var='i' value=1}
             {foreach from=$view_data item=post}
 
@@ -28,6 +28,6 @@
                     </div>
                 {$i=$i+1}
             {/foreach}
-        {/if}
+        {/if}*}
      </div>
 </div>

@@ -107,4 +107,50 @@ class Category extends \ObjectModel
             'link_rewrite' => $this->link_rewrite,
         ];
     }
+
+    public static function getCategory( $active = 1, $id_lang = null ) {
+        if ( $id_lang == null ) {
+            $id_lang = (int) Context::getContext()->language->id;
+        }
+
+        $sorting  = Configuration::get( 'sort_category_by' );
+        $orderby  = 'pcl.name';
+        $orderway = 'ASC';
+        if ( $sorting == 'name_ASC' ) {
+            $orderby  = 'pcl.name';
+            $orderway = 'ASC';
+        } elseif ( $sorting == 'name_DESC' ) {
+            $orderby  = 'pcl.name';
+            $orderway = 'DESC';
+        } elseif ( $sorting == 'id_ASC' ) {
+            $orderby  = 'pc.id_category';
+            $orderway = 'ASC';
+        } else {
+            $orderby  = 'pc.id_category';
+            $orderway = 'DESC';
+        }
+
+        $result = Db::getInstance( _PS_USE_SQL_SLAVE_ )->executeS(
+            '
+                SELECT * FROM `' . _DB_PREFIX_ . 'post_category` pc 
+                INNER JOIN `' . _DB_PREFIX_ . 'post_category_lang` pcl 
+                ON (pc.`id_category` = pcl.`id_category` AND pcl.`id_lang` = ' . (int) ( $id_lang ) . ')
+                WHERE pc.`active`= ' . $active . ' 
+                ORDER BY ' . $orderby . ' ' . $orderway
+        );
+
+        return $result;
+    }
+
+    public static function getCountPostsByCategory( $id_category ) {
+        $sql = 'SELECT count(id_post) as count 
+                from `' . _DB_PREFIX_ . 'post` 
+                where id_category = ' . (int) $id_category;
+
+        if ( ! $result = Db::getInstance()->executeS( $sql ) ) {
+            return false;
+        }
+
+        return $result[0]['count'];
+    }
 }

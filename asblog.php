@@ -19,6 +19,7 @@ use PrestaShop\Module\AsBlog\Repository\PostRepository;
 use PrestaShop\Module\AsBlog\Repository\CategoryRepository;
 use PrestaShop\Module\AsBlog\Repository\ImageObjectRepository;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
+use PrestaShop\Module\AsBlog\Model\Category;
 
 define('_PS_BLOG_CATEGORY_IMG_DIR_', _PS_IMG_DIR_.'blog/category/');
 define('_PS_BLOG_POST_IMG_DIR_', _PS_IMG_DIR_.'blog/post/');
@@ -73,6 +74,10 @@ class Asblog extends Module implements WidgetInterface
         if (!parent::install()
             || !$this->registerHook('moduleRoutes')
             || !$this->registerHook('displayBlogSearch')
+            || !$this->registerHook('displayBlogCategories')
+            || !$this->registerHook('hookDisplayBlogHome')
+            || !$this->registerHook('hookDisplayBlogRecentPostsLeft')
+            || !$this->registerHook('hookDisplayBlogRecentPostsHome')
         ) {
             return false;
         }
@@ -388,7 +393,46 @@ class Asblog extends Module implements WidgetInterface
         return $template_vars;
     }
 
-    public function hookDisplayHomeBlog($params)
+    public function hookDisplayBlogCategories($params)
+    {
+        if (!$this->isCached('categories.tpl', $this->getCacheId()))
+        {
+            $id_lang = $this->context->language->id;
+            $category = new Category();
+            $categories = $category->getCategory( 1, $id_lang);
+            $i = 0;
+            foreach ($categories as $category){
+                $categories[$i]['count'] = $category->getCountPostsByCategory($category['id_category']);
+                $i++;
+            }
+
+            $this->smarty->assign( array('categories' => $categories));
+        }
+
+        return $this->display(__FILE__, 'views/templates/front/plugin/categories.tpl', $this->getCacheId());
+    }
+
+
+    public function hookDisplayBlogHome($params)
+    {
+        /*        $id_lang = $this->context->language->id;
+                $posts   = SmartBlogPost::getRelatedPostsByProduct($id_lang, Tools::getvalue('id_product'));
+                $this->smarty->assign(
+                    array(
+                        'posts' => $posts,
+                    )
+                );*/
+
+        return $this->display(__FILE__, 'views/templates/front/plugins/home_posts.tpl');
+    }
+
+    public function hookDisplayBlogSearch($params)
+    {
+        return $this->display(__FILE__, 'views/templates/front/plugins/search_form.tpl');
+    }
+
+
+    public function hookDisplayBlogRecentPostsLeft($params)
     {
         /*        $id_lang = $this->context->language->id;
                 $posts   = SmartBlogPost::getRelatedPostsByProduct($id_lang, Tools::getvalue('id_product'));
@@ -401,19 +445,18 @@ class Asblog extends Module implements WidgetInterface
         return $this->display(__FILE__, 'views/templates/front/plugins/search_form.tpl');
     }
 
-    public function hookDisplayBlogSearch($params)
+    public function hookDisplayBlogRecentPostsHome($params)
     {
-/*        $id_lang = $this->context->language->id;
-        $posts   = SmartBlogPost::getRelatedPostsByProduct($id_lang, Tools::getvalue('id_product'));
-        $this->smarty->assign(
-            array(
-                'posts' => $posts,
-            )
-        );*/
+        /*        $id_lang = $this->context->language->id;
+                $posts   = SmartBlogPost::getRelatedPostsByProduct($id_lang, Tools::getvalue('id_product'));
+                $this->smarty->assign(
+                    array(
+                        'posts' => $posts,
+                    )
+                );*/
 
         return $this->display(__FILE__, 'views/templates/front/plugins/search_form.tpl');
     }
-
     /**
      * @return array
      */
@@ -533,7 +576,7 @@ class Asblog extends Module implements WidgetInterface
                         'module' => 'asblog',
                     ),
                 ),
-                'module-asblog-blogsearch_rule'         => array(
+                'module-asblog-blogsearch'         => array(
                     'controller' => 'blogSearch',
                     'rule'       => $alias . '/search',
                     'keywords'   => array(),
