@@ -20,6 +20,7 @@ use PrestaShop\Module\AsBlog\Repository\CategoryRepository;
 use PrestaShop\Module\AsBlog\Repository\ImageObjectRepository;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 use PrestaShop\Module\AsBlog\Model\Category;
+use PrestaShop\Module\AsBlog\Model\Post;
 
 define('_PS_BLOG_CATEGORY_IMG_DIR_', _PS_IMG_DIR_.'blog/category/');
 define('_PS_BLOG_POST_IMG_DIR_', _PS_IMG_DIR_.'blog/post/');
@@ -395,36 +396,25 @@ class Asblog extends Module implements WidgetInterface
 
     public function hookDisplayBlogCategories($params)
     {
-        if (!$this->isCached('categories.tpl', $this->getCacheId()))
+        if (!$this->isCached('views/templates/front/plugins/categories.tpl', $this->getCacheId()))
         {
             $id_lang = $this->context->language->id;
             $category = new Category();
             $categories = $category->getCategory( 1, $id_lang);
             $i = 0;
-            foreach ($categories as $category){
-                $categories[$i]['count'] = $category->getCountPostsByCategory($category['id_category']);
+            foreach ($categories as $cat){
+                $categories[$i]['count'] = $category->getCountPostsByCategory($cat['id_category']);
                 $i++;
             }
 
             $this->smarty->assign( array('categories' => $categories));
         }
-
-        return $this->display(__FILE__, 'views/templates/front/plugin/categories.tpl', $this->getCacheId());
+        $key = 'aa_carriersfooter|' . 'hookDisplayBlogCategories';
+        return $this->fetch('module:asblog/views/templates/front/plugins/categories.tpl', $this->getCacheId($key));
+        //return $this->display(__FILE__, 'views/templates/front/plugin/categories.tpl', $this->getCacheId());
     }
 
 
-    public function hookDisplayBlogHome($params)
-    {
-        /*        $id_lang = $this->context->language->id;
-                $posts   = SmartBlogPost::getRelatedPostsByProduct($id_lang, Tools::getvalue('id_product'));
-                $this->smarty->assign(
-                    array(
-                        'posts' => $posts,
-                    )
-                );*/
-
-        return $this->display(__FILE__, 'views/templates/front/plugins/home_posts.tpl');
-    }
 
     public function hookDisplayBlogSearch($params)
     {
@@ -434,15 +424,29 @@ class Asblog extends Module implements WidgetInterface
 
     public function hookDisplayBlogRecentPostsLeft($params)
     {
-        /*        $id_lang = $this->context->language->id;
-                $posts   = SmartBlogPost::getRelatedPostsByProduct($id_lang, Tools::getvalue('id_product'));
-                $this->smarty->assign(
-                    array(
-                        'posts' => $posts,
-                    )
-                );*/
+        if (!$this->isCached('views/templates/front/plugins/recent_posts_left.tpl', $this->getCacheId()))
+        {
+            $id_lang = $this->context->language->id;
+            $posts =  Post::getRecentPosts($id_lang);
+            $i = 0;
+            foreach($posts as $post) {
+                if (file_exists(_PS_IMG_DIR_.'blog/post/' . $post['id_post'] . '.jpeg') )
+                {
+                    $image =   $post['id_post'];
+                    $posts[$i]['post_img'] = $image;
+                }
+                else
+                {
+                    $posts[$i]['post_img'] ='no';
+                }
+                $i++;
+            }
+            $this->smarty->assign( array(
+                'posts' => $posts
+            ));
+        }
+        return $this->display(__FILE__, 'views/templates/front/plugins/recent_posts_left.tpl',$this->getCacheId());
 
-        return $this->display(__FILE__, 'views/templates/front/plugins/search_form.tpl');
     }
 
     public function hookDisplayBlogRecentPostsHome($params)
@@ -455,7 +459,7 @@ class Asblog extends Module implements WidgetInterface
                     )
                 );*/
 
-        return $this->display(__FILE__, 'views/templates/front/plugins/search_form.tpl');
+        return $this->display(__FILE__, 'views/templates/front/plugins/recent_posts_home.tpl');
     }
     /**
      * @return array

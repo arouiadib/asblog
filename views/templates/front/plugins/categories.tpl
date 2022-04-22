@@ -11,7 +11,7 @@
                         {$options.id_category = $category.id_category}
                         {$options.slug = $category.link_rewrite}
                         <li>
-                            <a href="{*{smartblog::GetSmartBlogLink('smartblog_category',$options)}*}">[{$category.count}] {$category.meta_title}</a>
+                            <a href="{*{smartblog::GetSmartBlogLink('smartblog_category',$options)}*}">{$category.name} [{$category.count}]</a>
                         </li>
                     {/foreach}
                 </ul>

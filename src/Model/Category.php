@@ -2,6 +2,8 @@
 
 namespace PrestaShop\Module\AsBlog\Model;
 
+use Configuration;
+use Db;
 /**
  * Class Category
  */

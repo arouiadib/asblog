@@ -366,4 +366,58 @@ class Post extends \ObjectModel
         }
         return count($posts);
     }
+
+    public static function getRecentPosts($id_lang = null)
+    {
+
+        if ($id_lang == null) {
+            $id_lang = (int) Context::getContext()->language->id;
+        }
+
+        $limit = 5;
+
+        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS(
+            'SELECT  /*p.id_author*/, p.id_post, p.created, pl.meta_title, pl.link_rewrite 
+                    FROM ' . _DB_PREFIX_ . 'post p 
+                    INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl ON p.id_post = pl.id_post 
+                    INNER JOIN ' . _DB_PREFIX_ . 'post_shop ps ON pl.id_post = ps.id_post 
+                    AND ps.id_shop = ' . (int) Context::getContext()->shop->id . '
+                    WHERE pl.id_lang =' . $id_lang . '  AND p.active = 1 
+                    ORDER BY p.id_post DESC LIMIT 0,' . $limit
+        );
+
+        foreach ($result as $key => $value) {
+            //$result[$key]['created'] = smartblog::displayDate($value['created']);
+        }
+
+        return $result;
+    }
+
+
+    public static function getPopularPosts($id_lang = null)
+    {
+        if ($id_lang == null) {
+            $id_lang = (int) Context::getContext()->language->id;
+        }
+
+        $limit = 5;
+
+        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS(
+            'SELECT /*p.id_author */, p.viewed, p.created, p.id_post, pl.meta_title, pl.link_rewrite 
+                    FROM ' . _DB_PREFIX_ . 'post p 
+                    INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl 
+                    ON p.id_post = pl.id_post 
+                    INNER ' . _DB_PREFIX_ . 'post_shop ps 
+                    ON pl.id_post = ps.id_post 
+                    AND ps.id_shop = ' . (int) Context::getContext()->shop->id . '
+                    WHERE pl.id_lang=' . $id_lang . ' AND p.active = 1 
+                    ORDER BY p.viewed DESC LIMIT 0,' . $limit
+        );
+        foreach ($result as $key => $value) {
+            //$result[$key]['created'] = smartblog::displayDate($value['created']);
+        }
+
+        return $result;
+    }
+
 }
