@@ -1,26 +1,33 @@
-<div class="block">
-    <h2 class='title_block'>{l s='Latest News' d='Modules.Asblog.Shop'}</h2>
-    <div class="sdsblog-box-content">
-        {if isset($posts) AND !empty($posts)}
-            <div id="recent_article_smart_blog_block_left"  class="block blogModule boxPlain">
-                <h2 class='sdstitle_block'><a href="{*{smartblog::GetSmartBlogLink('smartblog')}*}">{l s='Recent Articles' d='Modules.Asblog.Shop'}</a></h2>
-                <div class="block_content sdsbox-content">
-                    <ul class="recentArticles">
-                        {foreach from=$posts item="post"}
-                            {assign var="options" value=null}
-                            {$options.id_post= $post.id_smart_blog_post}
-                            {$options.slug= $post.link_rewrite}
-                            <li>
-                                <a class="image" title="{$post.meta_title}" href="{*{smartblog::GetSmartBlogLink('smartblog_post',$options)}*}">
-                                    <img alt="{$post.meta_title}" src="{$modules_dir}/smartblog/images/{$post.post_img}-home-small.jpg">
-                                </a>
-                                <a class="title"  title="{$post.meta_title}" href="{*{smartblog::GetSmartBlogLink('smartblog_post',$options)}*}">{$post.meta_title}</a>
-                                <span class="info">{$post.created|date_format:"%b %d, %Y"}</span>
-                            </li>
-                        {/foreach}
-                    </ul>
-                </div>
+<div id="blog-recent-posts-left" class="block">
+    {if isset($posts) AND !empty($posts)}
+        <div id="recent-articles-block-left"  class="block">
+            <h2 class="block_title">
+                    {l s='Recent Articles' d='Modules.Asblog.Shop'}
+            </h2>
+            <div class="block_content">
+                <ul class="posts-list">
+                    {foreach from=$posts item="post"}
+                        <li>
+                            {assign var="image_url" value="`$urls.img_ps_url`blog/post/`$post.post_img`.jpeg"}
+                            {if $post.post_img === 'no'}
+                                {$image_url = "`$urls.img_ps_url`blog/no.jpg"}
+                            {/if}
+                            <a class="image" title="{$post.meta_title}"
+                               href="{$bloglink->getBlogPostLink($post.id_post, $post.link_rewrite)|escape:'htmlall':'UTF-8'}">
+                                <div class="article-image">
+                                    <img alt="{$post.meta_title}" src="{$image_url}">
+                                </div>
+                                <div class="article-title-and-date">
+                                    <h3 class="article-title">{$post.meta_title}</h3>
+                                    <div class="article-date">{$post.date_add|date_format:"%b %d, %Y"}</div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </a>
+                        </li>
+                    {/foreach}
+                </ul>
             </div>
-        {/if}
-     </div>
+        </div>
+    {/if}
 </div>
+

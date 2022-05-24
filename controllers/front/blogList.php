@@ -33,8 +33,8 @@ class AsBlogBlogListModuleFrontController extends ModuleFrontController
     {
         $category_status  = '';
         $totalpages       = 0;
-        $cat_image        = 'no';
-        $categoryinfo     = '';
+/*        $cat_image        = 'no';
+        $categoryinfo     = '';*/
         $title_category   = '';
         $cat_link_rewrite = '';
         $post    = new Post();
@@ -54,7 +54,7 @@ class AsBlogBlogListModuleFrontController extends ModuleFrontController
         } else {
             $total = (int) $post->getTotalByCategory($id_category);
         }
-
+        //var_dump($id_category);
 
         if ($total != '' || $total != 0) {
             $totalpages = ceil($total / $posts_per_page);
@@ -90,7 +90,7 @@ class AsBlogBlogListModuleFrontController extends ModuleFrontController
 
         }
 
-
+        //var_dump(count($allNews));die;
         if (!empty($allNews)) {
             foreach ($allNews as $item) {
                 if (file_exists(_PS_IMG_DIR_ . 'blog/post/' . $item['id_post'] . '.jpeg')) {
@@ -113,7 +113,7 @@ class AsBlogBlogListModuleFrontController extends ModuleFrontController
             $limit_start = 0;
         }
 
-
+//var_dump($totalpages);die;
         $this->context->smarty->assign(
             array(
                 'bloglink'             => $bloglink,

@@ -1,5 +1,5 @@
-
 {extends file='page.tpl'}
+
 {block name='breadcrumb'}
   {if isset($breadcrumb)}
     <nav class="breadcrumb smart-blog-breadcrumb">
@@ -11,7 +11,7 @@
         </li>
         <li>
           <a href="">
-            <span>{l s='All Post' mod='smartblog'}</span>
+            <span>{l s='All Post' d='Modules.Asblog.Shop'}</span>
           </a>
         </li>
       </ol>
@@ -19,107 +19,146 @@
   {/if}
 {/block}
 
+{block name="before_content"}
+    <div id="before_content" class="col-xs-12 col-sm-12 col-md-12 pr-0 pl-0">
+        <div id="product_navigation">
+            <ul class="posts-navigation">
+                {foreach from=$posts_previous item="post"}
+                    {if isset($post.id_post)}
+                        <li  class="pull-left">
+                            <a title="{l s='Prevoius Post' d='Modules.Asblog.Shop'}"
+                               href="{$bloglink->getBlogPostLink($post.id_post, $post.link_rewrite)|escape:'htmlall':'UTF-8'}"
+                               class="btn">
+                                <span class="navigation-icon material-icons">arrow_back_ios</span>
+                                <span class="navigation-text">
+                                    {l s='Previous Post' d='Modules.Asblog.Shop'}
+                                </span>
+
+                            </a>
+                        </li>
+                    {/if}
+                {/foreach}
+                {foreach from=$posts_next item="post"}
+                    {if isset($post.id_post)}
+                        <li class="pull-right">
+                            <a title="{l s='Next Post' d='Modules.Asblog.Shop'}"
+                               href="{$bloglink->getBlogPostLink($post.id_post,$post.link_rewrite)|escape:'htmlall':'UTF-8'}"
+                               class="btn">
+                                <span class="navigation-icon material-icons">arrow_forward_ios</span>
+                                <span class="navigation-text">
+                                    {l s='Next Post' d='Modules.Asblog.Shop'}
+                                </span>
+                            </a>
+                        </li>
+                    {/if}
+                {/foreach}
+            </ul>
+        </div>
+
+        <div class="blog-post-title">
+            <h1>
+                {$title|escape:'htmlall':'UTF-8'}
+            </h1>
+        </div>
+        <div class="blog-post-excerpt">
+            <p>
+                The man who helped give the world candy-colored computers eventually walked out the door. What does that mean for the company’s next big thing?
+            </p>
+        </div>
+        <div class="blog-post-views-and-category">
+            <div class="">
+                <i class="material-icons md-48 md-dark md-inactive">speaker_group</i>
+                <span itemprop="">
+                            {l s='Post Category:' d='Modules.Asblog.Shop'}
+                        </span>
+                <a title=""
+                   href="{$bloglink->getBlogCategoryLink($post.id_category, $cat_link_rewrite)}"
+                   class="">
+                    <span>{$title_category}</span>
+                </a>
+            </div>
+        </div>
+        <div class="blog-post-featured-image">
+            {assign var="image_url" value="`$urls.img_ps_url`blog/post/`$post_img`.jpeg"}
+            {if $post_img === 'no'}
+                {$image_url = "`$urls.img_ps_url`blog/no.jpg"}
+            {/if}
+
+            <img itemprop="image" alt="{$post.meta_title|escape:'htmlall':'UTF-8'}"
+                 src="{$image_url}"
+                 class="imageFeatured"
+            >
+        </div>
+
+
+    </div>
+
+
+{/block}
+
+
 {block name='left_column'}
-  <div id="left-column" class="col-xs-12 col-sm-4 col-md-3">
-    {hook h='displayBlogSearch'}
+  <div id="left-column" class="col-xs-12 col-sm-12 col-md-3 pr-0">
     {hook h='displayBlogCategories'}
   </div>
 {/block}
 
-{block name='page_content'}
-  {capture name=path}<a href="">
-    {l s='All Blog News' mod='smartblog'}</a>
-    <span class="navigation-pipe"></span>
-    {$meta_title|escape:'htmlall':'UTF-8'}
-  {/capture}
-  <div id="content" class="block">
-    <div itemtype="http://schema.org/BlogPosting" itemscope="" id="sdsblogArticle" class="blog-post smart-blog-single-post">
-      <div class="smart-blog-posts-header-area">
-        <div class="title_block smart-blog-single-post-title">{$meta_title|escape:'htmlall':'UTF-8'}</div>
-        <div class="sdsarticleHeader">
-						<span class="smart-blog-posts-info">
-							 {l s='Posted by ' mod='smartblog'} &nbsp;<i class="icon icon-user"></i>
-							<span itemprop="author">{*{if $smartshowauthorstyle != 0}{$firstname} {$lastname}{else}{$lastname} {$firstname}{/if}*}</span>
-              &nbsp;
-							<i class="icon icon-calendar"></i>&nbsp;
-              <span itemprop="dateCreated">{$created|escape:'htmlall':'UTF-8'}</span>
-							<span itemprop="articleSection">
-								{*{$assocCats = BlogCategory::getPostCategoriesFull($post.id_post)}
-                {$catCounts = 0}
-                {if !empty($assocCats)}
-                  &nbsp;&nbsp;<i class="icon icon-tags"></i>&nbsp;
-									{foreach $assocCats as $catid=>$assoCat}
-                  {if $catCounts > 0}, {/if}
-                  {$catlink=[]}
-                  {$catlink.id_category = $assoCat.id_category}
-                  {$catlink.slug = $assoCat.link_rewrite}
-                  <a href="{$smartbloglink->getSmartBlogCategoryLink($assoCat.id_category,$assoCat.link_rewrite)|escape:'htmlall':'UTF-8'}">
-											{$assoCat.name|escape:'htmlall':'UTF-8'}
-										</a>
-                  {$catCounts = $catCounts + 1}
-                {/foreach}
-                {/if}*}
-							</span>
-						</span>
-          <a title="" style="display:none" itemprop="url" href="#"></a>
+{block name='content_wrapper'}
+    <div id="content-wrapper" class="col-xs-12 col-sm-12 col-md-5 pr-0 pl-0">
+        <div id="content" class="block">
+
+            <div class="blog-post-author">
+                <div id="post-author">
+                    <i class="material-icons md-48 md-dark md-inactive">person</i>
+                    <span itemprop="author">{l s='By: ' d='Modules.Asblog.Shop'}{$firstname} {$lastname}</span>
+                </div>
+                <div id="post-author-description">
+                    <p>The man who helped give the world candy-colored computers eventually walked out the door. What does that mean for the company’s next big thing?</p>
+                </div>
+
+            </div>
+
+            <div class="blog-post-date">
+                <i class="material-icons md-48 md-dark md-inactive">event_note</i>
+                <span itemprop="dateCreated">
+                        {$created|date_format:"%b %d, %Y"}
+                </span>
+            </div>
+
+            <div itemtype="http://schema.org/BlogPosting" itemscope="" id="" class="blog-post">
+
+                <div itemprop="articleBody">
+                    <div class="articleContent">
+                        {* {if isset($ispost) && !empty($ispost)}
+                        <a itemprop="url" href="{'$smartbloglink->getSmartBlogPostLink($post.id_post,$post.cat_link_rewrite)'|escape:'htmlall':'UTF-8'}" title="{$post.meta_title|escape:'htmlall':'UTF-8'}" class="imageFeaturedLink">
+                          {/if}
+
+                         {if $smartbloglink->getImageLink($post.link_rewrite, $post.id_post, 'single-default') != 'false'}
+                            <img itemprop="image" alt="{$post.meta_title|escape:'htmlall':'UTF-8'}"
+                                 src="{$smartbloglink->getImageLink($post.link_rewrite, $post.id_post, 'single-default')}"
+                                 class="imageFeatured">
+                          {/if}
+
+                          {if isset($ispost) && !empty($ispost)}
+                        </a>
+                        {/if}*}
+
+
+                        <div class="blog-content">
+                            {$post.content nofilter}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div itemprop="articleBody">
-        <div class="articleContent">
-          {* {if isset($ispost) && !empty($ispost)}
-          <a itemprop="url" href="{'$smartbloglink->getSmartBlogPostLink($post.id_post,$post.cat_link_rewrite)'|escape:'htmlall':'UTF-8'}" title="{$post.meta_title|escape:'htmlall':'UTF-8'}" class="imageFeaturedLink">
-            {/if}
-
-           {if $smartbloglink->getImageLink($post.link_rewrite, $post.id_post, 'single-default') != 'false'}
-              <img itemprop="image" alt="{$post.meta_title|escape:'htmlall':'UTF-8'}"
-                   src="{$smartbloglink->getImageLink($post.link_rewrite, $post.id_post, 'single-default')}"
-                   class="imageFeatured">
-            {/if}
-
-            {if isset($ispost) && !empty($ispost)}
-          </a>
-          {/if}*}
-          {assign var="url" value="`$urls.img_ps_url`blog/post/`$post_img`.jpeg"}
-          <img itemprop="image" alt="{$post.meta_title|escape:'htmlall':'UTF-8'}"
-               src="{$url}"
-               class="imageFeatured"
-               width="500"
-          >
-
-          <div class="blog-content">
-            {$post.content nofilter}
-          </div>
-        </div>
-
-        <div class="sdsarticle-des"></div>
-      </div>
-      <div class="sdsarticleBottom"></div>
     </div>
-  </div>
+{/block}
 
-  <div id="product_comments_block_tab">
-    <ul class="footer_links smart-blog-posts-navigation">
-      {foreach from=$posts_previous item="post"}
-        {if isset($post.id_post)}
-          <li>
-            <a title="{l s='Prevoius Post' d='Modules.Asblog.Shop'}"
-               href="{$bloglink->getBlogPostLink($post.id_post, $post.link_rewrite)|escape:'htmlall':'UTF-8'}"
-               class="btn btn-default button button-small">
-              <span><i class="icon-chevron-left"></i> {l s='Prev Post' d='Modules.Asblog.Shop'}</span></a>
-          </li>
-        {/if}
-      {/foreach}
-      {foreach from=$posts_next item="post"}
-        {if isset($post.id_post)}
-          <li class="pull-right">
-            <a title="{l s='Next Post' d='Modules.Asblog.Shop'}"
-               href="{$bloglink->getBlogPostLink($post.id_post,$post.link_rewrite)|escape:'htmlall':'UTF-8'}"
-               class="btn btn-default button button-small"><span>{l s='Next Post' d='Modules.Asblog.Shop'}
-                <i class="icon-chevron-right"></i>
-              </span></a>
-          </li>
-        {/if}
-      {/foreach}
-    </ul>
-  </div>
+
+{block name='right_column'}
+    <div id="right-column" class="col-xs-12 col-sm-12 col-md-3 pr-0 pl-0">
+        {hook h='displayBlogRecentPostsLeft'}
+        {hook h='displayBlogPopularPosts'}
+        {hook h='displayBlogSearch'}
+    </div>
 {/block}

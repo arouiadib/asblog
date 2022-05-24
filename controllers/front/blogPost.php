@@ -1,7 +1,9 @@
 <?php
 
 use PrestaShop\Module\AsBlog\Model\Post;
+use PrestaShop\Module\AsBlog\Model\Category;
 use PrestaShop\Module\AsBlog\Link\BlogLink;
+use Employee;
 
 class AsBlogBlogPostModuleFrontController extends ModuleFrontController
 {
@@ -12,9 +14,8 @@ class AsBlogBlogPostModuleFrontController extends ModuleFrontController
 
         if ($id_post) {
 
-            $post = new Post($id_post, true, $this->context->language->id, $this->context->shop->id);
+            $post = new Post($id_post, $this->context->language->id, $this->context->shop->id);
             $this->post = $post->toArray();
-
 
             if (!$this->post['active']) {
                 $this->post = array();
@@ -35,7 +36,11 @@ class AsBlogBlogPostModuleFrontController extends ModuleFrontController
             $currentPostPosition = $this->post['position'];
             //$post['post_img'] = null; // --extra added
 
-            //$id_category      = $post['id_category'];
+            //var_dump('hi');die;
+            $id_category      = (int)$this->post['id_category'];
+
+            $category = new Category($id_category, $this->context->language->id, $this->context->shop->id);
+
             $posts_previous = Post::getPreviousPostsById($id_lang, $currentPostPosition);
             $posts_next = Post::getNextPostsById($id_lang, $currentPostPosition);
 
@@ -51,6 +56,9 @@ class AsBlogBlogPostModuleFrontController extends ModuleFrontController
                 $post_img = 'no';
             }
 
+            $employee                 = new Employee($this->post['id_author']);
+
+            Post::setNbViews($id_post);
 
             $this->context->smarty->assign(
                 array(
@@ -61,8 +69,9 @@ class AsBlogBlogPostModuleFrontController extends ModuleFrontController
                     'post'                       => $this->post,
                     'posts_next'                 => $posts_next,
                     'posts_previous'             => $posts_previous,
-                    //'title_category'             => (isset($title_category[0][0]['name'])) ? $title_category[0][0]['name'] : '',
-                    //'cat_link_rewrite'           => (isset($title_category[0][0]['link_rewrite'])) ? $title_category[0][0]['link_rewrite'] : '',
+                    'title_category'             => (isset($category->name)) ? $category->name : '',
+                    'cat_link_rewrite'           => (isset($category->link_rewrite)) ? $category->link_rewrite : '',
+                    'title'                      => $this->post['title'],
                     'meta_title'                 => $this->post['meta_title'],
                     'post_active'                => $this->post['active'],
                     'content'                    => $this->post['content'],
@@ -70,6 +79,8 @@ class AsBlogBlogPostModuleFrontController extends ModuleFrontController
                     'created'                    => $this->post['date_add'],//Smartblog::displayDate($post['date_add']),
                     'post_img'                   => $post_img,
                     'id_category'                => $this->post['id_category'],
+                    'firstname'                  => $employee->firstname,
+                    'lastname'                   => $employee->lastname,
                 )
             );
         }

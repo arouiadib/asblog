@@ -1,18 +1,17 @@
-<div class="block">
+<div id="blog-categories" class="block">
     {if isset($categories) AND !empty($categories)}
-        <div id="category_blog_block_left"  class="block blogModule boxPlain">
-            <h2 class='sdstitle_block'>
-                <a href="{*{smartblog::GetSmartBlogLink('smartblog_list')}*}">{l s='Blog Categories' d='Modules.Asblog.Shop'}</a>
+        <div id="blog-categories-left">
+            <h2 class="block_title">
+                <a href="{$bloglink->getBlogLink('module-asblog-bloglist')}">{l s='Blog Categories' d='Modules.Asblog.Shop'}</a>
             </h2>
             <div class="block_content list-block">
                 <ul>
                     {foreach from=$categories item="category"}
-                        {assign var="options" value=null}
-                        {$options.id_category = $category.id_category}
-                        {$options.slug = $category.link_rewrite}
-                        <li>
-                            <a href="{*{smartblog::GetSmartBlogLink('smartblog_category',$options)}*}">{$category.name} [{$category.count}]</a>
-                        </li>
+                        {if $category.id_category != 1 }
+                            <li>
+                                <a href="{$bloglink->getBlogCategoryLink($category.id_category, $category.link_rewrite)}">{$category.name} ({$category.count})</a>
+                            </li>
+                        {/if}
                     {/foreach}
                 </ul>
             </div>

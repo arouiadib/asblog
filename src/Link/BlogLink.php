@@ -6,6 +6,7 @@ use Configuration;
 use Context;
 use Dispatcher;
 use Language;
+use PrestaShop\Module\AsBlog\Model\Category;
 
 class BlogLink
 {
@@ -63,10 +64,35 @@ class BlogLink
         $params = array();
         $params['rewrite'] = $blogpost->link_rewrite;
         $params['id_post'] = $blogpost->id_post;
-        //return 'adib';
+
         return $url . $dispatcher->createUrl('module-asblog-blogpost', $id_lang, $params, $this->allow);
     }
 
+
+    public  function getBlogCategoryLink($blogcategory, $rewrite = null, $ssl = null, $id_lang = null, $id_shop = null, $relative_protocol = false)
+    {
+
+        if (!$id_lang) {
+            $id_lang = Context::getContext()->language->id;
+        }
+
+        $url = $this->getBlogUrl();
+        $dispatcher = Dispatcher::getInstance();
+
+        if (!is_object($blogcategory)) {
+            if ($rewrite !== null) {
+                return $url . $dispatcher->createUrl('module-asblog-blogcategory', $id_lang, array('id_category' => (int)$blogcategory, 'rewrite' => $rewrite), $this->allow, '', $id_shop);
+            }
+            $blogcategory = new Category($blogcategory, $id_lang);
+        }
+
+        $params = array();
+        $params['rewrite'] = $blogcategory->link_rewrite;
+        $params['id_category'] = $blogcategory->id_category;
+
+
+        return $url . $dispatcher->createUrl('module-asblog-blogcategory', $id_lang, $params,  $this->allow);
+    }
 
     /**
      * Returns a link to a product image for display
@@ -172,6 +198,42 @@ class BlogLink
         } else {
             $params = array();
             return $url . $dispatcher->createUrl($rewrite, $id_lang, $params, $force_routes);
+        }
+    }
+
+    public  function getCategoryPagination($id_category, $link_rewrite, $pageNum)
+    {
+        $rewrite = 'module-asblog-blogcategory_pagination';
+        $params = array();
+        $params['rewrite'] = $link_rewrite;
+        $params['id_category'] = $id_category;
+        $params['page'] = $pageNum;
+        $url          = self::getBlogUrl();
+        $dispatcher = Dispatcher::getInstance();
+        $id_lang = (int) Context::getContext()->language->id;
+
+        if ($params != null) {
+            return $url . $dispatcher->createUrl($rewrite, $id_lang, $params,  $this->allow);
+        } else {
+            $params = array();
+            return $url . $dispatcher->createUrl($rewrite, $id_lang, $params,  $this->allow);
+        }
+    }
+
+    public  function getListPagination($pageNum)
+    {
+        $rewrite = 'module-asblog-bloglist_pagination';
+        $params = array();
+        $params['page'] = $pageNum;
+        $url          = self::getBlogUrl();
+        $dispatcher = Dispatcher::getInstance();
+        $id_lang = (int) Context::getContext()->language->id;
+
+        if ($params != null) {
+            return $url . $dispatcher->createUrl($rewrite, $id_lang, $params,  $this->allow);
+        } else {
+            $params = array();
+            return $url . $dispatcher->createUrl($rewrite, $id_lang, $params,  $this->allow);
         }
     }
 }

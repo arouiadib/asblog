@@ -155,4 +155,60 @@ class Category extends \ObjectModel
 
         return $result[0]['count'];
     }
+
+    
+    public static function getCategoryPosts($id_lang, $id_category, $limit_start, $limit)
+    {
+        $result = array();
+        $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'post p
+                LEFT JOIN ' . _DB_PREFIX_ . 'post_lang pl 
+                ON p.id_post = pl.id_post 
+                /*WHERE pl.id_lang=' . (int) $id_lang . ' */
+                WHERE p.active = 1 
+                AND p.id_category = ' . (int) $id_category . '
+                ORDER BY p.id_post DESC LIMIT ' . (int) $limit_start . ',' . (int) $limit;
+
+        //var_dump($limit_start);
+        //var_dump($sql);
+        //die;
+        if (!$posts = Db::getInstance()->executeS($sql))  return false;
+
+        $i = 0;
+        foreach ($posts as $post) {
+
+            /*$result[$i]['cat_link_rewrite'] = '';
+            $result[$i]['cat_name'] = 'Home';*/
+
+
+            $result[$i]['id_post'] = $post['id_post'];
+            $result[$i]['nb_views'] = $post['nb_views'];
+            $result[$i]['title'] = $post['title'];
+            $result[$i]['position'] = $post['position'];
+            $result[$i]['meta_title'] = $post['meta_title'];
+            $result[$i]['meta_description'] = $post['meta_description'];
+            $result[$i]['meta_keywords'] = $post['meta_keywords'];
+            $result[$i]['content'] = $post['content'];
+            $result[$i]['id_category'] = $post['id_category'];
+            $result[$i]['link_rewrite'] = $post['link_rewrite'];
+//            $result[$i]['cat_link_rewrite'] = $BlogCategory->getCatLinkRewrite($post['id_category']);
+/*            $employee = new Employee($post['id_author']);
+
+            $result[$i]['lastname'] = $employee->lastname;
+            $result[$i]['firstname'] = $employee->firstname;*/
+            if (file_exists(_PS_IMG_DIR_ . 'blog/post/' . $post['id_post'] . '.jpeg')) {
+                $image = $post['id_post'];
+                $result[$i]['post_img'] = $image;
+            } else {
+                $result[$i]['post_img'] = 'no';
+            }
+            $result[$i]['date_add'] = $post['date_add'];
+
+            $i++;
+        }
+
+
+        return $result;
+    }
+
+
 }

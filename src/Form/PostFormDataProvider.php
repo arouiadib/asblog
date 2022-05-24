@@ -96,6 +96,7 @@ class PostFormDataProvider implements FormDataProviderInterface
                     'active' => $arrayPost['active'],
                     'id_category' => $arrayPost['id_category'],
                     'link_rewrite' => $arrayPost['link_rewrite'],
+                    'id_author' => $arrayPost['id_author'],
             ]];
     }
 

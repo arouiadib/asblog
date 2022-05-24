@@ -41,7 +41,7 @@ class AsBlogBlogCategoryModuleFrontController extends ModuleFrontController
 		$post    = new Post();
 
         $id_category = Tools::getValue('id_category');
-
+        //var_dump(count($id_category) );die;
         $orderby     = 'id_post';
         $order = 'asc';
         $posts_per_page = 5;
@@ -100,15 +100,16 @@ class AsBlogBlogCategoryModuleFrontController extends ModuleFrontController
 			$category_status  = $categoryinfo['active'];
 			$cat_link_rewrite = $categoryinfo['link_rewrite'][$this->context->language->id];
 
-            $allNews = $post->getAllPost($this->context->language->id, $limit_start, $limit, $orderby, $order);
+            $allNews = Category::getCategoryPosts($this->context->language->id, $id_category, $limit_start, $limit);
+
 
 		}
 
-
+        //var_dump(count($allNews));die;
 		if (!empty($allNews)) {
 			foreach ($allNews as $item) {
 				if (file_exists(_PS_IMG_DIR_ . 'blog/post/' . $item['id_post'] . '.jpeg')) {
-					$item['post_img'] = $item['id_post'] . '.jpg';
+					$item['post_img'] = $item['id_post'] . '.jpeg';
 				} else {
 					$item['post_img'] = 'no';
 				}
@@ -127,7 +128,7 @@ class AsBlogBlogCategoryModuleFrontController extends ModuleFrontController
 			$limit_start = 0;
 		}
 
-
+        //var_dump($allNews);die;
 		$this->context->smarty->assign(
 			array(
 				'bloglink'             => $bloglink,

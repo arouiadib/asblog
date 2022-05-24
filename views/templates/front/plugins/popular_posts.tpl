@@ -1,33 +1,32 @@
-<div class="block">
-    <h2 class='title_block'>{l s='Popular Articles' d='Modules.Asblog.Shop'}</h2>
-    <div class="sdsblog-box-content">
-        {*{if isset($view_data) AND !empty($view_data)}
-            {assign var='i' value=1}
-            {foreach from=$view_data item=post}
-
-                    <div id="sds_blog_post" class="col-xs-12 col-sm-4 col-md-3">
-                        <span class="news_module_image_holder">
-                            <a href="{$bloglink->getBlogPostLink($post.id,$post.link_rewrite)}">
-                              {if $smartbloglink->getImageLink($post.link_rewrite, $post.id, 'home-default') != 'false'}
-                                  <img class="replace-2x img-responsive"
-                                       src="{$bloglink->getImageLink($post.link_rewrite, $post.id, 'home-default')}"
-                                       alt="{$post.title|escape:'html':'UTF-8'}" title="{$post.title|escape:'html':'UTF-8'}"
-                                       itemprop="image" />
-                              {/if}
-                            </a>
-                        </span>
-                        <i class="icon icon-calendar"></i>
-                        <span>{$post.date_added}</span>
-                        <h4 class="sds_post_title"><a href="{$bloglink->getBlogPostLink($post.id,$post.link_rewrite)}">{$post.title}</a></h4>
-                        <p>
-                            {$post.short_description|escape:'htmlall':'UTF-8'}
-                        </p>
-                        <a href="{$bloglink->getPostLink($post.id,$post.link_rewrite)}" class="r_more btn btn-default button button-small">
-                          <span>{l s='Read More' d='Modules.Asblog.Shop'}<i class="icon-chevron-right right"></i></span>
-                        </a>
-                    </div>
-                {$i=$i+1}
-            {/foreach}
-        {/if}*}
-     </div>
+<div id="blog-popular-posts" class="block">
+        {if isset($posts) AND !empty($posts)}
+            <div id="recent-posts"  class="block">
+                <h2 class="block_title">
+                        {l s='Popular Articles' d='Modules.Asblog.Shop'}
+                </h2>
+                <div class="block_content">
+                    <ul class="posts-list">
+                        {foreach from=$posts item="post"}
+                            <li>
+                                {assign var="image_url" value="`$urls.img_ps_url`blog/post/`$post.post_img`.jpeg"}
+                                {if $post.post_img === 'no'}
+                                    {$image_url = "`$urls.img_ps_url`blog/no.jpg"}
+                                {/if}
+                                <a class="image" title="{$post.meta_title}"
+                                   href="{$bloglink->getBlogPostLink($post.id_post, $post.link_rewrite)|escape:'htmlall':'UTF-8'}">
+                                    <div class="article-image">
+                                        <img alt="{$post.meta_title}" src="{$image_url}">
+                                    </div>
+                                    <div class="article-title-and-date">
+                                        <h3 class="article-title">{$post.meta_title}</h3>
+                                        <div class="article-date">{$post.date_add|date_format:"%b %d, %Y"}</div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </a>
+                            </li>
+                        {/foreach}
+                    </ul>
+                </div>
+            </div>
+        {/if}
 </div>

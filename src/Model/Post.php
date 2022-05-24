@@ -4,6 +4,7 @@ namespace PrestaShop\Module\AsBlog\Model;
 
 use Db;
 use Context;
+use Employee;
 /**
  * Class Post
  */
@@ -18,6 +19,11 @@ class Post extends \ObjectModel
      * @var int
      */
     public $id_category;
+
+    /**
+     * @var int
+     */
+    public $id_author;
 
     /**
      * @var string
@@ -65,6 +71,10 @@ class Post extends \ObjectModel
     public $link_rewrite;
 
     /**
+     * @var int
+     */
+    public $nb_views;
+    /**
      * @see ObjectModel::$definition
      */
     public static $definition = array(
@@ -72,6 +82,8 @@ class Post extends \ObjectModel
         'primary' => 'id_post',
         'multilang' => true,
         'fields' => array(
+            'id_category' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
+            'id_author' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
             'title' => array('type' => self::TYPE_STRING, 'lang' => true, 'required' => true, 'size' => 40),
             'content' => array('type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isString', 'required' => true),
             'meta_title'       => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName'),
@@ -79,9 +91,9 @@ class Post extends \ObjectModel
             'meta_description' => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName'),
             'active'           => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
             'date_add' => array('type' => self::TYPE_DATE, 'required' => true),
-            'id_category' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
             'position' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
-            'link_rewrite' => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isString')
+            'link_rewrite' => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isString'),
+            'nb_views' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
         ),
     );
 
@@ -110,6 +122,7 @@ class Post extends \ObjectModel
         return [
             'id_post' => $this->id_post,
             'id_category' => $this->id_category,
+            'id_author' => $this->id_category,
             'title' => $this->title,
             'content' => $this->content,
             'active' => $this->active,
@@ -119,6 +132,7 @@ class Post extends \ObjectModel
             'meta_keywords' => $this->meta_keywords,
             'meta_description' => $this->meta_description,
             'link_rewrite' => $this->link_rewrite,
+            'nb_views' => $this->nb_views
         ];
     }
 
@@ -162,7 +176,6 @@ class Post extends \ObjectModel
         }
         $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'post p
                 INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl ON p.id_post = pl.id_post
-                INNER JOIN ' . _DB_PREFIX_ . 'post_shop ps ON pl.id_post = ps.id_post AND ps.id_shop = ' . (int) Context::getContext()->shop->id . '
                 WHERE pl.id_lang =' . (int) $id_lang . '
                 AND p.active = 1';
 
@@ -176,15 +189,12 @@ class Post extends \ObjectModel
 
     public static function getTotalByCategory($id_category = null)
     {
-
-
         if ($id_category == null) {
             $id_category = 1;
         }
         $sql = 'SELECT COUNT(*) AS num
                 FROM ' . _DB_PREFIX_ . 'post p
-/*                INNER JOIN ' . _DB_PREFIX_ . 'post_shop ps ON p.id_post = ps.id_post AND ps.id_shop = ' . (int) Context::getContext()->shop->id . '*/
-                WHERE p.id_category=' . (int) $id_category . '
+                WHERE p.id_category =' . (int) $id_category . '
                 AND p.active = 1';
 
         return Db::getInstance()->getValue($sql);
@@ -253,7 +263,8 @@ class Post extends \ObjectModel
 
             $result[$i]['id_post']           = $post['id_post'];
             //$result[$i]['is_featured']       = $post['is_featured'];
-            //$result[$i]['viewed']            = $post['viewed'];
+            $result[$i]['nb_views']            = $post['nb_views'];
+            $result[$i]['title']                = $post['title'];
             $result[$i]['meta_title']        = $post['meta_title'];
             $result[$i]['meta_description']  = $post['meta_description'];
             //$result[$i]['short_description'] = $post['short_description'];
@@ -261,22 +272,22 @@ class Post extends \ObjectModel
             $result[$i]['content']           = $post['content'];
             $result[$i]['meta_keywords']      = $post['meta_keywords'];
             $result[$i]['link_rewrite']      = $link_rewrite;
-/*            $employee                          = new Employee($post['id_author']);
+
+            $employee                          = new Employee($post['id_author']);
 
             $result[$i]['lastname']  = $employee->lastname;
-            $result[$i]['firstname'] = $employee->firstname;*/
+            $result[$i]['firstname'] = $employee->firstname;
             if (file_exists(_PS_IMG_DIR_ . 'blog/post/' . $post['id_post'] . '.jpeg')) {
                 $image                    = $post['id_post'];
                 $result[$i]['post_img'] = $image;
             } else {
                 $result[$i]['post_img'] = 'no';
             }
-            //$result[$i]['created'] = $post['created'];
+            $result[$i]['date_add'] = $post['date_add'];
 
             $i++;
         }
-/*        echo "<pre>";
-        var_dump($result);die;*/
+
         return $result;
     }
 
@@ -314,9 +325,10 @@ class Post extends \ObjectModel
         foreach ($posts as $post) {
 
             $result[$i]['id_post']           = $post['id_post'];
-            //$result[$i]['viewed']            = $post['viewed'];
+            $result[$i]['nb_views']            = $post['nb_views'];
             //$result[$i]['is_featured']       = $post['is_featured'];
             $result[$i]['meta_title']        = $post['meta_title'];
+            $result[$i]['title']            = $post['title'];
             //$result[$i]['short_description'] = $post['short_description'];
             $result[$i]['meta_description']  = $post['meta_description'];
             $result[$i]['content']           = $post['content'];
@@ -325,17 +337,17 @@ class Post extends \ObjectModel
             $result[$i]['link_rewrite']      = $post['link_rewrite'];
             //$result[ $i ]['cat_name']          = $BlogCategory->getCatName(  $post['id_smart_blog_post'] );
             //$result[$i]['cat_link_rewrite']  = $BlogCategory->getCatLinkRewrite($post['id_smart_blog_post']);
-/*            $employee                          = new Employee($post['id_author']);
+           $employee                          = new Employee($post['id_author']);
 
             $result[$i]['lastname']  = $employee->lastname;
-            $result[$i]['firstname'] = $employee->firstname;*/
+            $result[$i]['firstname'] = $employee->firstname;
             if (file_exists(_PS_IMG_DIR_ . 'blog/post/' . $post['id_post'] . '.jpeg')) {
                 $image                    = $post['id_post'];
                 $result[$i]['post_img'] = $image;
             } else {
                 $result[$i]['post_img'] = 'no';
             }
-            //$result[$i]['created'] = Smartblog::displayDate($post['created']);
+            $result[$i]['date_add'] = $post['date_add'];
             $i++;
         }
         return $result;
@@ -367,21 +379,19 @@ class Post extends \ObjectModel
         return count($posts);
     }
 
-    public static function getRecentPosts($id_lang = null)
+    public static function getRecentPosts($id_lang = null, $destination = 'left')
     {
-
         if ($id_lang == null) {
             $id_lang = (int) Context::getContext()->language->id;
         }
+        $limit = 6;
+        if ($destination === 'home') $limit = 3;
 
-        $limit = 5;
 
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS(
-            'SELECT  /*p.id_author*/, p.id_post, p.created, pl.meta_title, pl.link_rewrite 
+            'SELECT  p.id_author, p.id_post, p.date_add, p.id_category, pl.meta_title, pl.link_rewrite , pl.title, p.nb_views
                     FROM ' . _DB_PREFIX_ . 'post p 
                     INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl ON p.id_post = pl.id_post 
-                    INNER JOIN ' . _DB_PREFIX_ . 'post_shop ps ON pl.id_post = ps.id_post 
-                    AND ps.id_shop = ' . (int) Context::getContext()->shop->id . '
                     WHERE pl.id_lang =' . $id_lang . '  AND p.active = 1 
                     ORDER BY p.id_post DESC LIMIT 0,' . $limit
         );
@@ -403,15 +413,12 @@ class Post extends \ObjectModel
         $limit = 5;
 
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS(
-            'SELECT /*p.id_author */, p.viewed, p.created, p.id_post, pl.meta_title, pl.link_rewrite 
+            'SELECT p.id_author, p.nb_views, p.date_add, p.id_post, pl.meta_title, pl.link_rewrite 
                     FROM ' . _DB_PREFIX_ . 'post p 
                     INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl 
                     ON p.id_post = pl.id_post 
-                    INNER ' . _DB_PREFIX_ . 'post_shop ps 
-                    ON pl.id_post = ps.id_post 
-                    AND ps.id_shop = ' . (int) Context::getContext()->shop->id . '
                     WHERE pl.id_lang=' . $id_lang . ' AND p.active = 1 
-                    ORDER BY p.viewed DESC LIMIT 0,' . $limit
+                    ORDER BY p.nb_views DESC LIMIT 0,' . $limit
         );
         foreach ($result as $key => $value) {
             //$result[$key]['created'] = smartblog::displayDate($value['created']);
@@ -420,4 +427,12 @@ class Post extends \ObjectModel
         return $result;
     }
 
+    public static function setNbViews($id_post)
+    {
+        $sql = 'UPDATE ' . _DB_PREFIX_ . 'post as p 
+        SET p.nb_views = (p.nb_views + 1) 
+        WHERE p.id_post = ' . (int) $id_post;
+
+        return Db::getInstance()->execute($sql);
+    }
 }

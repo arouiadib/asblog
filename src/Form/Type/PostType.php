@@ -55,11 +55,11 @@ class PostType extends TranslatorAwareType
                 'options' => [
                     'constraints' => [
                         new Length([
-                            'max' => 150,
+                            'max' => 1500,
                             'maxMessage' => $this->translator->trans(
                                 'Name of the block cannot be longer than %limit% characters',
                                 [
-                                    '%limit%' => 150
+                                    '%limit%' => 1500
                                 ],
                                 'Modules.Asblog.Admin'
                             ),
@@ -107,11 +107,11 @@ class PostType extends TranslatorAwareType
                 'options' => [
                     'constraints' => [
                         new Length([
-                            'max' => 40,
+                            'max' => 1000,
                             'maxMessage' => $this->translator->trans(
                                 'Meta Keywords cannot be more than %limit% characters',
                                 [
-                                    '%limit%' => 40
+                                    '%limit%' => 1000
                                 ],
                                 'Modules.Asblog.Admin'
                             ),
@@ -129,11 +129,11 @@ class PostType extends TranslatorAwareType
                 'options' => [
                     'constraints' => [
                         new Length([
-                            'max' => 40,
+                            'max' => 1000,
                             'maxMessage' => $this->translator->trans(
                                 'Meta Keywords cannot be more than %limit% characters',
                                 [
-                                    '%limit%' => 40
+                                    '%limit%' => 1000
                                 ],
                                 'Modules.Asblog.Admin'
                             ),
@@ -151,11 +151,11 @@ class PostType extends TranslatorAwareType
                 'options' => [
                     'constraints' => [
                         new Length([
-                            'max' => 40,
+                            'max' => 1500,
                             'maxMessage' => $this->translator->trans(
                                 'Meta description cannot be more than %limit% characters',
                                 [
-                                    '%limit%' => 40
+                                    '%limit%' => 1500
                                 ],
                                 'Modules.Asblog.Admin'
                             ),

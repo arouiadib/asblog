@@ -21,6 +21,7 @@ use PrestaShop\Module\AsBlog\Repository\ImageObjectRepository;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 use PrestaShop\Module\AsBlog\Model\Category;
 use PrestaShop\Module\AsBlog\Model\Post;
+use PrestaShop\Module\AsBlog\Link\BlogLink;
 
 define('_PS_BLOG_CATEGORY_IMG_DIR_', _PS_IMG_DIR_.'blog/category/');
 define('_PS_BLOG_POST_IMG_DIR_', _PS_IMG_DIR_.'blog/post/');
@@ -76,9 +77,11 @@ class Asblog extends Module implements WidgetInterface
             || !$this->registerHook('moduleRoutes')
             || !$this->registerHook('displayBlogSearch')
             || !$this->registerHook('displayBlogCategories')
-            || !$this->registerHook('hookDisplayBlogHome')
-            || !$this->registerHook('hookDisplayBlogRecentPostsLeft')
-            || !$this->registerHook('hookDisplayBlogRecentPostsHome')
+            || !$this->registerHook('displayBlogPopularPosts')
+            || !$this->registerHook('displayBlogRecentPostsLeft')
+            || !$this->registerHook('displayBlogRecentPostsHome')
+            || !$this->registerHook('displayBlogExtraLeft')
+            || !$this->registerHook('displayContentWrapperBottom')
         ) {
             return false;
         }
@@ -394,6 +397,12 @@ class Asblog extends Module implements WidgetInterface
         return $template_vars;
     }
 
+
+    public function hookDisplayBlogSearch($params)
+    {
+        return $this->display(__FILE__, 'views/templates/front/plugins/search_form.tpl');
+    }
+
     public function hookDisplayBlogCategories($params)
     {
         if (!$this->isCached('views/templates/front/plugins/categories.tpl', $this->getCacheId()))
@@ -409,25 +418,18 @@ class Asblog extends Module implements WidgetInterface
 
             $this->smarty->assign( array('categories' => $categories));
         }
-        $key = 'aa_carriersfooter|' . 'hookDisplayBlogCategories';
+        $key = 'asblog|' . 'hookDisplayBlogCategories';
         return $this->fetch('module:asblog/views/templates/front/plugins/categories.tpl', $this->getCacheId($key));
         //return $this->display(__FILE__, 'views/templates/front/plugin/categories.tpl', $this->getCacheId());
     }
 
-
-
-    public function hookDisplayBlogSearch($params)
+    public function hookDisplayBlogPopularPosts($params)
     {
-        return $this->display(__FILE__, 'views/templates/front/plugins/search_form.tpl');
-    }
-
-
-    public function hookDisplayBlogRecentPostsLeft($params)
-    {
-        if (!$this->isCached('views/templates/front/plugins/recent_posts_left.tpl', $this->getCacheId()))
+        $key = 'asblog|' . 'displayBlogPopularPosts';
+        if (!$this->isCached('views/templates/front/plugins/popular_posts.tpl', $this->getCacheId($key)))
         {
             $id_lang = $this->context->language->id;
-            $posts =  Post::getRecentPosts($id_lang);
+            $posts =  Post::getPopularPosts($id_lang);
             $i = 0;
             foreach($posts as $post) {
                 if (file_exists(_PS_IMG_DIR_.'blog/post/' . $post['id_post'] . '.jpeg') )
@@ -445,21 +447,104 @@ class Asblog extends Module implements WidgetInterface
                 'posts' => $posts
             ));
         }
-        return $this->display(__FILE__, 'views/templates/front/plugins/recent_posts_left.tpl',$this->getCacheId());
+        return $this->display(__FILE__, 'views/templates/front/plugins/popular_posts.tpl', $this->getCacheId($key));
 
     }
 
-    public function hookDisplayBlogRecentPostsHome($params)
-    {
-        /*        $id_lang = $this->context->language->id;
-                $posts   = SmartBlogPost::getRelatedPostsByProduct($id_lang, Tools::getvalue('id_product'));
-                $this->smarty->assign(
-                    array(
-                        'posts' => $posts,
-                    )
-                );*/
+    public function hookDisplayContentWrapperBottom() {
+        return $this->hookDisplayBlogRecentPostsHome();
+    }
 
-        return $this->display(__FILE__, 'views/templates/front/plugins/recent_posts_home.tpl');
+    public function hookDisplayBlogRecentPostsHome()
+    {
+        $key = 'asblog|' . 'displayBlogRecentPostsHome';
+        if (!$this->isCached('views/templates/front/plugins/recent_posts_left.tpl', $this->getCacheId($key)))
+        {
+            $id_lang = $this->context->language->id;
+            $posts =  Post::getRecentPosts($id_lang, 'home');
+
+            $i = 0;
+            foreach($posts as $post) {
+                if (file_exists(_PS_IMG_DIR_.'blog/post/' . $post['id_post'] . '.jpeg') )
+                {
+                    $image =   $post['id_post'];
+                    $posts[$i]['post_img'] = $image;
+                }
+                else
+                {
+                    $posts[$i]['post_img'] ='no';
+                }
+
+
+
+                $employee                 = new Employee((int)$post['id_author']);
+                $avatar = $employee->getImage();
+                $posts[$i]['author_image'] = $avatar;
+
+                $posts[$i]['lastname'] = $employee->lastname;
+                $posts[$i]['firstname'] = $employee->lastname;
+
+                $id_category      = (int)$post['id_category'];
+
+                $category = new Category($id_category, $this->context->language->id, $this->context->shop->id);
+                $posts[$i]['category'] = $category->name;
+                $i++;
+
+
+            }
+
+        /* Server Params */
+        $protocol_link    = (Configuration::get('PS_SSL_ENABLED')) ? 'https://' : 'http://';
+        $protocol_content = (isset($useSSL) and $useSSL and Configuration::get('PS_SSL_ENABLED')) ? 'https://' : 'http://';
+
+        $bloglink = new BlogLink($protocol_link, $protocol_content);
+
+
+            $this->smarty->assign( array(
+                'posts' => $posts,
+                'bloglink' => $bloglink,
+            ));
+        }
+
+        //return $this->display(__FILE__, 'views/templates/front/plugins/recent_posts_home.tpl'/*,$this->getCacheId($key)*/);
+        return $this->fetch('module:asblog/views/templates/front/plugins/recent_posts_home.tpl', $this->getCacheId($key));
+    }
+
+
+    public function hookDisplayBlogRecentPostsLeft()
+    {
+
+        $key = 'asblog|' . 'displayBlogRecentPostsLeft';
+        if (!$this->isCached('views/templates/front/plugins/recent_posts_left.tpl', $this->getCacheId($key))) {
+            $id_lang = $this->context->language->id;
+            $posts = Post::getRecentPosts($id_lang);
+
+            $i = 0;
+            foreach ($posts as $post) {
+                if (file_exists(_PS_IMG_DIR_ . 'blog/post/' . $post['id_post'] . '.jpeg')) {
+                    $image = $post['id_post'];
+                    $posts[$i]['post_img'] = $image;
+                } else {
+                    $posts[$i]['post_img'] = 'no';
+                }
+                $i++;
+            }
+
+
+            /* Server Params */
+            $protocol_link = (Configuration::get('PS_SSL_ENABLED')) ? 'https://' : 'http://';
+            $protocol_content = (isset($useSSL) and $useSSL and Configuration::get('PS_SSL_ENABLED')) ? 'https://' : 'http://';
+
+            $bloglink = new BlogLink($protocol_link, $protocol_content);
+
+
+            $this->smarty->assign(array(
+                'bloglink' => $bloglink,
+                'posts' => $posts
+            ));
+        }
+        return $this->display(__FILE__, 'views/templates/front/plugins/recent_posts_left.tpl', $this->getCacheId($key));
+        //return $this->fetch('module:asblog/views/templates/front/plugins/recent_posts_home.tpl', $this->getCacheId($key));
     }
     /**
      * @return array
@@ -524,6 +609,15 @@ class Asblog extends Module implements WidgetInterface
 
         if ($ModuleRoutes == 'ModuleRoutes') {
             return array(
+                'module-asblog-bloglist_withoutslash'        => array(
+                    'controller' => 'blogList',
+                    'rule'       => $alias,
+                    'keywords'   => array(),
+                    'params'     => array(
+                        'fc'     => 'module',
+                        'module' => 'asblog',
+                    ),
+                ),
                 'module-asblog-bloglist'        => array(
                     'controller' => 'blogList',
                     'rule'       => $alias . '/' ,
@@ -533,10 +627,15 @@ class Asblog extends Module implements WidgetInterface
                         'module' => 'asblog',
                     ),
                 ),
-                'module-asblog-bloglist_rule'        => array(
+                'module-asblog-bloglist_pagination' => array(
                     'controller' => 'blogList',
-                    'rule'       => $alias,
-                    'keywords'   => array(),
+                    'rule'       => $alias . '/page/{page}',
+                    'keywords'   => array(
+                        'page'        => array(
+                            'regexp' => '[_a-zA-Z0-9-\pL]*',
+                            'param'  => 'page',
+                        ),
+                    ),
                     'params'     => array(
                         'fc'     => 'module',
                         'module' => 'asblog',
@@ -544,7 +643,7 @@ class Asblog extends Module implements WidgetInterface
                 ),
                 'module-asblog-blogpost' => array(
                     'controller' => 'blogPost',
-                    'rule' => $alias .'/{:id_post}_{:rewrite}',
+                    'rule' => $alias .'/{id_post}_{rewrite}',
                     'keywords' => array(
                         'id_post' => array('regexp' => '[0-9]+', 'param' => 'id_post'),
                         'rewrite'    => array('regexp' => '[_a-zA-Z0-9-\pL]*', 'param'  => 'rewrite'),
@@ -565,7 +664,7 @@ class Asblog extends Module implements WidgetInterface
                         'module' => 'asblog',
                     ),
                 ),*/
-                'module-asblog-blogcategory_rule'       => array(
+                'module-asblog-blogcategory'       => array(
                     'controller' => 'blogCategory',
                     'rule'       => $alias . '/category/{id_category}_{rewrite}',
                     'keywords'   => array(
@@ -574,6 +673,25 @@ class Asblog extends Module implements WidgetInterface
                             'param'  => 'id_category',
                         ),
                         'rewrite'        => array('regexp' => '[_a-zA-Z0-9-\pL]*'),
+                    ),
+                    'params'     => array(
+                        'fc'     => 'module',
+                        'module' => 'asblog',
+                    ),
+                ),
+                'module-asblog-blogcategory_pagination' => array(
+                    'controller' => 'blogCategory',
+                    'rule'       => $alias . '/category/{id_category}_{rewrite}/page/{page}',
+                    'keywords'   => array(
+                        'id_category' => array(
+                            'regexp' => '[_a-zA-Z0-9-\pL]*',
+                            'param'  => 'id_category',
+                        ),
+                        'page'        => array(
+                            'regexp' => '[_a-zA-Z0-9-\pL]*',
+                            'param'  => 'page',
+                        ),
+                        'rewrite'     => array('regexp' => '[_a-zA-Z0-9-\pL]*'),
                     ),
                     'params'     => array(
                         'fc'     => 'module',

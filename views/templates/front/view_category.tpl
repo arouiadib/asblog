@@ -1,6 +1,5 @@
 {extends file='page.tpl'}
 
-
 {block name='breadcrumb'}
   {if isset($breadcrumb)}
     <nav class="breadcrumb smart-blog-breadcrumb">
@@ -31,13 +30,16 @@
 {/block}
 
 {block name='left_column'}
-  <div id="left-column" class="col-xs-12 col-sm-4 col-md-3">
+  <div id="left-column" class="col-xs-12 col-sm-12 col-md-5 pr-0 pl-0">
     {hook h='displayBlogSearch'}
     {hook h='displayBlogCategories'}
+    {hook h='displayBlogRecentPostsLeft'}
+    {hook h='displayBlogPopularPosts'}
   </div>
 {/block}
 
-{block name='content'}
+{block name='right_column'}
+<div id="right-column" class="col-xs-12 col-sm-12 col-md-7 pr-0 pl-0">
   {capture name=path}
     <a href="{*{smartblog::GetSmartBlogLink('module-smartblog-list')|escape:'htmlall':'UTF-8'}*}">{l s='All Blog News' d='Modules.Asblog.Shop'}</a>
     {if $title_category != ''}<span class="navigation-pipe"></span>{$title_category|escape:'htmlall':'UTF-8'}{/if}
@@ -68,15 +70,15 @@
       </div>
   {/if}
 
-
     <div id="" class="">
       {foreach from=$postcategory item=post}
-        {include file="module:asblog/views/templates/front/category_loop.tpl" postcategory=$postcategory}
+        {include file="module:asblog/views/templates/front/loop.tpl" postcategory=$postcategory}
       {/foreach}
     </div>
 
+{*    {$pagenums|var_dump}*}
     {if !empty($pagenums)}
-      <div class="row bottom-pagination-content smart-blog-bottom-pagination">
+      <div class="row bottom-pagination-content blog-bottom-pagination">
         <div class="post-page col-md-12">
           <div id="pagination_bottom" class="col-md-6">
             <ul class="pagination">
@@ -85,9 +87,17 @@
                   <li><span class="page-link page-active"><span>{$k+1|escape:'htmlall':'UTF-8'}</span></span></li>
                 {else}
                   {if $title_category != ''}
-                    <li><a class="page-link" href="{*{$smartbloglink->getSmartBlogCategoryPagination($id_category,$cat_link_rewrite,$k+1)|escape:'htmlall':'UTF-8'}*}"><span>{$k+1|escape:'htmlall':'UTF-8'}</span></a></li>
+                    <li>
+                      <a class="page-link" href="{$bloglink->getCategoryPagination($id_category,$cat_link_rewrite,$k+1)|escape:'htmlall':'UTF-8'}">
+                        <span>{$k+1|escape:'htmlall':'UTF-8'}</span>
+                      </a>
+                    </li>
                   {else}
-                    <li><a class="page-link" href="{*{$smartbloglink->getSmartBlogListPagination($k+1)|escape:'htmlall':'UTF-8'}*}"><span>{$k+1|escape:'htmlall':'UTF-8'}</span></a></li>
+                    <li>
+                      <a class="page-link" href="{$bloglink->getListPagination($k+1)|escape:'htmlall':'UTF-8'}">
+                        <span>{$k+1|escape:'htmlall':'UTF-8'}</span>
+                      </a>
+                    </li>
                   {/if}
                 {/if}
               {/for}
@@ -96,7 +106,7 @@
         </div>
         <div class="col-md-6">
           <div class="results">
-            {l s='Showing' mod='smartblog'}
+            {l s='Showing' d='Modules.Asblog.Shop'}
             {if $limit_start!=0}
               {$limit_start|escape:'htmlall':'UTF-8'}
             {else}1{/if} {l s='to' d='Modules.Asblog.Shop'}
@@ -114,4 +124,5 @@
       </div>
     {/if}
   {/if}
+</div>
 {/block}

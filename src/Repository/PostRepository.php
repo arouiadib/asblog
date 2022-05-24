@@ -7,7 +7,7 @@ use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Query\QueryBuilder;
 use PrestaShop\PrestaShop\Core\Exception\DatabaseException;
 use Symfony\Component\Translation\TranslatorInterface;
-
+use Context;
 
 /**
  * Class PostRepository.
@@ -72,6 +72,8 @@ class PostRepository
     			`date_add` datetime,
     			`id_category` int(10) unsigned NOT NULL,
     			`position` int(10) unsigned NOT NULL default '0',
+    			`nb_views` int(11) DEFAULT NULL,
+    			`id_author` int(10) unsigned NOT NULL,
     			PRIMARY KEY (`id_post`)
             ) ENGINE=$engine DEFAULT CHARSET=utf8",
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_lang`(
@@ -143,18 +145,22 @@ class PostRepository
      */
     public function create(array $data)
     {
+        $id_employee = Context::getContext()->employee->id;
+
         $qb = $this->connection->createQueryBuilder();
         $qb
             ->insert($this->dbPrefix . 'post')
             ->values([
                     'date_add' => ':dateAdd',
                     'active' => ':active',
-                    'id_category' => ':id_category'
+                    'id_category' => ':id_category',
+                    'id_author' => ':id_author'
             ])
             ->setParameters([
                 'dateAdd' => date('Y-m-d H:i:s'),
                 'active' => $data['active'],
-                'id_category' => $data['id_category']
+                'id_category' => $data['id_category'],
+                'id_author' => $id_employee,
             ])
         ;
 
