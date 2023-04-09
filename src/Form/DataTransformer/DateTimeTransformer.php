@@ -19,6 +19,7 @@ class DateTimeTransformer implements DataTransformerInterface
             return '';
         }
 
+
         return $datetime->format('d/m/Y H:i');
     }
 
@@ -34,7 +35,8 @@ class DateTimeTransformer implements DataTransformerInterface
         if (!$datetime) {
             return;
         }
-
+/*        var_dump($datetime);
+        var_dump(date_create_from_format('d/m/Y H:i', $datetime, new \DateTimeZone('Europe/Paris')));die;*/
         return date_create_from_format('d/m/Y H:i', $datetime, new \DateTimeZone('Europe/Madrid'));
     }
 }

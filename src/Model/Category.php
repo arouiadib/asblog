@@ -181,8 +181,10 @@ class Category extends \ObjectModel
 
 
             $result[$i]['id_post'] = $post['id_post'];
+            $result[$i]['id_author'] = $post['id_author'];
             $result[$i]['nb_views'] = $post['nb_views'];
             $result[$i]['title'] = $post['title'];
+            $result[$i]['summary'] = $post['summary'];
             $result[$i]['position'] = $post['position'];
             $result[$i]['meta_title'] = $post['meta_title'];
             $result[$i]['meta_description'] = $post['meta_description'];

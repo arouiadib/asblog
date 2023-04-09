@@ -33,6 +33,11 @@ class Post extends \ObjectModel
     /**
      * @var string
      */
+    public $summary;
+
+    /**
+     * @var string
+     */
     public $content;
 
     /**
@@ -84,7 +89,8 @@ class Post extends \ObjectModel
         'fields' => array(
             'id_category' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
             'id_author' => array('type' => self::TYPE_INT, 'validate' => 'isunsignedInt'),
-            'title' => array('type' => self::TYPE_STRING, 'lang' => true, 'required' => true, 'size' => 40),
+            'title' => array('type' => self::TYPE_STRING, 'lang' => true, 'required' => true, 'size' => 70),
+            'summary' => array('type' => self::TYPE_STRING, 'lang' => true, 'required' => true, 'size' => 450),
             'content' => array('type' => self::TYPE_HTML, 'lang' => true, 'validate' => 'isString', 'required' => true),
             'meta_title'       => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName'),
             'meta_keywords'     => array('type' => self::TYPE_STRING, 'validate' => 'isGenericName', 'lang' => true),
@@ -124,6 +130,7 @@ class Post extends \ObjectModel
             'id_category' => $this->id_category,
             'id_author' => $this->id_category,
             'title' => $this->title,
+            'summary' => $this->summary,
             'content' => $this->content,
             'active' => $this->active,
             'position' => $this->position,
@@ -262,12 +269,13 @@ class Post extends \ObjectModel
                         }*/
 
             $result[$i]['id_post']           = $post['id_post'];
-            //$result[$i]['is_featured']       = $post['is_featured'];
+            $result[$i]['id_author']           = $post['id_author'];
+            $result[$i]['id_category']           = $post['id_category'];
             $result[$i]['nb_views']            = $post['nb_views'];
             $result[$i]['title']                = $post['title'];
             $result[$i]['meta_title']        = $post['meta_title'];
             $result[$i]['meta_description']  = $post['meta_description'];
-            //$result[$i]['short_description'] = $post['short_description'];
+            $result[$i]['summary'] = $post['summary'];
             $result[$i]['position']          = $post['position'];
             $result[$i]['content']           = $post['content'];
             $result[$i]['meta_keywords']      = $post['meta_keywords'];
@@ -387,13 +395,12 @@ class Post extends \ObjectModel
         $limit = 6;
         if ($destination === 'home') $limit = 3;
 
-
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS(
-            'SELECT  p.id_author, p.id_post, p.date_add, p.id_category, pl.meta_title, pl.link_rewrite , pl.title, p.nb_views
+            'SELECT  p.id_author, p.id_post, p.date_add, p.id_category, pl.meta_title, pl.link_rewrite , pl.title, p.nb_views, pl.summary
                     FROM ' . _DB_PREFIX_ . 'post p 
                     INNER JOIN ' . _DB_PREFIX_ . 'post_lang pl ON p.id_post = pl.id_post 
                     WHERE pl.id_lang =' . $id_lang . '  AND p.active = 1 
-                    ORDER BY p.id_post DESC LIMIT 0,' . $limit
+                    ORDER BY p.date_add DESC LIMIT 0,' . $limit
         );
 
         foreach ($result as $key => $value) {

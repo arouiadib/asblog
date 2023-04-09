@@ -3,7 +3,6 @@
 use PrestaShop\Module\AsBlog\Model\Post;
 use PrestaShop\Module\AsBlog\Model\Category;
 use PrestaShop\Module\AsBlog\Link\BlogLink;
-use Employee;
 
 class AsBlogBlogPostModuleFrontController extends ModuleFrontController
 {

@@ -88,6 +88,7 @@ class PostFormDataProvider implements FormDataProviderInterface
             'post' => [
                     'id_post' => $arrayPost['id_post'],
                     'title' => $arrayPost['title'],
+                    'summary' => $arrayPost['summary'],
                     'content' => $arrayPost['content'],
                     'meta_title' => $arrayPost['meta_title'],
                     'meta_description' => $arrayPost['meta_description'],
@@ -115,6 +116,14 @@ class PostFormDataProvider implements FormDataProviderInterface
             foreach ($this->languages as $language) {
                 if (empty($post['title'][$language['id_lang']])) {
                     $post['title'][$language['id_lang']] = $post['title'][$defaultLanguageId];
+                }
+            }
+        }
+
+        if (!empty($post['summary'])) {
+            foreach ($this->languages as $language) {
+                if (empty($post['summary'][$language['id_lang']])) {
+                    $post['summary'][$language['id_lang']] = $post['summary'][$defaultLanguageId];
                 }
             }
         }
@@ -215,7 +224,7 @@ class PostFormDataProvider implements FormDataProviderInterface
         }
 
         $defaultLanguageId = (int) $this->configuration->get('PS_LANG_DEFAULT');
-        $fields = ['content'];
+        $fields = ['content', 'summary'];
         foreach ($fields as $field) {
             if (empty($data[$field][$defaultLanguageId])) {
                 $errors[] = [

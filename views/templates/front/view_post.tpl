@@ -62,7 +62,7 @@
         </div>
         <div class="blog-post-excerpt">
             <p>
-                The man who helped give the world candy-colored computers eventually walked out the door. What does that mean for the company’s next big thing?
+                {$post.summary}
             </p>
         </div>
         <div class="blog-post-views-and-category">
@@ -113,7 +113,9 @@
                     <span itemprop="author">{l s='By: ' d='Modules.Asblog.Shop'}{$firstname} {$lastname}</span>
                 </div>
                 <div id="post-author-description">
-                    <p>The man who helped give the world candy-colored computers eventually walked out the door. What does that mean for the company’s next big thing?</p>
+                    <p>
+                        {widget name="hs_employeedescription" id_employee = $post.id_author}
+                    </p>
                 </div>
 
             </div>

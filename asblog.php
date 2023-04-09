@@ -457,8 +457,9 @@ class Asblog extends Module implements WidgetInterface
 
     public function hookDisplayBlogRecentPostsHome()
     {
+
         $key = 'asblog|' . 'displayBlogRecentPostsHome';
-        if (!$this->isCached('views/templates/front/plugins/recent_posts_left.tpl', $this->getCacheId($key)))
+        if (!$this->isCached('views/templates/front/plugins/recent_posts_home.tpl', $this->getCacheId($key)))
         {
             $id_lang = $this->context->language->id;
             $posts =  Post::getRecentPosts($id_lang, 'home');
@@ -475,22 +476,18 @@ class Asblog extends Module implements WidgetInterface
                     $posts[$i]['post_img'] ='no';
                 }
 
-
-
                 $employee                 = new Employee((int)$post['id_author']);
                 $avatar = $employee->getImage();
                 $posts[$i]['author_image'] = $avatar;
 
                 $posts[$i]['lastname'] = $employee->lastname;
-                $posts[$i]['firstname'] = $employee->lastname;
+                $posts[$i]['firstname'] = $employee->firstname;
 
                 $id_category      = (int)$post['id_category'];
 
                 $category = new Category($id_category, $this->context->language->id, $this->context->shop->id);
                 $posts[$i]['category'] = $category->name;
                 $i++;
-
-
             }
 
         /* Server Params */
@@ -521,6 +518,8 @@ class Asblog extends Module implements WidgetInterface
 
             $i = 0;
             foreach ($posts as $post) {
+
+
                 if (file_exists(_PS_IMG_DIR_ . 'blog/post/' . $post['id_post'] . '.jpeg')) {
                     $image = $post['id_post'];
                     $posts[$i]['post_img'] = $image;

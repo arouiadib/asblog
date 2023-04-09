@@ -79,8 +79,9 @@ class PostRepository
             "CREATE TABLE IF NOT EXISTS `{$this->dbPrefix}post_lang`(
     			`id_post` int(10) unsigned NOT NULL,
     			`id_lang` int(10) unsigned NOT NULL,
-    			`title` varchar(40) NOT NULL default '',
+    			`title` varchar(70) NOT NULL default '',
     			`content` text default NULL,
+    			`summary` text default NULL,
     			`meta_title` text default NULL,
     			`meta_keywords` text default NULL,
     			`meta_description` text default NULL,
@@ -190,7 +191,7 @@ class PostRepository
             ->setParameters([
                 'postId' => $postId,
                 'active' => $data['active'],
-                'dateAdd' => $data['date_add']->format('d-m-y H:i'),
+                'dateAdd' => $data['date_add']->format('y-m-d H:i'),
                 'idCategory' => $data['id_category']
             ])
         ;
@@ -253,6 +254,7 @@ class PostRepository
                         'id_post' => ':postId',
                         'id_lang' => ':langId',
                         'title' => ':title',
+                        'summary' => ':summary',
                         'content' => ':content',
                         'meta_title' => ':metaTitle',
                         'meta_description' => ':metaDescription',
@@ -264,6 +266,7 @@ class PostRepository
                 $qb
                     ->update($this->dbPrefix . 'post_lang', 'pl')
                     ->set('title', ':title')
+                    ->set('summary', ':summary')
                     ->set('content', ':content')
                     ->set('meta_title', ':metaTitle')
                     ->set('meta_description', ':metaDescription')
@@ -279,6 +282,7 @@ class PostRepository
                     'postId' => $postId,
                     'langId' => $language['id_lang'],
                     'title' => $postData['title'][$language['id_lang']],
+                    'summary' => $postData['summary'][$language['id_lang']],
                     'content' => empty($postData['content'][$language['id_lang']]) ? null : $postData['content'][$language['id_lang']],
                     'metaTitle' => $postData['meta_title'][$language['id_lang']],
                     'metaDescription' => $postData['meta_description'][$language['id_lang']],

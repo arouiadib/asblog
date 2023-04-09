@@ -3,6 +3,7 @@
 namespace PrestaShop\Module\AsBlog\Form\Type;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -16,6 +17,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\DefaultLanguage;
 use PrestaShop\Module\AsBlog\Form\DataTransformer\DateTimeTransformer;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use PrestaShopBundle\Form\Admin\Type\TranslatableType;
 
 class PostType extends TranslatorAwareType
 {
@@ -70,6 +72,30 @@ class PostType extends TranslatorAwareType
             ->add('id_category', ParentCategoryChoiceTreeType::class, [
                 'required' => true,
                 'label' => $this->trans('Category', 'Modules.AsBlog.Admin'),
+            ])
+            ->add('summary', TranslatableType::class, [
+                'type' => TextareaType::class,
+                'locales' => $this->locales,
+                'required' => true,
+                'label' => $this->trans('Summary', 'Modules.Asblog.Admin'),
+                'constraints' => [
+                    new DefaultLanguage(),
+                ],
+                'options' => [
+                    'constraints' => [
+                        new Length([
+                            'max' => 450,
+                            'maxMessage' => $this->translator->trans(
+                                'Summary cannot be more than %limit% characters',
+                                [
+                                    '%limit%' => 450
+                                ],
+                                'Modules.Asblog.Admin'
+                            ),
+                        ]),
+                    ],
+                ],
+                'attr' => array('style' => 'meta_description_field ')
             ])
             ->add('content',  TranslateType::class, [
                 'required' => false,
@@ -141,7 +167,7 @@ class PostType extends TranslatorAwareType
                     ],
                 ],
             ])
-            ->add('meta_description', TranslateTextType::class, [
+            ->add('meta_description', TranslatableType::class, [
                 'locales' => $this->locales,
                 'required' => false,
                 'label' => $this->trans('Meta Description', 'Modules.Asblog.Admin'),
@@ -162,6 +188,7 @@ class PostType extends TranslatorAwareType
                         ]),
                     ],
                 ],
+                'attr' => array('style' => 'meta_description_field ')
             ])
             ->add('upload_image_file', FileType::class, [
                 'label' => $this->trans('Featured image', 'Modules.AsBlog.Admin'),

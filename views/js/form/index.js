@@ -26,7 +26,7 @@ $(() => {
   ]);
 
   $('.datetimepicker').datetimepicker({
-    locale: 'es',
+    locale: 'fr',
     useCurrent: false,
     sideBySide: true
   });

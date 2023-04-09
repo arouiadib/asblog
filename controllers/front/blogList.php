@@ -41,9 +41,9 @@ class AsBlogBlogListModuleFrontController extends ModuleFrontController
 
         $id_category = Tools::getValue('id_category');
 
-        $orderby     = 'id_post';
-        $order = 'asc';
-        $posts_per_page = 5;
+        $orderby     = 'date_add';
+        $order = 'desc';
+        $posts_per_page = 12;
 
 
         $limit_start    = 0;
@@ -90,16 +90,32 @@ class AsBlogBlogListModuleFrontController extends ModuleFrontController
 
         }
 
-        //var_dump(count($allNews));die;
+        //var_dump($allNews);die;
+        $i = 0;
         if (!empty($allNews)) {
             foreach ($allNews as $item) {
                 if (file_exists(_PS_IMG_DIR_ . 'blog/post/' . $item['id_post'] . '.jpeg')) {
-                    $item['post_img'] = $item['id_post'] . '.jpg';
+                    $allNews[$i]['post_img'] = $item['id_post'] . '.jpeg';
                 } else {
-                    $item['post_img'] = 'no';
+                    $allNews[$i]['post_img'] = 'no';
                 }
+
+                $employee                 = new Employee((int)$item['id_author']);
+                $avatar = $employee->getImage();
+                $allNews[$i]['author_image'] = $avatar;
+
+                $allNews[$i]['lastname'] = $employee->lastname;
+                $allNews[$i]['firstname'] = $employee->firstname;
+
+                $id_category      = (int)$item['id_category'];
+
+
+                $category = new Category($id_category, $this->context->language->id, $this->context->shop->id);
+                $allNews[$i]['category'] = isset($category->name) ? $category->name : '';
+                $i++;
             }
         }
+
         $protocol_link        = (Configuration::get('PS_SSL_ENABLED')) ? 'https://' : 'http://';
         $protocol_content = (isset($useSSL) and $useSSL and Configuration::get('PS_SSL_ENABLED')) ? 'https://' : 'http://';
 

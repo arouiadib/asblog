@@ -1,15 +1,14 @@
-<section id="blog-recent-posts-home" class="block">
-
+<section id="blog-recent-posts-home" class="block">hiiii
     {if isset($posts) AND !empty($posts)}
         <div id="recent-articles-block-home"  class="block">
             <h2 class="block_title h2 products-section-title text-uppercase">
-                {l s='Recent Articles' d='Modules.Asblog.Recent_posts_home'}
+                {l s='latest publications' d='Modules.Asblog.Shop'}
             </h2>
 
             <div class="block_content container-blog-home container">
                 <div class="row">
                     {foreach from=$posts item="post"}
-                        <div class="card col-sm-6 col-md-4 pl-0 pr-0 ml-0 mr-1">
+                        <div class="card col-sm-6 col-md-4 pl-0 pr-0 ml-0 terma mr-1">
                             {assign var="image_url" value="`$urls.img_ps_url`blog/post/`$post.post_img`.jpeg"}
                             {if $post.post_img === 'no'}
                                 {$image_url = "`$urls.img_ps_url`blog/no.jpg"}
@@ -23,7 +22,7 @@
                                 <div class="card__body">
                                     <span class="tag tag-brown">{$post.category}</span>
                                     <h4>{$post.title}</h4>
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi perferendis molestiae non nemo doloribus. Doloremque, nihil! At ea atque quidem!</p>
+                                    <p>{$post.summary}</p>
                                 </div>
                                 <div class="card__footer">
                                     <div class="user">
@@ -43,9 +42,10 @@
 
         </div>
         <div class="block_button">
-            <a href="{$bloglink->getBlogLink('module-asblog-bloglist')}" class="btn btn-primary btn-xxl page-scroll">
+{*            <a href="{$bloglink->getBlogLink('module-asblog-bloglist')}" class="btn btn-primary btn-xxl page-scroll">
                 {l s='All posts' d='Modules.Asblog.Shop'}
-            </a>
+            </a>*}
+            <button disabled class="btn btn-primary btn-xxl page-scroll">{l s='All posts' d='Modules.Asblog.Shop'}</button>
         </div>
     {/if}
 </section>

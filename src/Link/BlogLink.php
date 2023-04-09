@@ -6,6 +6,7 @@ use Configuration;
 use Context;
 use Dispatcher;
 use Language;
+use Shop;
 use PrestaShop\Module\AsBlog\Model\Category;
 
 class BlogLink
