@@ -457,7 +457,7 @@ class Asblog extends Module implements WidgetInterface
 
     public function hookDisplayBlogRecentPostsHome()
     {
-
+        if ($this->context->controller->getPageName() !== 'index')  return;
         $key = 'asblog|' . 'displayBlogRecentPostsHome';
         if (!$this->isCached('views/templates/front/plugins/recent_posts_home.tpl', $this->getCacheId($key)))
         {
